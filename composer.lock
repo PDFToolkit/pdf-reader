@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "593f21a691b9ffdc9a4c63b176ef8d8f",
+    "content-hash": "110cb0f1797fec55f9bc613d0c353d68",
     "packages": [
         {
             "name": "roukmoute/pdf",
-            "version": "dev-master",
+            "version": "v0.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PDFToolkit/pdf.git",
-                "reference": "951717ebe4ec0b70f0b610dd4c106bcaaa8dccb4"
+                "reference": "ba6bd68ef5364a949921f9988a3e810fe9d0ee88"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PDFToolkit/pdf/zipball/951717ebe4ec0b70f0b610dd4c106bcaaa8dccb4",
-                "reference": "951717ebe4ec0b70f0b610dd4c106bcaaa8dccb4",
+                "url": "https://api.github.com/repos/PDFToolkit/pdf/zipball/ba6bd68ef5364a949921f9988a3e810fe9d0ee88",
+                "reference": "ba6bd68ef5364a949921f9988a3e810fe9d0ee88",
                 "shasum": ""
             },
             "require": {
@@ -34,7 +34,6 @@
                 "phpstan/phpstan": "^2.1",
                 "phpunit/phpunit": "^12.0"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -90,7 +89,7 @@
                 "issues": "https://github.com/PDFToolkit/pdf/issues",
                 "source": "https://github.com/PDFToolkit/pdf"
             },
-            "time": "2026-10-13T09:13:52+00:00"
+            "time": "2026-10-13T10:19:47+00:00"
         }
     ],
     "packages-dev": [
@@ -4553,9 +4552,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "roukmoute/pdf": 20
-    },
+    "stability-flags": {},
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

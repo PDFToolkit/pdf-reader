@@ -6,9 +6,9 @@ complétés par les contrôles d'accès, quotas et budgets de l'application.
 
 ## Versions prises en charge
 
-Le lecteur est actuellement développé sur `master`, sans version publiée.
-Les corrections de sécurité sont appliquées à cette branche. PHP 8.3, 8.4 et
-8.5 sont vérifiés en CI ; utiliser une version maintenue avec ses correctifs.
+La série `0.1.x` est prise en charge. Les corrections de sécurité sont publiées
+dans cette série. PHP 8.3 minimum est requis ; PHP 8.3, 8.4 et 8.5 sont vérifiés
+en CI. Utiliser une version PHP maintenue avec ses correctifs.
 
 ## Signaler une vulnérabilité
 

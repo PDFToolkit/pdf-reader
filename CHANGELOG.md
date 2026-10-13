@@ -2,9 +2,11 @@
 
 ## Unreleased
 
+## 0.1.0 — 2026-10-13
+
 Première implémentation du lecteur de PDF externes, sous `PDF\Reading`, dans
 le paquet `pdftoolkit/pdf-reader`. Le lecteur dépend du modèle partagé
-`roukmoute/pdf` ; aucune dépendance inverse n'est ajoutée au modèle.
+`roukmoute/pdf:^0.2` ; aucune dépendance inverse n'est ajoutée au modèle.
 
 ### Ajouts
 

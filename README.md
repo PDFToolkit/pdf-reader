@@ -18,12 +18,13 @@ VCS au projet Composer :
 ```console
 composer config repositories.pdf vcs https://github.com/PDFToolkit/pdf
 composer config repositories.pdf-reader vcs https://github.com/PDFToolkit/pdf-reader
-composer require roukmoute/pdf:dev-master pdftoolkit/pdf-reader:dev-master
+composer require "pdftoolkit/pdf-reader:^0.1"
 ```
 
-La dépendance `roukmoute/pdf:dev-master` est provisoire : cette branche contient
-le modèle compatible PHP 8.3. La version publiée `v0.1.1` demande PHP 8.5.
-Le fichier `composer.lock` du projet consommateur fixe les révisions utilisées.
+Le lecteur utilise le core `roukmoute/pdf:^0.2`, installé automatiquement par
+Composer. Les deux dépôts VCS doivent être déclarés ici, car Composer ne reprend
+pas les dépôts configurés dans les dépendances. Le fichier `composer.lock` du
+projet consommateur fixe les versions et les révisions utilisées.
 
 ## Lire les pages
 
