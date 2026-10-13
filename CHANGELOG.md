@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+## 0.1.1 — 2026-10-13
+
+### Compatibilité
+
+- Accepte le core `roukmoute/pdf:^0.2 || ^0.3`, pour permettre l'installation
+  avec les nouveaux objets PDF de la série 0.3 sans modifier l'API du module.
+- Revalide les tests et les PDF indépendants avec le core stable `0.2.1`.
+  Aucun mécanisme de lecture ou de conversion n'est ajouté par ce correctif.
+
 ## 0.1.0 — 2026-10-13
 
 Première implémentation du lecteur de PDF externes, sous `PDF\Reading`, dans

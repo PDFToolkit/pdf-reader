@@ -21,7 +21,7 @@ composer config repositories.pdf-reader vcs https://github.com/PDFToolkit/pdf-re
 composer require "pdftoolkit/pdf-reader:^0.1"
 ```
 
-Le lecteur utilise le core `roukmoute/pdf:^0.2`, installé automatiquement par
+Le lecteur utilise le core `roukmoute/pdf:^0.2 || ^0.3`, installé automatiquement par
 Composer. Les deux dépôts VCS doivent être déclarés ici, car Composer ne reprend
 pas les dépôts configurés dans les dépendances. Le fichier `composer.lock` du
 projet consommateur fixe les versions et les révisions utilisées.

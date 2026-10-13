@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "110cb0f1797fec55f9bc613d0c353d68",
+    "content-hash": "132a7ad56ef2b6b0e9cfa869424d2254",
     "packages": [
         {
             "name": "roukmoute/pdf",
-            "version": "v0.2.0",
+            "version": "v0.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PDFToolkit/pdf.git",
-                "reference": "ba6bd68ef5364a949921f9988a3e810fe9d0ee88"
+                "reference": "c0fdcf782cf45542c847faabd2ec3190980e8b2f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PDFToolkit/pdf/zipball/ba6bd68ef5364a949921f9988a3e810fe9d0ee88",
-                "reference": "ba6bd68ef5364a949921f9988a3e810fe9d0ee88",
+                "url": "https://api.github.com/repos/PDFToolkit/pdf/zipball/c0fdcf782cf45542c847faabd2ec3190980e8b2f",
+                "reference": "c0fdcf782cf45542c847faabd2ec3190980e8b2f",
                 "shasum": ""
             },
             "require": {
@@ -28,13 +28,18 @@
             },
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^3.0",
-                "pdftoolkit/pdf-fonts": "dev-master",
-                "pdftoolkit/pdf-images": "dev-master",
-                "pdftoolkit/pdf-reader": "dev-master",
+                "pdftoolkit/pdf-fonts": "^0.1",
+                "pdftoolkit/pdf-images": "^0.1",
+                "pdftoolkit/pdf-reader": "^0.1",
                 "phpstan/phpstan": "^2.1",
                 "phpunit/phpunit": "^12.0"
             },
             "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.2.x-dev"
+                }
+            },
             "autoload": {
                 "psr-4": {
                     "PDF\\": "src/"
@@ -89,7 +94,7 @@
                 "issues": "https://github.com/PDFToolkit/pdf/issues",
                 "source": "https://github.com/PDFToolkit/pdf"
             },
-            "time": "2026-10-13T10:19:47+00:00"
+            "time": "2026-10-13T10:35:47+00:00"
         }
     ],
     "packages-dev": [
