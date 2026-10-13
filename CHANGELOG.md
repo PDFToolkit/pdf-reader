@@ -2,6 +2,20 @@
 
 ## Unreleased
 
+## 0.1.4 — 2026-10-14
+
+### Documentation
+
+- Relie la documentation commune à `https://pdftoolkit.github.io/` et ajoute
+  l'entrée stable du lecteur à `/modules/reader/`.
+- Confie les guides communs et la publication du site à
+  `PDFToolkit/pdftoolkit.github.io`, avec des sources de modules épinglées sur
+  leurs versions publiées et leurs commits exacts.
+- Corrige la compatibilité décrite dans le README pour refléter la contrainte
+  existante `roukmoute/pdf:^0.2 || ^0.3 || ^0.4 || ^0.5`.
+- Conserve l'API, les mécanismes de lecture, les dépendances et leurs versions
+  verrouillées ; cette version modifie uniquement la documentation.
+
 ## 0.1.3 — 2026-10-13
 
 ### Compatibilité
