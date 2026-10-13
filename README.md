@@ -21,10 +21,11 @@ composer config repositories.pdf-reader vcs https://github.com/PDFToolkit/pdf-re
 composer require "pdftoolkit/pdf-reader:^0.1"
 ```
 
-Le lecteur utilise le core `roukmoute/pdf:^0.2 || ^0.3`, installé automatiquement par
-Composer. Les deux dépôts VCS doivent être déclarés ici, car Composer ne reprend
-pas les dépôts configurés dans les dépendances. Le fichier `composer.lock` du
-projet consommateur fixe les versions et les révisions utilisées.
+Le lecteur utilise le core `roukmoute/pdf:^0.2 || ^0.3 || ^0.4 || ^0.5`,
+installé automatiquement par Composer. Les deux dépôts VCS doivent être déclarés
+ici, car Composer ne reprend pas les dépôts configurés dans les dépendances.
+Le fichier `composer.lock` du projet consommateur fixe les versions et les
+révisions utilisées.
 
 ## Lire les pages
 
@@ -174,7 +175,8 @@ budgets d'un service recevant des uploads.
 - [Contrôles de sécurité](docs/security.md)
 - [Politique de signalement](SECURITY.md)
 - [Changelog](CHANGELOG.md)
-- [Documentation commune des objets, du writer et des modules](https://pdftoolkit.github.io/pdf/)
+- [Documentation du module lecteur](https://pdftoolkit.github.io/modules/reader/)
+- [Documentation commune des objets, du writer et des modules](https://pdftoolkit.github.io/)
 - [Norme PDF 1.7 incluse dans le dépôt du modèle](https://github.com/PDFToolkit/pdf/blob/master/PDF32000_2008.pdf)
 
 Licence [MIT](LICENSE).

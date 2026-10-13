@@ -12,8 +12,9 @@
 - Keep commits atomic, with a clear purpose and no WIP commits in the published history.
 - Release each affected package when a coherent addition, correction or documentation update has been completed and validated. Publishing the changes on `master` alone does not complete the work.
 - Follow [RELEASING.md](RELEASING.md): use independent package versions, stable dependency constraints, annotated tags and GitHub release notes.
-- The initial publication of the optional packages has one bootstrap exception: the core may temporarily lock their validated development snapshots. Follow the sequence in RELEASING.md and publish the core stabilization patch with released module dependencies before completing that work. Module production dependencies must remain stable throughout.
+- The initial publication of the optional packages used one bootstrap exception, recorded in RELEASING.md. It is complete and must not be repeated for later releases. Module production dependencies must remain stable throughout.
 - Before tagging, require successful checks for the exact candidate commit on PHP 8.3, 8.4 and 8.5, including the repository's independent PDF validations.
 - Do not rewrite a published tag or edit an old release to include new changes. Publish a new version instead.
-- Update the shared documentation in `PDFToolkit/pdf` when the reader's public API changes; lock its reader dependency to a published version and link to the tagged source commit.
+- Keep the reader's guides beside its code. Maintain shared guides, site tooling and publication in [PDFToolkit/pdftoolkit.github.io](https://github.com/PDFToolkit/pdftoolkit.github.io), serving [the documentation root](https://pdftoolkit.github.io/) and [reader entrypoint](https://pdftoolkit.github.io/modules/reader/).
+- After a reader release, update the documentation site's released-source pins and provenance to its published version and exact tag commit. Build module guides and API documentation from that pinned source, verify source links, and publish the site update independently of the core package.
 - Report the versions and release links when the work is complete.

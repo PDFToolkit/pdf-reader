@@ -24,14 +24,17 @@ Describe incompatible changes and the required migration in the changelog and re
 ## Dependencies and publication order
 
 - Released packages must use stable version constraints for PDFToolkit dependencies. Do not publish runtime requirements on `dev-master`, local path repositories or unpublished commits.
-- Keep the core free of production dependencies on the reader, image converters and font converters. Its development dependencies may use those packages for examples and shared documentation.
+- Keep the core free of production dependencies on the reader, image converters and font converters. Its development dependencies may use those packages for examples and cross-package validation.
 - Publish a changed dependency before packages that require its new API. Check the actual dependency graph, including development dependencies, before choosing a publication order.
-- For later releases, when a core change and a module change depend on each other for development checks, validate them together locally first. Publish the dependency with development dependencies on compatible, already released modules, then publish the changed modules. Update the core's documentation dependencies in a subsequent release if needed.
+- For later releases, when a core change and a module change depend on each other for development checks, validate them together locally first. Publish the dependency with development dependencies on compatible, already released modules, then publish the changed modules. Update the dedicated documentation site's released-source pins after publishing the changed packages.
 - Update lock files using the declared repositories. Outside the initial bootstrap exception below, their PDFToolkit source references must identify real commits from the selected published tags.
 - Verify installation in a fresh consumer project with stable package versions. Test both the affected module and the core alone; installing the core must not install optional modules.
-- Shared API documentation lives in [PDFToolkit/pdf](https://github.com/PDFToolkit/pdf). After a module release, update its development dependency and lock file there, regenerate the API documentation, and verify that source links point to the selected tag's exact commit. Release that documentation update in the core when it changes.
+- Shared guides, API generation, site tooling and publication live in [PDFToolkit/pdftoolkit.github.io](https://github.com/PDFToolkit/pdftoolkit.github.io), published at [the documentation root](https://pdftoolkit.github.io/). Module guides remain beside their code and are rendered at [the reader entrypoint](https://pdftoolkit.github.io/modules/reader/).
+- After a module release, update the site's released-source pins and provenance with the published version and selected tag's exact commit. Rebuild module guides and API documentation from those pinned sources, verify that source links identify the same commit, and publish the site update independently of package releases.
 
-### Initial optional-package bootstrap
+### Historical initial optional-package bootstrap
+
+This sequence is complete and records the first publication, when the core also owned the shared site. Current documentation publication belongs to the dedicated repository described above.
 
 The first release of the extracted optional packages creates a publication cycle: their production code needs the new core API, while the core's examples and documentation use those modules as development dependencies. For this initial publication only, the following sequence is allowed:
 
