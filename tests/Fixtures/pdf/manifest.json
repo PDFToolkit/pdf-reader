@@ -1,0 +1,62 @@
+{
+  "generators": {
+    "pypdf": "6.20.1",
+    "qpdf": "12.4.2"
+  },
+  "classic_identifiers": {
+    "catalog": 3,
+    "page": 4,
+    "font": 5,
+    "contents": 6,
+    "length": 7,
+    "binary_stream": 8,
+    "transient": 9,
+    "info": 1
+  },
+  "binary_stream_bytes": 297,
+  "binary_stream_sha256": "822f707e1f97a5daddd0201085b20b9ad8d1d7adbf773bbc7a51fe34f96e49c1",
+  "page_content_hex": "4254202f4631203134205466203230203132302054642028496e646570656e64656e742072656164657220666978747572652920546a2045540a",
+  "literal_value_hex": "4120286e657374656429205c206c696e650a09656e64",
+  "fixtures": {
+    "classic.pdf": {
+      "bytes": 2030,
+      "sha256": "4e414c54c6920e4c99ab27d02c700e8194fdfa5385c7c13c8870708ac8a22528",
+      "startxref": 1674,
+      "catalog": 3,
+      "binary_stream": 8,
+      "transient": 9
+    },
+    "deleted-object.pdf": {
+      "bytes": 2240,
+      "sha256": "183b2fc6c27fe5191f01d1a597e7f338a8a22427371b0ebf48872b7c2e740672",
+      "startxref": 2030,
+      "catalog": 3,
+      "binary_stream": 8,
+      "transient": 9
+    },
+    "incremental.pdf": {
+      "bytes": 2336,
+      "sha256": "e617a54737d7e9cfc9086dee13372b8ca2c1f6c5fa7a566484f7bfd4f1becaca",
+      "startxref": 2126,
+      "catalog": 3,
+      "binary_stream": 8,
+      "transient": 9
+    },
+    "object-streams.pdf": {
+      "bytes": 1650,
+      "sha256": "7ca334f9c20011fa7ab2651679bda84ee5ce06812d75eb6cd25f9fe1353a0fbe",
+      "startxref": 1342,
+      "catalog": 4,
+      "binary_stream": 8,
+      "transient": 7
+    },
+    "reused-generation.pdf": {
+      "bytes": 2489,
+      "sha256": "07cf8133a37f0bd707e6ebdfe41ccca691e4b0e012e7a128ba4634a8937f4308",
+      "startxref": 2279,
+      "catalog": 3,
+      "binary_stream": 8,
+      "transient": 9
+    }
+  }
+}
