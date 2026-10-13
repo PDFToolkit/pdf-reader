@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "132a7ad56ef2b6b0e9cfa869424d2254",
+    "content-hash": "fb33278ad50ab4dbb905c38c22f06dbd",
     "packages": [
         {
             "name": "roukmoute/pdf",
-            "version": "v0.2.1",
+            "version": "v0.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PDFToolkit/pdf.git",
-                "reference": "c0fdcf782cf45542c847faabd2ec3190980e8b2f"
+                "reference": "63dd94b6e6c4efa540658492ce30a4f612b6db02"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PDFToolkit/pdf/zipball/c0fdcf782cf45542c847faabd2ec3190980e8b2f",
-                "reference": "c0fdcf782cf45542c847faabd2ec3190980e8b2f",
+                "url": "https://api.github.com/repos/PDFToolkit/pdf/zipball/63dd94b6e6c4efa540658492ce30a4f612b6db02",
+                "reference": "63dd94b6e6c4efa540658492ce30a4f612b6db02",
                 "shasum": ""
             },
             "require": {
@@ -28,16 +28,19 @@
             },
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^3.0",
-                "pdftoolkit/pdf-fonts": "^0.1",
-                "pdftoolkit/pdf-images": "^0.1",
-                "pdftoolkit/pdf-reader": "^0.1",
+                "pdftoolkit/pdf-fonts": "^0.1.1",
+                "pdftoolkit/pdf-images": "^0.1.1",
+                "pdftoolkit/pdf-reader": "^0.1.1",
                 "phpstan/phpstan": "^2.1",
                 "phpunit/phpunit": "^12.0"
+            },
+            "suggest": {
+                "ext-openssl": "Required only for the explicitly selected historical AES-256 revision 5 backend."
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.2.x-dev"
+                    "dev-master": "0.3.x-dev"
                 }
             },
             "autoload": {
@@ -94,7 +97,7 @@
                 "issues": "https://github.com/PDFToolkit/pdf/issues",
                 "source": "https://github.com/PDFToolkit/pdf"
             },
-            "time": "2026-10-13T10:35:47+00:00"
+            "time": "2026-10-13T14:10:51+00:00"
         }
     ],
     "packages-dev": [

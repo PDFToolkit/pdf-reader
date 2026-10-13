@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+## 0.1.2 — 2026-10-13
+
+### Compatibilité
+
+- Accepte le core stable `roukmoute/pdf:^0.2 || ^0.3 || ^0.4`.
+- Conserve l'API du module et sa frontière de traitement des données externes.
+- Vérifie le core stable 0.3.0 et les nouveaux objets du core 0.4 en développement,
+  sous PHP 8.3, 8.4 et 8.5.
+
 ## 0.1.1 — 2026-10-13
 
 ### Compatibilité
