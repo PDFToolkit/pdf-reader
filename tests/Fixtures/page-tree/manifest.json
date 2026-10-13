@@ -1,0 +1,348 @@
+{
+  "generators": {
+    "pypdf": "6.20.1",
+    "qpdf": "12.4.2"
+  },
+  "page_tree_nodes": 6,
+  "page_count": 3,
+  "binary_sample_bytes": 297,
+  "binary_sample_sha256": "822f707e1f97a5daddd0201085b20b9ad8d1d7adbf773bbc7a51fe34f96e49c1",
+  "fixtures": {
+    "classic.pdf": {
+      "bytes": 2502,
+      "sha256": "9fc525fb547afd5b1b3b1e80a9893d5ceac6cee971b51a91611d4c7b4e6a1e86",
+      "startxref": 1946,
+      "catalog": {
+        "number": 3,
+        "generation": 0
+      },
+      "page_tree": {
+        "root": {
+          "number": 2,
+          "generation": 0
+        },
+        "branch": {
+          "number": 9,
+          "generation": 0
+        },
+        "nested": {
+          "number": 10,
+          "generation": 0
+        }
+      },
+      "pages": [
+        {
+          "identifier": {
+            "number": 14,
+            "generation": 0
+          },
+          "parent": {
+            "number": 9,
+            "generation": 0
+          },
+          "own_entries": [
+            "Contents",
+            "Parent",
+            "Type"
+          ],
+          "media_box": [
+            0,
+            0,
+            300,
+            500
+          ],
+          "crop_box": [
+            20,
+            30,
+            280,
+            470
+          ],
+          "rotation": -90,
+          "resource_fonts": {
+            "FBranch": "Courier"
+          },
+          "contents": [
+            {
+              "identifier": {
+                "number": 11,
+                "generation": 0
+              },
+              "filters": [],
+              "encoded_hex": "4254202f464272616e6368203132205466203330203430302054642028496e686572697465642070616765206f6e652920546a2045540a",
+              "decoded_hex": "4254202f464272616e6368203132205466203330203430302054642028496e686572697465642070616765206f6e652920546a2045540a"
+            },
+            {
+              "identifier": {
+                "number": 12,
+                "generation": 0
+              },
+              "filters": [
+                "FlateDecode"
+              ],
+              "encoded_hex": "789c730a51d077732a4acc4bce5030345208495330365030363750084951d0084e4dcecf4b51001225a979250ac52545a989b99a0a21590aae215c00e5d91121",
+              "decoded_hex": "4254202f464272616e63682031322054662033302033373020546420285365636f6e6420636f6e74656e742073747265616d2920546a2045540a"
+            }
+          ],
+          "text": "Inherited page one\nSecond content stream"
+        },
+        {
+          "identifier": {
+            "number": 18,
+            "generation": 0
+          },
+          "parent": {
+            "number": 10,
+            "generation": 0
+          },
+          "own_entries": [
+            "Contents",
+            "MediaBox",
+            "Parent",
+            "Resources",
+            "Rotate",
+            "Type"
+          ],
+          "media_box": [
+            0,
+            0,
+            320,
+            520
+          ],
+          "crop_box": [
+            30,
+            40,
+            270,
+            460
+          ],
+          "rotation": 0,
+          "resource_fonts": {},
+          "contents": [
+            {
+              "identifier": {
+                "number": 15,
+                "generation": 0
+              },
+              "filters": [],
+              "encoded_hex": "710a4249202f5720323937202f482031202f4250432038202f4353202f472049440a00ff0a656e6473747265616d0a656e646f626a0a787265660a7374617274787265660a2525454f460a000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f404142434445464748494a4b4c4d4e4f505152535455565758595a5b5c5d5e5f606162636465666768696a6b6c6d6e6f707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f909192939495969798999a9b9c9d9e9fa0a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4b5b6b7b8b9babbbcbdbebfc0c1c2c3c4c5c6c7c8c9cacbcccdcecfd0d1d2d3d4d5d6d7d8d9dadbdcdddedfe0e1e2e3e4e5e6e7e8e9eaebecedeeeff0f1f2f3f4f5f6f7f8f9fafbfcfdfeff0a45490a510a",
+              "decoded_hex": "710a4249202f5720323937202f482031202f4250432038202f4353202f472049440a00ff0a656e6473747265616d0a656e646f626a0a787265660a7374617274787265660a2525454f460a000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f404142434445464748494a4b4c4d4e4f505152535455565758595a5b5c5d5e5f606162636465666768696a6b6c6d6e6f707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f909192939495969798999a9b9c9d9e9fa0a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4b5b6b7b8b9babbbcbdbebfc0c1c2c3c4c5c6c7c8c9cacbcccdcecfd0d1d2d3d4d5d6d7d8d9dadbdcdddedfe0e1e2e3e4e5e6e7e8e9eaebecedeeeff0f1f2f3f4f5f6f7f8f9fafbfcfdfeff0a45490a510a"
+            },
+            {
+              "identifier": {
+                "number": 16,
+                "generation": 0
+              },
+              "filters": [
+                "FlateDecode"
+              ],
+              "encoded_hex": "789c2be4325430004208999ccb15c8050023730393",
+              "decoded_hex": "710a312030203020312030203020636d0a510a"
+            }
+          ],
+          "text": ""
+        },
+        {
+          "identifier": {
+            "number": 19,
+            "generation": 0
+          },
+          "parent": {
+            "number": 2,
+            "generation": 0
+          },
+          "own_entries": [
+            "Parent",
+            "Type"
+          ],
+          "media_box": [
+            0,
+            0,
+            400,
+            600
+          ],
+          "crop_box": [
+            10,
+            20,
+            390,
+            580
+          ],
+          "rotation": 90,
+          "resource_fonts": {
+            "FRoot": "Helvetica"
+          },
+          "contents": [],
+          "text": ""
+        }
+      ]
+    },
+    "object-streams.pdf": {
+      "bytes": 1690,
+      "sha256": "31578fdc682650df15797d9d926459ca42ba44340b779e279156e1eb999b2332",
+      "startxref": 1376,
+      "catalog": {
+        "number": 4,
+        "generation": 0
+      },
+      "page_tree": {
+        "root": {
+          "number": 3,
+          "generation": 0
+        },
+        "branch": {
+          "number": 10,
+          "generation": 0
+        },
+        "nested": {
+          "number": 11,
+          "generation": 0
+        }
+      },
+      "pages": [
+        {
+          "identifier": {
+            "number": 13,
+            "generation": 0
+          },
+          "parent": {
+            "number": 10,
+            "generation": 0
+          },
+          "own_entries": [
+            "Contents",
+            "Parent",
+            "Type"
+          ],
+          "media_box": [
+            0,
+            0,
+            300,
+            500
+          ],
+          "crop_box": [
+            20,
+            30,
+            280,
+            470
+          ],
+          "rotation": -90,
+          "resource_fonts": {
+            "FBranch": "Courier"
+          },
+          "contents": [
+            {
+              "identifier": {
+                "number": 17,
+                "generation": 0
+              },
+              "filters": [
+                "FlateDecode"
+              ],
+              "encoded_hex": "789c730a51d077732a4acc4bce5030345208495330365030313050084951d0f0cccb482dca2c494d5128484c4f55c8cf4bd55408c952700de10200ad260fb3",
+              "decoded_hex": "4254202f464272616e6368203132205466203330203430302054642028496e686572697465642070616765206f6e652920546a2045540a"
+            },
+            {
+              "identifier": {
+                "number": 18,
+                "generation": 0
+              },
+              "filters": [
+                "FlateDecode"
+              ],
+              "encoded_hex": "789c730a51d077732a4acc4bce5030345208495330365030363750084951d0084e4dcecf4b51001225a979250ac52545a989b99a0a21590aae215c00e5d91121",
+              "decoded_hex": "4254202f464272616e63682031322054662033302033373020546420285365636f6e6420636f6e74656e742073747265616d2920546a2045540a"
+            }
+          ],
+          "text": "Inherited page one\nSecond content stream"
+        },
+        {
+          "identifier": {
+            "number": 15,
+            "generation": 0
+          },
+          "parent": {
+            "number": 11,
+            "generation": 0
+          },
+          "own_entries": [
+            "Contents",
+            "MediaBox",
+            "Parent",
+            "Resources",
+            "Rotate",
+            "Type"
+          ],
+          "media_box": [
+            0,
+            0,
+            320,
+            520
+          ],
+          "crop_box": [
+            30,
+            40,
+            270,
+            460
+          ],
+          "rotation": 0,
+          "resource_fonts": {},
+          "contents": [
+            {
+              "identifier": {
+                "number": 19,
+                "generation": 0
+              },
+              "filters": [
+                "FlateDecode"
+              ],
+              "encoded_hex": "789c015101aefe710a4249202f5720323937202f482031202f4250432038202f4353202f472049440a00ff0a656e6473747265616d0a656e646f626a0a787265660a7374617274787265660a2525454f460a000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f404142434445464748494a4b4c4d4e4f505152535455565758595a5b5c5d5e5f606162636465666768696a6b6c6d6e6f707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f909192939495969798999a9b9c9d9e9fa0a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4b5b6b7b8b9babbbcbdbebfc0c1c2c3c4c5c6c7c8c9cacbcccdcecfd0d1d2d3d4d5d6d7d8d9dadbdcdddedfe0e1e2e3e4e5e6e7e8e9eaebecedeeeff0f1f2f3f4f5f6f7f8f9fafbfcfdfeff0a45490a510a3be395ae",
+              "decoded_hex": "710a4249202f5720323937202f482031202f4250432038202f4353202f472049440a00ff0a656e6473747265616d0a656e646f626a0a787265660a7374617274787265660a2525454f460a000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f404142434445464748494a4b4c4d4e4f505152535455565758595a5b5c5d5e5f606162636465666768696a6b6c6d6e6f707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f909192939495969798999a9b9c9d9e9fa0a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4b5b6b7b8b9babbbcbdbebfc0c1c2c3c4c5c6c7c8c9cacbcccdcecfd0d1d2d3d4d5d6d7d8d9dadbdcdddedfe0e1e2e3e4e5e6e7e8e9eaebecedeeeff0f1f2f3f4f5f6f7f8f9fafbfcfdfeff0a45490a510a"
+            },
+            {
+              "identifier": {
+                "number": 20,
+                "generation": 0
+              },
+              "filters": [
+                "FlateDecode"
+              ],
+              "encoded_hex": "789c2be4325430004208999ccb15c8050023730393",
+              "decoded_hex": "710a312030203020312030203020636d0a510a"
+            }
+          ],
+          "text": ""
+        },
+        {
+          "identifier": {
+            "number": 16,
+            "generation": 0
+          },
+          "parent": {
+            "number": 3,
+            "generation": 0
+          },
+          "own_entries": [
+            "Parent",
+            "Type"
+          ],
+          "media_box": [
+            0,
+            0,
+            400,
+            600
+          ],
+          "crop_box": [
+            10,
+            20,
+            390,
+            580
+          ],
+          "rotation": 90,
+          "resource_fonts": {
+            "FRoot": "Helvetica"
+          },
+          "contents": [],
+          "text": ""
+        }
+      ]
+    }
+  }
+}
