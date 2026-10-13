@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+## 0.1.3 — 2026-10-13
+
+### Compatibilité
+
+- Accepte le core stable `roukmoute/pdf:^0.2 || ^0.3 || ^0.4 || ^0.5`.
+- Verrouille les vérifications sur le core publié `0.4.0`, sous PHP 8.3, 8.4 et 8.5.
+- Conserve l'API et les limites du lecteur ; aucun mécanisme de lecture supplémentaire
+  n'est ajouté par ce correctif de compatibilité.
+
 ## 0.1.2 — 2026-10-13
 
 ### Compatibilité
