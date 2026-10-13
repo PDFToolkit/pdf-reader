@@ -35,5 +35,9 @@ jobs:
       - run: sudo apt-get update && sudo apt-get install -y qpdf
       - name: Validate the independent PDF fixtures
         run: python tools/validate_reader_fixtures.py
+      - name: Validate independent nested page-tree fixtures
+        run: python tools/validate_page_tree_fixture.py
       - run: php examples/inspect.php tests/Fixtures/pdf/object-streams.pdf
       - run: php examples/parse-value.php
+      - run: php examples/pages.php tests/Fixtures/page-tree/classic.pdf
+      - run: php examples/pages.php tests/Fixtures/page-tree/object-streams.pdf

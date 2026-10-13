@@ -7,7 +7,14 @@ use PDF\Reading\FileBytes;
 use PDF\Syntax\Object\DictionaryType;
 use PDF\Syntax\Object\IntegerType;
 
-require dirname(__DIR__) . '/vendor/autoload.php';
+$autoload = dirname(__DIR__) . '/vendor/autoload.php';
+if (!is_file($autoload)) {
+    $autoload = dirname(__DIR__, 3) . '/autoload.php';
+}
+if (!is_file($autoload)) {
+    throw new RuntimeException('Install the Composer dependencies before running this example.');
+}
+require $autoload;
 
 // The application chooses a local path; the reader only receives bytes.
 $path = $argv[1] ?? dirname(__DIR__) . '/tests/Fixtures/pdf/object-streams.pdf';

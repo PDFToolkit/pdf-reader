@@ -7,7 +7,14 @@ use PDF\Reading\SyntaxParser;
 use PDF\Syntax\Object\DictionaryType;
 use PDF\Syntax\Object\StringType;
 
-require dirname(__DIR__) . '/vendor/autoload.php';
+$autoload = dirname(__DIR__) . '/vendor/autoload.php';
+if (!is_file($autoload)) {
+    $autoload = dirname(__DIR__, 3) . '/autoload.php';
+}
+if (!is_file($autoload)) {
+    throw new RuntimeException('Install the Composer dependencies before running this example.');
+}
+require $autoload;
 
 // PDF literal strings contain byte escapes; no text encoding is guessed.
 $value = (new SyntaxParser(new ByteCursor('<< /Label (A\053B) >>')))->read();
