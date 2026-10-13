@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/PDFToolkit/pdf.git",
-                "reference": "502c0a6c754c22e70ac51a4f74295d829d93bd56"
+                "reference": "951717ebe4ec0b70f0b610dd4c106bcaaa8dccb4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PDFToolkit/pdf/zipball/502c0a6c754c22e70ac51a4f74295d829d93bd56",
-                "reference": "502c0a6c754c22e70ac51a4f74295d829d93bd56",
+                "url": "https://api.github.com/repos/PDFToolkit/pdf/zipball/951717ebe4ec0b70f0b610dd4c106bcaaa8dccb4",
+                "reference": "951717ebe4ec0b70f0b610dd4c106bcaaa8dccb4",
                 "shasum": ""
             },
             "require": {
@@ -28,6 +28,9 @@
             },
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^3.0",
+                "pdftoolkit/pdf-fonts": "dev-master",
+                "pdftoolkit/pdf-images": "dev-master",
+                "pdftoolkit/pdf-reader": "dev-master",
                 "phpstan/phpstan": "^2.1",
                 "phpunit/phpunit": "^12.0"
             },
@@ -75,7 +78,7 @@
                 }
             ],
             "description": "An explicit object model and writer for ISO 32000-1 PDF 1.7",
-            "homepage": "https://github.com/roukmoute/pdf",
+            "homepage": "https://github.com/PDFToolkit/pdf",
             "keywords": [
                 "iso-32000-1",
                 "object-model",
@@ -84,10 +87,10 @@
                 "php"
             ],
             "support": {
-                "issues": "https://github.com/roukmoute/pdf/issues",
-                "source": "https://github.com/roukmoute/pdf"
+                "issues": "https://github.com/PDFToolkit/pdf/issues",
+                "source": "https://github.com/PDFToolkit/pdf"
             },
-            "time": "2026-10-13T07:38:14+00:00"
+            "time": "2026-10-13T09:13:52+00:00"
         }
     ],
     "packages-dev": [

@@ -169,7 +169,7 @@ budgets d'un service recevant des uploads.
 - [Contrôles de sécurité](docs/security.md)
 - [Politique de signalement](SECURITY.md)
 - [Changelog](CHANGELOG.md)
-- [Modèle PDF et documentation du writer](https://github.com/PDFToolkit/pdf#documentation)
+- [Documentation commune des objets, du writer et des modules](https://pdftoolkit.github.io/pdf/)
 - [Norme PDF 1.7 incluse dans le dépôt du modèle](https://github.com/PDFToolkit/pdf/blob/master/PDF32000_2008.pdf)
 
 Licence [MIT](LICENSE).
