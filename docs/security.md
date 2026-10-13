@@ -4,7 +4,7 @@ Le lecteur analyse des octets PDF externes. Cette documentation décrit les
 protections implémentées et les scénarios couverts par les tests du projet.
 Elle ne constitue pas un audit externe ni une garantie d'absence de
 vulnérabilité. Le périmètre inclut la syntaxe, la résolution des objets, les
-révisions et les filtres pris en charge.
+révisions, les pages et les filtres pris en charge.
 
 ## Surfaces contrôlées
 
@@ -16,6 +16,9 @@ révisions et les filtres pris en charge.
 | Xref | Offsets, générations, types et plages vérifiés ; champs big endian sans dépassement d'entier ; sous-sections et `/Index` sans chevauchement. |
 | Révisions | Chaîne `/Prev` bornée et cycles détectés ; les entrées récentes, y compris libres, masquent les anciennes. Une génération périmée se résout à null. |
 | Objets | Identifiant réel comparé à l'entrée xref ; chargements récursifs bornés et cycles de chargement détectés ; caches propres au document. |
+| Arbre de pages | Parcours avec pile explicite ; limites propres de profondeur, de nœuds et de feuilles ; refus des cycles, descendants répétés, comptes incohérents et liens Parent incorrects. |
+| Héritage | Types des ressources, rectangles et rotations vérifiés ; quatre entrées héritables seulement ; ressources locales remplaçant les valeurs héritées sans fusion ; rotation multiple de 90. |
+| Contenus de page | Page liée à son document source ; nombre de flux borné avant résolution du tableau ; chaque élément doit désigner un flux ; aucun héritage, décodage ou interprétation automatique. |
 | Streams | Étendue déterminée exclusivement par `/Length`. Les marqueurs de fin contenus dans les données binaires ne découpent pas le flux. Les longueurs indirectes utilisent le résolveur borné. |
 | Données conservées | Budget cumulé des noms, chaînes et octets encodés, contrôlé avant leur conservation ; des vues répétées ou chevauchantes ne peuvent pas multiplier ces copies sans plafond. |
 | ObjStm | Contrôle de `/N`, `/First`, numéros et offsets ; une valeur par tranche ; validation du numéro désigné par l'index xref ; génération zéro et longueur non comprimée. |
@@ -24,12 +27,16 @@ révisions et les filtres pris en charge.
 | Écriture | Références et streams externes refusent leur sérialisation sans import et remappage ; aucun fichier de sortie n'est ouvert par le lecteur. |
 
 Les tests [ReadingSyntaxTest](../tests/ReadingSyntaxTest.php),
-[ReadingFiltersTest](../tests/ReadingFiltersTest.php) et
+[ReadingFiltersTest](../tests/ReadingFiltersTest.php),
 [ReadingDocumentTest](../tests/ReadingDocumentTest.php),
-[ReadingFileStructureTest](../tests/ReadingFileStructureTest.php) et
-[ReadingRetentionTest](../tests/ReadingRetentionTest.php) exercent ces frontières.
+[ReadingFileStructureTest](../tests/ReadingFileStructureTest.php),
+[ReadingRetentionTest](../tests/ReadingRetentionTest.php) et
+[ReadingPagesTest](../tests/ReadingPagesTest.php) exercent ces frontières.
 Les cinq [fixtures externes](../tests/Fixtures/pdf/README.md) proviennent d'un
 générateur pypdf et d'une transformation qpdf, indépendants du writer PHP.
+Les deux [fixtures de pages](../tests/Fixtures/page-tree/README.md) ajoutent
+un arbre à plusieurs niveaux, des attributs hérités ou locaux et des tableaux
+de contenus directs ou indirects, y compris des données binaires.
 Leur reproduction vérifie les bytes, les lectures strictes et les résultats
 structurels attendus. Une bonne lecture de ces fixtures ne démontre pas la
 conformité à tous les PDF possibles.
@@ -61,6 +68,13 @@ mémoire PHP consommée. La source, les objets, les dictionnaires et les caches
 occupent de la mémoire supplémentaire. Un décodeur natif peut aussi produire
 une tranche temporaire avant son contrôle. Les valeurs par défaut doivent
 être adaptées au budget mémoire et aux quotas de l'application.
+
+Les opérations de pages ajoutent leurs plafonds : `PageTreeLimits` autorise
+par défaut 64 niveaux, 100 000 nœuds et 100 000 pages ; `PageContentLimits`
+autorise 1 024 flux par page. Ces compteurs appartiennent à une opération.
+Les objets chargés et les octets décodés restent soumis aux budgets cumulatifs
+du même `ReadDocument`. Consulter le [guide des pages](pages.md)
+pour les configurer explicitement.
 
 ## Responsabilités de l'application
 

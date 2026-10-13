@@ -25,7 +25,7 @@ La dépendance `roukmoute/pdf:dev-master` est provisoire : cette branche contien
 le modèle compatible PHP 8.3. La version publiée `v0.1.1` demande PHP 8.5.
 Le fichier `composer.lock` du projet consommateur fixe les révisions utilisées.
 
-## Lire un graphe d'objets
+## Lire les pages
 
 Cet exemple se lance depuis un checkout du lecteur après `composer install`.
 Le chargement du fichier est effectué par l'application ; le lecteur reçoit
@@ -40,85 +40,84 @@ require __DIR__ . '/vendor/autoload.php';
 
 use PDF\Reading\DocumentReader;
 use PDF\Reading\FileBytes;
-use PDF\Syntax\Object\ArrayType;
-use PDF\Syntax\Object\DictionaryType;
-use PDF\Syntax\Object\IntegerType;
+use PDF\Reading\PageTreeLimits;
+use PDF\Reading\PageTreeReader;
 
-$bytes = file_get_contents(__DIR__ . '/tests/Fixtures/pdf/classic.pdf');
+$bytes = file_get_contents(__DIR__ . '/tests/Fixtures/page-tree/classic.pdf');
 if ($bytes === false) {
     throw new RuntimeException('Could not read the fixture.');
 }
 
 $document = (new DocumentReader())->read(new FileBytes($bytes));
-$catalog = $document->catalog();
-$pages = $document->resolve($catalog->get('Pages')
-    ?? throw new UnexpectedValueException('Missing Pages.'));
-if (!$pages instanceof DictionaryType) {
-    throw new UnexpectedValueException('Pages must resolve to a dictionary.');
-}
+$tree = (new PageTreeReader($document, new PageTreeLimits(
+    maxDepth: 64,
+    maxNodes: 10_000,
+    maxPages: 5_000,
+)))->read();
+printf("Validated page count: %d\n", count($tree));
 
-$count = $pages->get('Count');
-if (!$count instanceof IntegerType) {
-    throw new UnexpectedValueException('Count must be an integer.');
-}
-printf("Declared page count: %d\n", $count->integer());
-
-$kids = $document->resolve($pages->get('Kids')
-    ?? throw new UnexpectedValueException('Missing Kids.'));
-if (!$kids instanceof ArrayType || $kids->items === []) {
-    throw new UnexpectedValueException('Kids must be a nonempty array.');
-}
-
-// This fixture's first child is a leaf page. Other documents can have nested trees.
-$page = $document->resolve($kids->items[0]);
-if (!$page instanceof DictionaryType) {
-    throw new UnexpectedValueException('The child must resolve to a dictionary.');
-}
-$resources = $document->resolve($page->get('Resources')
-    ?? throw new UnexpectedValueException('Missing local Resources.'));
-if (!$resources instanceof DictionaryType) {
-    throw new UnexpectedValueException('Resources must resolve to a dictionary.');
-}
-
-foreach ($resources->entries() as $entry) {
-    printf("Resource category: %s\n", $entry->key->value);
+foreach ($tree as $index => $page) {
+    // These are the effective PDF values, after page-tree inheritance.
+    $attributes = $page->attributes;
+    printf(
+        "Page %d; rotation: %d; normalized rotation: %d\n",
+        $index + 1,
+        $attributes->rotate->integer(),
+        $attributes->normalizedRotation(),
+    );
+    foreach ($attributes->resources->entries() as $entry) {
+        printf("Resource category: %s\n", $entry->key->value);
+    }
 }
 ```
 
-`DictionaryType::get()` retourne la valeur stockée : une référence reste un
-`ObjectReference`. `ReadDocument::resolve()` charge cette référence dans le
+`PageTreeReader::read()` parcourt les branches `/Pages` et les feuilles `/Page`
+dans l'ordre de `/Kids`. Il vérifie chaque `/Count`, les relations `/Parent`,
+l'unicité des descendants et les limites du parcours. Le `ReadPageTree` obtenu
+est comptable et itérable ; `page(0)` désigne sa première page. Chaque `ReadPage`
+garde son document, sa référence et son dictionnaire source, puis expose ses
+`PageAttributes` effectifs : ressources, MediaBox, CropBox et rotation.
+
+`DictionaryType::get()` retourne toujours la valeur stockée : une référence
+reste un `ObjectReference`. `ReadDocument::resolve()` charge cette référence dans le
 document concerné et laisse une valeur directe inchangée. Les objets déjà lus
 sont conservés dans un cache propre au document ; aucun registre global,
 singleton ou résolution cachée dans les valeurs.
 
-`/Count` est une déclaration du PDF. L'exemple ne recompte pas les feuilles,
-ne parcourt pas tout l'arbre et ne calcule pas l'héritage des ressources.
-La référence des [composants](docs/components.md) décrit les opérations
-disponibles pour construire ces parcours explicitement.
+Les attributs hérités utilisent l'ancêtre le plus proche qui les définit.
+Un dictionnaire de ressources local remplace les ressources héritées, sans
+fusion. Le [guide des pages](docs/pages.md) explique cet héritage et distingue
+les valeurs écrites des valeurs effectives. Le parcours ne charge pas les
+contenus ni toutes les ressources de chaque page.
 
 ## Lire les octets d'un flux
 
-Un `EncodedStream` conserve son dictionnaire et les octets d'origine. Son
-chargement ne décode pas automatiquement son contenu. À la suite de l'exemple
-précédent :
+`PageContentsReader` résout `/Contents` en une collection ordonnée de flux
+encodés. Il reçoit le document et sa propre limite de flux par page.
+À la suite de l'exemple précédent, pour la première page de cette fixture :
 
 ```php
-use PDF\Reading\EncodedStream;
+use PDF\Reading\PageContentLimits;
+use PDF\Reading\PageContentsReader;
 
-$contents = $document->resolve($page->get('Contents')
-    ?? throw new UnexpectedValueException('Missing Contents.'));
-if (!$contents instanceof EncodedStream) {
-    throw new UnexpectedValueException('This example expects a single content stream.');
+$page = $tree->page(0);
+$contents = (new PageContentsReader($document, new PageContentLimits(
+    maxStreams: 128,
+)))->read($page);
+
+foreach ($contents as $stream) {
+    $encodedBytes = $stream->encodedBytes();
+    // Decoding is requested explicitly, under the document's shared budgets.
+    $decodedBytes = $document->streamData($stream);
 }
-
-$encodedBytes = $contents->encodedBytes();
-$decodedBytes = $document->streamData($contents);
 ```
 
-Dans d'autres documents, `/Contents` peut être un tableau de références à des
-flux. Le résultat décodé reste une suite d'octets : les opérateurs de dessin,
-polices et encodages ne sont pas interprétés pour extraire du texte ou rendre
-une page.
+Une page sans `/Contents`, avec null ou un tableau vide donne une collection
+vide. Les flux d'un tableau sont conservés dans leur ordre, sans concaténation
+ni décodage automatiques. Un `EncodedStream` garde son dictionnaire et ses octets
+d'origine ; `streamData()` demande leur décodage. Le résultat reste une suite
+d'octets : les opérateurs de dessin, polices et encodages ne sont pas interprétés
+pour extraire du texte ou rendre une page.
 
 ## Couverture actuelle
 
@@ -132,6 +131,9 @@ une page.
 | Filtres | FlateDecode, ASCIIHexDecode, ASCII85Decode et RunLengthDecode ; chaînes de filtres et paramètres explicites. |
 | Prédicteurs | TIFF 2 et PNG 10 à 15, avec composants de 8 bits. |
 | Résolution | Un objet absent, libre ou de génération différente donne `NullType`. |
+| Arbre de pages | Parcours ordonné complet, vérification de chaque `/Count` et `/Parent`, refus des cycles ou descendants répétés, limites propres au parcours. |
+| Héritage | Ressources, MediaBox, CropBox et rotation effectifs ; CropBox utilise MediaBox par défaut et rotation zéro si absente. |
+| Contenu des pages | Un flux ou un tableau de flux, conservés dans l'ordre ; lecture et décodage séparés. |
 
 Les fichiers chiffrés, les références hybrides `/XRefStm`, PDF 2.0 et les codecs
 non implémentés sont refusés explicitement. Un flux utilisant un codec inconnu
@@ -152,8 +154,9 @@ composer check
 composer audit --locked
 ```
 
-Les tests couvrent la syntaxe, les filtres, les structures, les budgets et les
-cinq [fixtures externes](tests/Fixtures/pdf/README.md). Ces fixtures sont
+Les tests couvrent la syntaxe, les filtres, les structures, les pages et les
+budgets. Les [cinq fixtures de structure](tests/Fixtures/pdf/README.md) et les
+[deux fixtures de pages](tests/Fixtures/page-tree/README.md) sont
 générées avec pypdf et qpdf, indépendamment du writer PHP ; leurs octets et leurs
 résultats sont vérifiés lors de la reproduction.
 
@@ -165,6 +168,7 @@ budgets d'un service recevant des uploads.
 ## Documentation
 
 - [Architecture et frontières des objets](docs/architecture.md)
+- [Pages, héritage et flux de contenu](docs/pages.md)
 - [Référence des composants](docs/components.md)
 - [Contrôles de sécurité](docs/security.md)
 - [Politique de signalement](SECURITY.md)

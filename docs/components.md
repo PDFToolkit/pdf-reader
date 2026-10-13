@@ -26,8 +26,37 @@ du [modèle PDF partagé](https://github.com/PDFToolkit/pdf/tree/master/src/Synt
 | `resolve(BasicType): BasicType` | Appelle `object()` pour une référence ; conserve une valeur directe inchangée. |
 | `streamData(EncodedStream): string` | Décode le flux sous les budgets du document. Les accès suivants réutilisent le résultat. |
 
-Ces opérations ne fournissent pas une vue aplatie des pages ou des ressources.
-Leurs références sont parcourues explicitement avec les primitives du modèle.
+Ces opérations chargent le graphe de base. Les services de pages ci-dessous
+ajoutent un parcours demandé explicitement ; le chargement du catalogue seul
+ne visite pas cet arbre.
+
+## Pages, héritage et contenu
+
+| Composant | Construction et rôle |
+| --- | --- |
+| `PageTreeReader` | `new PageTreeReader(ReadDocument, PageTreeLimits)` ; `read(): ReadPageTree` parcourt l'arbre complet dans l'ordre de `/Kids`. Contrôle les types, comptes, parents, cycles, identités répétées et plafonds. |
+| `ReadPageTree` | Collection immuable comptable et itérable, produite après validation. Propriétés `document`, `root` et `pages` ; `page(int $index): ReadPage` commence à zéro et refuse un indice hors collection. |
+| `ReadPage` | Vue immuable d'une feuille : propriétés `document`, `reference`, `dictionary` et `attributes`. Le dictionnaire source est conservé. |
+| `PageAttributes` | Ressources effectives `DictionaryType`, MediaBox et CropBox `Rectangle`, rotation `IntegerType`. `normalizedRotation(): int` dérive une orientation 0/90/180/270, sans remplacer l'entier d'origine. |
+| `PageInheritance` | Valeurs partielles d'un ancêtre, toutes facultatives. `effective(): PageAttributes` exige Resources/MediaBox et applique les valeurs par défaut uniquement à la feuille. |
+| `PageAttributeReader` | Reçoit un `ObjectResolver`. `read(DictionaryType, PageInheritance): PageInheritance` résout les quatre entrées héritables et leurs types sans visiter le contenu des ressources. |
+| `PageTreeTraversal` | État d'une opération de parcours : pile explicite, identités déjà visitées, ordre des feuilles et comptes des sous-arbres. |
+| `PageTreeFrame` | Une branche en cours : référence, héritage, compte déclaré et enfants restant à visiter. Vérifie son compte une fois ses descendants visités. |
+| `PageTreeLimits` | Plafonds strictement positifs : `maxDepth` 64, `maxNodes` 100 000 et `maxPages` 100 000 par défaut. |
+| `PageContentsReader` | `new PageContentsReader(ReadDocument, PageContentLimits)` ; `read(ReadPage): PageContents` résout le contenu local d'une page du même document. |
+| `PageContents` | Collection immuable comptable et itérable : propriétés `page` et `streams`, conservés dans l'ordre. Aucune concaténation ni décompression. |
+| `PageContentLimits` | Plafond `maxStreams` strictement positif, 1 024 par page par défaut. |
+
+Les quatre entrées héritables sont `Resources`, `MediaBox`, `CropBox` et
+`Rotate`. Un Resources local remplace le dictionnaire hérité sans fusion.
+Null est traité comme une absence. CropBox utilise MediaBox par défaut et
+Rotate utilise zéro ; les autres attributs de page restent consultables dans
+le dictionnaire source. Contents n'est jamais hérité. Absence, null et tableau
+vide donnent une collection de contenu vide.
+
+Les budgets de `ReadDocument` restent partagés pendant ces opérations.
+Les plafonds d'arbre et de contenu sont propres à chaque demande de parcours
+ou de lecture. Consulter le [guide des pages](pages.md) pour un exemple expliqué.
 
 ## Syntaxe et structures
 
@@ -82,7 +111,7 @@ tandis que sa demande de décodage est refusée.
 | Composant | Rôle |
 | --- | --- |
 | `ReaderLimits` | Valeur immuable des plafonds, configurables par arguments nommés. Tous doivent être strictement positifs. |
-| `ReadBudget` | Compteurs cumulatifs de valeurs analysées, entrées xref et octets décodés, propres à une lecture. |
+| `ReadBudget` | Compteurs cumulatifs de valeurs analysées, entrées xref, octets conservés et octets décodés, propres à une lecture. |
 | `ParseException` | Erreur de structure ou de budget ; propriété `offset` facultative pour la position dans les bytes. |
 | `UnsupportedPdfFeature` | Sous-type de `ParseException`, distinguant un mécanisme volontairement non pris en charge. |
 

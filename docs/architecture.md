@@ -3,7 +3,8 @@
 Le lecteur transforme des octets PDF en un graphe consultable d'objets. Il
 conserve les références comme des valeurs explicites et utilise les primitives
 de [PDFToolkit/pdf](https://github.com/PDFToolkit/pdf). Les clauses de référence
-sont ISO 32000-1, 7.2–7.5 ; le PDF de norme reste dans le dépôt du modèle.
+sont ISO 32000-1, 7.2–7.5 pour la structure et 7.7.3 pour les pages ; le PDF
+de norme reste dans le dépôt du modèle.
 
 ## Deux paquets et une dépendance
 
@@ -38,6 +39,11 @@ flowchart TD
     E --> H[ObjectStreamReader]
     E --> I[StreamDecoder]
     I --> J[Décodeurs et prédicteurs]
+    E --> K[PageTreeReader]
+    K --> L[ReadPageTree et ReadPage]
+    E --> M[PageContentsReader]
+    L --> M
+    M --> N[PageContents et EncodedStream]
 ```
 
 `DocumentReader` contrôle le header et le dernier footer, lit la chaîne de
@@ -95,12 +101,43 @@ lecture en cours. Les identifiants, références, sections et limites sont des
 valeurs immuables. Aucun singleton, état global, fabrique statique ou service
 caché dans un objet de valeur n'est nécessaire.
 
+## Pages comme objets du document source
+
+`PageTreeReader` reçoit un `ReadDocument` et ses `PageTreeLimits`. Une demande
+`read()` crée son état de parcours dans `PageTreeTraversal`. Une pile de
+`PageTreeFrame` suit les enfants dans l'ordre de `/Kids` et compte les feuilles
+de chaque branche au retour. Les références déjà visitées permettent de refuser
+les cycles et les descendants répétés ; les `/Parent` doivent correspondre aux
+parents réellement parcourus. Le lecteur rend un `ReadPageTree` seulement après
+la vérification des comptes de l'arbre entier.
+
+`PageAttributeReader` résout les quatre entrées héritables en utilisant
+`ReadDocument` comme `ObjectResolver`. Il produit des `PageInheritance`
+partiels jusqu'à la feuille, où les valeurs par défaut deviennent effectives.
+Cette distinction évite de figer un CropBox par défaut sur le MediaBox d'un
+ancêtre si une page remplace ce MediaBox plus bas dans l'arbre.
+Les ressources sont choisies comme un dictionnaire entier, sans fusion.
+
+Un `ReadPage` conserve le document qui possède sa référence, son dictionnaire
+source et ses `PageAttributes` effectifs. Ces derniers gardent des objets PDF,
+dont l'entier de rotation brut. La normalisation de l'orientation est une
+demande distincte ; elle ne réécrit pas les valeurs de la source.
+
+`PageContentsReader` compose ce service avec une limite de flux par page. Il
+résout l'entrée locale `/Contents` dans le document propriétaire et retourne
+un `PageContents` ordonné d'`EncodedStream`. Il n'hérite pas cette entrée,
+ne concatène pas les flux et n'exécute pas les filtres. Le décodage reste
+une demande à `ReadDocument::streamData()`, qui utilise ses caches et budgets.
+Le [guide des pages](pages.md) explique cet assemblage avec les fixtures
+indépendantes.
+
 ## Budgets et frontières
 
 Un `ReaderLimits` décrit les plafonds. Un `ReadBudget`, créé pour chaque appel
-à `DocumentReader::read()`, additionne les valeurs analysées, les entrées xref
-et les octets produits par les étapes de décodage. Les plafonds sont partagés
-par les lecteurs du même document ; ils ne repartent pas de zéro à chaque
+à `DocumentReader::read()`, additionne les valeurs analysées, les entrées xref,
+les octets conservés et les octets produits par les étapes de décodage.
+Les plafonds sont partagés par les lecteurs du même document ; ils ne repartent
+pas de zéro à chaque
 référence ou filtre.
 
 La bibliothèque reçoit des `FileBytes`. L'application choisit le fichier,
@@ -108,8 +145,8 @@ autorise sa lecture, borne son chargement et gère ses ressources. Les actions
 JavaScript, URI ou de lancement restent des dictionnaires ; la bibliothèque
 ne les exécute pas. Un flux externe n'est jamais chargé depuis `/F`.
 
-Cette étape fournit la syntaxe et la résolution structurelle. Les futurs
-parcours de pages, imports, interpréteurs de contenu et moteurs de formulaire
+Cette étape fournit la syntaxe, la résolution structurelle et le parcours de
+pages. Les futurs imports, interpréteurs de contenu et moteurs de formulaire
 pourront les composer sans ajouter ces responsabilités au parseur.
 
 [Composants](components.md) · [Sécurité](security.md) · [README](../README.md)
