@@ -1,0 +1,10 @@
+parameters:
+    phpVersion: 80300
+    level: 8
+    paths:
+        - src
+        - examples
+    tmpDir: .cache/phpstan
+    treatPhpDocTypesAsCertain: false
+    parallel:
+        maximumNumberOfProcesses: 2

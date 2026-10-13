@@ -1,0 +1,62 @@
+{
+    "name": "pdftoolkit/pdf-reader",
+    "type": "library",
+    "description": "An explicit, bounded object reader for ISO 32000-1 PDF 1.7",
+    "keywords": ["pdf", "pdf-1.7", "iso-32000-1", "reader", "object-model", "php"],
+    "homepage": "https://github.com/PDFToolkit/pdf-reader",
+    "support": {
+        "issues": "https://github.com/PDFToolkit/pdf-reader/issues",
+        "source": "https://github.com/PDFToolkit/pdf-reader"
+    },
+    "require": {
+        "php": "^8.3",
+        "ext-ctype": "*",
+        "ext-zlib": "*",
+        "roukmoute/pdf": "dev-master"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.0",
+        "phpstan/phpstan": "^2.1",
+        "phpunit/phpunit": "^12.0"
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/PDFToolkit/pdf"
+        }
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Mathias STRASSER",
+            "email": "contact@roukmoute.fr"
+        }
+    ],
+    "minimum-stability": "stable",
+    "config": {
+        "platform": {
+            "php": "8.3.0"
+        },
+        "preferred-install": {
+            "*": "dist"
+        },
+        "sort-packages": true
+    },
+    "autoload": {
+        "psr-4": {
+            "PDF\\Reading\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "PDF\\Reading\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "analyse": "phpstan analyse --no-progress",
+        "format": "php-cs-fixer fix",
+        "format:check": "php-cs-fixer fix --dry-run --diff",
+        "check": ["@test", "@analyse", "@format:check"]
+    }
+}
