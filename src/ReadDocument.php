@@ -59,7 +59,8 @@ final class ReadDocument implements ObjectResolver
             throw new ParseException('Root must resolve to a catalog with an indirect page tree.');
         }
         $version = $catalog->get('Version');
-        if ($version !== null && (!$version instanceof \PDF\Syntax\Object\NameType || !preg_match('/\A(?:1\.[0-7]|2\.0)\z/', $version->value))) {
+        $version = $version === null ? null : $this->resolve($version);
+        if ($version !== null && !$version instanceof NullType && (!$version instanceof \PDF\Syntax\Object\NameType || !preg_match('/\A(?:1\.[0-7]|2\.0)\z/', $version->value))) {
             throw new UnsupportedPdfFeature('The catalog requires a supported PDF 1.0–1.7 or 2.0 version.');
         }
         return $catalog;

@@ -8,11 +8,15 @@ Elle ne constitue pas un audit externe ni une garantie d'absence de
 vulnérabilité. Le périmètre inclut la syntaxe, la résolution des objets, les
 révisions, les pages et les filtres pris en charge.
 
-Une véritable entrée `/Encrypt` du trailer lève `EncryptedPdfException`, un
-sous-type de `UnsupportedPdfFeature`. Une application peut orienter cette
+Une entrée effective `/Encrypt` du trailer, non null et résolue en dictionnaire,
+lève `EncryptedPdfException`, un sous-type de `UnsupportedPdfFeature`. Une application peut orienter cette
 condition explicite vers son fournisseur d'authentification sans rechercher des
 mots dans les messages d'erreur. Les autres mécanismes non pris en charge
 conservent leur erreur ; le lecteur n'authentifie ni ne déchiffre le document.
+L'index complet des références croisées et le résolveur borné du document vérifient
+l'entrée avant l'interprétation du catalogue. Les valeurs null, y compris les
+références résolues en null, signifient l'absence et ne signalent pas un chiffrement.
+Les valeurs autres que des dictionnaires sont des erreurs d'analyse.
 
 ## Surfaces contrôlées
 

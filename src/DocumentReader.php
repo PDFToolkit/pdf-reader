@@ -8,6 +8,7 @@ use PDF\Reading\CrossReference\Index;
 use PDF\Syntax\FileStructure\FileHeader;
 use PDF\Syntax\Object\DictionaryObject\Entry;
 use PDF\Syntax\Object\DictionaryType;
+use PDF\Syntax\Object\NullType;
 
 /** Read PDF 1.0–2.0 syntax; source access and upload policy belong to the application. */
 final readonly class DocumentReader
@@ -58,6 +59,18 @@ final readonly class DocumentReader
         /** @var list<Entry> $entries */
         $entries = array_values($trailerEntries);
         $document = new ReadDocument($source, new FileHeader($header[1]), new DictionaryType(...$entries), new Index(...$sections), $this->limits, $budget, $decoder);
+        // A null dictionary value is equivalent to absence, including a reference that resolves to null.
+        // The completed index is required here; resolution keeps the same document's cumulative budgets.
+        $encryption = $document->trailer()->get('Encrypt');
+        if ($encryption !== null) {
+            $encryption = $document->resolve($encryption);
+            if (!$encryption instanceof NullType) {
+                if (!$encryption instanceof DictionaryType) {
+                    throw new ParseException('An Encrypt entry must resolve to an encryption dictionary.', $sections[0]->offset->value);
+                }
+                throw new EncryptedPdfException($sections[0]->offset->value);
+            }
+        }
         $document->catalog();
         return $document;
     }

@@ -4,6 +4,12 @@
 
 ## Unreleased
 
+## 0.2.3 - 2026-10-15
+
+- Résoudre la valeur effective `/Encrypt` du trailer avec le résolveur borné du document avant de lever `EncryptedPdfException`. Les valeurs null directes, indirectes et les références indisponibles suivent la sémantique PDF de null et ne déclenchent pas l'authentification ; les valeurs mal formées autres que des dictionnaires restent des erreurs d'analyse.
+- Accepter les noms `/Version` indirects du catalogue et les valeurs null sans modifier le header original du fichier. Les versions non prises en charge et les valeurs de mauvais type restent explicitement refusées.
+- Vérifier les valeurs optionnelles avec des références croisées traditionnelles et en flux indépendantes, des déclarations PDF 1.7/2.0 et des fixtures de catalogue ; préciser la frontière d'authentification dans les deux guides de sécurité.
+
 ## 0.2.2 - 2026-10-15
 
 - Exposer un trailer chiffré vérifié via `EncryptedPdfException`, tout en conservant la compatibilité des gestionnaires `UnsupportedPdfFeature`. L'application peut déclencher l'authentification par type d'exception plutôt que par recherche dans le diagnostic.

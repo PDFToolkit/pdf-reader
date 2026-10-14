@@ -4,6 +4,12 @@ English | [Français](CHANGELOG.fr.md)
 
 ## Unreleased
 
+## 0.2.3 - 2026-10-15
+
+- Resolve the effective trailer `/Encrypt` value through the bounded document resolver before raising `EncryptedPdfException`. Direct null, indirect null and unavailable references follow PDF null semantics and do not trigger authentication; malformed non-dictionary values remain parse errors.
+- Accept indirect catalog `/Version` names and null values without changing the original file header. Unsupported versions and values with the wrong type remain explicitly rejected.
+- Verify optional-value handling with independent traditional and stream cross-references, PDF 1.7/2.0 declarations and catalog fixtures; clarify the authentication boundary in both security guides.
+
 ## 0.2.2 - 2026-10-15
 
 - Expose a verified encrypted trailer as `EncryptedPdfException`, retaining compatibility with `UnsupportedPdfFeature` handlers. Applications can dispatch authentication by exception type rather than matching diagnostic text.
