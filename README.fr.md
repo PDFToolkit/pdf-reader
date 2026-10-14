@@ -183,6 +183,6 @@ budgets d'un service recevant des uploads.
 - [Changelog](CHANGELOG.fr.md)
 - [Documentation du module lecteur](https://pdftoolkit.github.io/fr/modules/reader/)
 - [Documentation commune des objets, du writer et des modules](https://pdftoolkit.github.io/fr/)
-- [Norme PDF 1.7 incluse dans le dépôt du modèle](https://github.com/PDFToolkit/pdf/blob/master/PDF32000_2008.pdf)
+- [Norme PDF 1.7 incluse dans le dépôt du modèle](https://pdftoolkit.github.io/downloads/iso-32000-1.pdf)
 
 Licence [MIT](LICENSE).

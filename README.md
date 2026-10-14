@@ -177,6 +177,6 @@ an upload service.
 - [Changelog](CHANGELOG.md)
 - [Reader module documentation](https://pdftoolkit.github.io/modules/reader/)
 - [Shared documentation for objects, the writer and modules](https://pdftoolkit.github.io/)
-- [PDF 1.7 standard included in the model repository](https://github.com/PDFToolkit/pdf/blob/master/PDF32000_2008.pdf)
+- [PDF 1.7 standard included in the model repository](https://pdftoolkit.github.io/downloads/iso-32000-1.pdf)
 
 [MIT](LICENSE) licence.

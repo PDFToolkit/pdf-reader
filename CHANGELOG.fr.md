@@ -4,6 +4,13 @@
 
 ## Unreleased
 
+## 0.1.9 — 2026-10-14
+
+### Documentation
+
+- Relie les README anglais et français au téléchargement stable de la norme PDF 1.7 sur le site documentaire, indépendamment de son emplacement dans le dépôt du core.
+- Conserve l’API du lecteur, son comportement, les contraintes de dépendances et leurs versions verrouillées.
+
 ## 0.1.8 — 2026-10-14
 
 ### Compatibilité et périmètre

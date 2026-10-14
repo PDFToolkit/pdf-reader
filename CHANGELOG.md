@@ -4,6 +4,13 @@ English | [Français](CHANGELOG.fr.md)
 
 ## Unreleased
 
+## 0.1.9 — 2026-10-14
+
+### Documentation
+
+- Link the English and French README to the documentation site's stable PDF 1.7 standard download, independently of its location in the core repository.
+- Preserve the reader API, runtime behaviour, dependency constraints and locked versions.
+
 ## 0.1.8 — 2026-10-14
 
 ### Compatibility and scope
