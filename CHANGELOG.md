@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+## 0.1.5 — 2026-10-14
+
+### Installation et publication
+
+- Publie le package sur Packagist et simplifie son installation en une commande
+  `composer require` dans un projet consommateur.
+- Utilise les dépôts Composer par défaut et relie les métadonnées du package à
+  sa documentation sur `https://pdftoolkit.github.io/`.
+- Verrouille les vérifications sur le core stable `roukmoute/pdf:0.5.3`, sans
+  modifier les versions des outils de développement.
+- Vérifie l'indexation des versions publiées et leur installation sans dépôts
+  VCS ou locaux. Conserve l'API PHP, les mécanismes et les limites existants.
+
 ## 0.1.4 — 2026-10-14
 
 ### Documentation
