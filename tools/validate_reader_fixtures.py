@@ -28,7 +28,18 @@ def main():
     reused = subprocess.check_output(['qpdf', '--show-object=9,1', str(root / 'reused-generation.pdf')], text=True).strip()
     if deleted != 'null' or stale != 'null' or reused != '(reused generation one)':
         raise ValueError('Independent free-object or generation check failed.')
+    modern = root.parent / 'pdf20'
+    for name, information in json.loads((modern / 'manifest.json').read_text(encoding='utf-8'))['fixtures'].items():
+        path = modern / name
+        data = path.read_bytes()
+        if len(data) != information['bytes'] or hashlib.sha256(data).hexdigest() != information['sha256']:
+            raise ValueError('PDF 2.0 fixture identity mismatch: ' + name)
+        subprocess.run(['qpdf', '--check', str(path)], check=True, capture_output=True)
+        reader = PdfReader(path, strict=True)
+        if len(reader.pages) != 1 or reader.pdf_header != information['header'] or str(reader.root_object.get('/Version')) != str(information['catalogVersion']):
+            raise ValueError('Unexpected PDF 2.0 file structure: ' + name)
     print('Validated five external PDF fixtures, binary streams, deletion and generation reuse.')
+    print('Validated three independent PDF 2.0 header, catalog-version and object-stream fixtures.')
 
 
 if __name__ == '__main__':

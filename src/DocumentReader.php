@@ -9,7 +9,7 @@ use PDF\Syntax\FileStructure\FileHeader;
 use PDF\Syntax\Object\DictionaryObject\Entry;
 use PDF\Syntax\Object\DictionaryType;
 
-/** Read PDF 1.0–1.7 bytes; source access and upload policy belong to the application. */
+/** Read PDF 1.0–2.0 syntax; source access and upload policy belong to the application. */
 final readonly class DocumentReader
 {
     public function __construct(private ReaderLimits $limits = new ReaderLimits())
@@ -22,8 +22,8 @@ final readonly class DocumentReader
         if ($length > $this->limits->maxFileBytes) {
             throw new ParseException('The PDF source exceeds the file-byte limit.');
         }
-        if (!preg_match('/\A%PDF-(1\.[0-7])(?:\r\n|\r|\n)/', $source->bytes, $header)) {
-            throw new UnsupportedPdfFeature('A PDF 1.0–1.7 header is required at the beginning of the source.');
+        if (!preg_match('/\A%PDF-(1\.[0-7]|2\.0)(?:\r\n|\r|\n)/', $source->bytes, $header)) {
+            throw new UnsupportedPdfFeature('A PDF 1.0–1.7 or 2.0 header is required at the beginning of the source.');
         }
         // Bound the footer search independently of the potentially much larger source.
         $tail = substr($source->bytes, -min($length, $this->limits->maxTokenBytes));

@@ -4,6 +4,15 @@
 
 ## Unreleased
 
+## 0.2.0 — 2026-10-14
+
+### Syntaxe PDF 2.0
+
+- Accepte les headers PDF 2.0 et la version `/Version /2.0` du catalogue avec les lecteurs bornés existants de syntaxe, de références croisées et de flux d’objets.
+- Conserve le refus explicite des entrées chiffrées, filtres non pris en charge et versions futures inconnues ; l’extraction sémantique reste dans les modules optionnels.
+- Vérifie trois fixtures originales et indépendantes pypdf/qpdf, dont les flux d’objets PDF 2.0 et chaînes avec BOM UTF-8.
+- Met à jour les documentations anglaises et françaises du périmètre, de l’architecture et de la sécurité.
+
 ## 0.1.9 — 2026-10-14
 
 ### Documentation

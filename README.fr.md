@@ -2,7 +2,8 @@
 
 [English](README.md) | Français
 
-Lecteur PHP de PDF externes, construit autour des objets de **ISO 32000-1:2008**.
+Lecteur PHP de PDF externes, construit autour des objets de **ISO 32000-1:2008**
+et **ISO 32000-2:2020**.
 Il expose les dictionnaires, tableaux, références et flux du document avec une
 résolution explicite. PHP **8.3 minimum** ; la CI exécute les vérifications sur
 PHP **8.3, 8.4 et 8.5**.
@@ -19,7 +20,7 @@ Le package est disponible sur
 consommateur :
 
 ```console
-composer require "pdftoolkit/pdf-reader:^0.1"
+composer require "pdftoolkit/pdf-reader:^0.2"
 ```
 
 Le lecteur utilise le core `roukmoute/pdf:^0.2 || ^0.3 || ^0.4 || ^0.5 || ^0.6 || ^0.7`,
@@ -28,10 +29,11 @@ installé automatiquement par Composer. PHP 8.3 ou supérieur sur une plateforme
 Le fichier `composer.lock` du projet consommateur fixe les versions et les
 révisions utilisées.
 
-Les cores 0.6 et 0.7 peuvent être installés sans changer l’API du lecteur.
-Le core 0.7 ajoute au writer des mécanismes de métadonnées, de balisage et de
-sécurité PDF 2.0. Le lecteur conserve les entrées PDF 1.0 à 1.7 ; cette
-compatibilité n’ajoute ni analyse PDF 2.0, ni déchiffrement, ni import.
+La version 0.2 accepte la syntaxe PDF 1.0–1.7 et PDF 2.0, y compris la version
+`/Version /2.0` du catalogue, avec les mêmes lecteurs bornés d’objets et de flux.
+Les dictionnaires PDF 2.0 deviennent accessibles aux interprètes optionnels,
+dont `pdftoolkit/pdf-to-html` ; cela n’interprète pas chaque mécanisme PDF 2.0.
+Chiffrement, filtres non pris en charge, rendu et import restent des limites explicites.
 
 ## Lire les pages
 
@@ -132,7 +134,7 @@ pour extraire du texte ou rendre une page.
 | Mécanisme | Lecture disponible |
 | --- | --- |
 | Syntaxe | Noms et chaînes échappés, entiers et réels, booléens, null, tableaux, dictionnaires, références indirectes. |
-| Structure | Headers PDF 1.0 à 1.7 ; objets indirects et flux délimités par `/Length`, y compris une longueur indirecte. |
+| Structure | Headers et versions de catalogue PDF 1.0–1.7 et 2.0 ; objets indirects et flux délimités par `/Length`, y compris une longueur indirecte. |
 | Xref traditionnel | Sous-sections, offsets, générations, objets libres et révisions liées par `/Prev`. |
 | Flux xref | Champs `/W`, plages `/Index`, types libres, directs ou comprimés ; types inconnus donnant un objet indisponible. |
 | Flux d'objets | Membres de `/ObjStm`, avec validation de l'en-tête, des offsets et du numéro attendu. |

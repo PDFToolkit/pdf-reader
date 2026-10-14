@@ -1,0 +1,23 @@
+{
+  "producer": "pypdf 6.20.1 and qpdf 12.4.2; original MIT fixtures",
+  "fixtures": {
+    "header.pdf": {
+      "bytes": 496,
+      "sha256": "3e0684c8ba33aaf5777a78fa0806dc200af7b2a99d6c80da7a47e86e7260c374",
+      "header": "%PDF-2.0",
+      "catalogVersion": null
+    },
+    "catalog.pdf": {
+      "bytes": 510,
+      "sha256": "845b59cac40a519cc91888b4a067ab474ea95c9b08444315041414a088c3277c",
+      "header": "%PDF-1.7",
+      "catalogVersion": "/2.0"
+    },
+    "object-streams.pdf": {
+      "bytes": 606,
+      "sha256": "d74cdbf073aba9e208e3045b488840529acc55c1fc40c27eca88525771e5c82d",
+      "header": "%PDF-2.0",
+      "catalogVersion": null
+    }
+  }
+}

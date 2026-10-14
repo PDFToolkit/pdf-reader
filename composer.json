@@ -1,10 +1,11 @@
 {
     "name": "pdftoolkit/pdf-reader",
     "type": "library",
-    "description": "An explicit, bounded PDF 1.0-1.7 object reader for PHP 8.3+",
+    "description": "An explicit, bounded PDF 1.0-2.0 object reader for PHP 8.3+",
     "keywords": [
         "pdf",
         "pdf-1.7",
+        "pdf-2.0",
         "iso-32000-1",
         "reader",
         "object-model",

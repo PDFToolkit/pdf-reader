@@ -2,7 +2,8 @@
 
 English | [Français](README.fr.md)
 
-A PHP reader for external PDFs, built around the objects of **ISO 32000-1:2008**.
+A PHP reader for external PDFs, built around the objects of **ISO 32000-1:2008**
+and **ISO 32000-2:2020**.
 It exposes document dictionaries, arrays, references and streams with explicit
 resolution. Requires **PHP 8.3** or newer; CI runs checks on **PHP 8.3, 8.4 and 8.5**.
 
@@ -18,7 +19,7 @@ The package is available on
 application:
 
 ```console
-composer require "pdftoolkit/pdf-reader:^0.1"
+composer require "pdftoolkit/pdf-reader:^0.2"
 ```
 
 The reader uses `roukmoute/pdf:^0.2 || ^0.3 || ^0.4 || ^0.5 || ^0.6 || ^0.7`, installed
@@ -26,10 +27,11 @@ automatically by Composer. PHP 8.3 or newer on a 64-bit platform and the `ctype`
 `iconv` and `zlib` extensions are required for this combination. The application's
 `composer.lock` records the selected versions and revisions.
 
-Core 0.6 and 0.7 can be installed without changing the reader API. Core 0.7
-adds PDF 2.0 metadata, tagging and security mechanisms to the writer. The
-reader still accepts PDF 1.0–1.7 input; this dependency compatibility does
-not add PDF 2.0 parsing, decryption or import.
+Version 0.2 accepts PDF 1.0–1.7 and PDF 2.0 syntax, including the catalog
+`/Version /2.0` override, using the same bounded object and stream readers.
+This makes PDF 2.0 dictionaries available to optional interpreters such as
+`pdftoolkit/pdf-to-html`; it does not interpret every PDF 2.0 feature.
+Encryption, unsupported filters, rendering and importing remain explicit limits.
 
 ## Read pages
 
@@ -128,7 +130,7 @@ encodings are not interpreted to extract text or render a page.
 | Mechanism | Available reading |
 | --- | --- |
 | Syntax | Escaped names and strings, integers and reals, booleans, null, arrays, dictionaries, indirect references. |
-| Structure | PDF 1.0 to 1.7 headers; indirect objects and streams delimited by `/Length`, including indirect lengths. |
+| Structure | PDF 1.0–1.7 and 2.0 headers and catalog versions; indirect objects and streams delimited by `/Length`, including indirect lengths. |
 | Traditional xref | Subsections, offsets, generations, free objects and revisions linked by `/Prev`. |
 | Xref streams | `/W` fields, `/Index` ranges, free, direct or compressed types; unknown types yield an unavailable object. |
 | Object streams | `/ObjStm` members, with header, offset and expected object number validation. |

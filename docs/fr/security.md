@@ -12,7 +12,7 @@ révisions, les pages et les filtres pris en charge.
 
 | Surface | Contrôles et tests |
 | --- | --- |
-| Source | Header PDF 1.0–1.7 au début des bytes, footer final borné, refus des sources dépassant la limite. Aucun chargement de chemin ou d'URL par le lecteur. |
+| Source | Header PDF 1.0–1.7 ou 2.0 au début des bytes, footer final borné, refus des sources dépassant la limite. Aucun chargement de chemin ou d'URL par le lecteur. |
 | Syntaxe | Longueurs des tokens, profondeur et nombre de valeurs ; échappements des noms et chaînes ; tableaux et dictionnaires bornés ; refus des clés dupliquées et des nombres hors plage. |
 | Curseurs | Chaque vue possède des bornes ; les lectures et déplacements hors vue sont refusés. Les objets comprimés sont analysés dans des tranches séparées. |
 | Xref | Offsets, générations, types et plages vérifiés ; champs big endian sans dépassement d'entier ; sous-sections et `/Index` sans chevauchement. |

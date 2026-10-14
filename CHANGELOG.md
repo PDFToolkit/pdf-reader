@@ -4,6 +4,15 @@ English | [Français](CHANGELOG.fr.md)
 
 ## Unreleased
 
+## 0.2.0 — 2026-10-14
+
+### PDF 2.0 syntax
+
+- Accept PDF 2.0 file headers and `/Version /2.0` catalog overrides through the existing bounded syntax, xref and object-stream readers.
+- Preserve explicit rejection of encrypted inputs, unsupported filters and unknown future PDF versions; semantic extraction remains in optional modules.
+- Validate three original independent pypdf/qpdf fixtures, including PDF 2.0 object streams and UTF-8 BOM strings.
+- Update the English and French scope, architecture and security documentation.
+
 ## 0.1.9 — 2026-10-14
 
 ### Documentation

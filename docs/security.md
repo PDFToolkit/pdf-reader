@@ -11,7 +11,7 @@ object resolution, revisions, pages and supported filters.
 
 | Surface | Controls and tests |
 | --- | --- |
-| Source | PDF 1.0–1.7 header at the beginning of bytes, bounded final footer, rejection of sources exceeding the limit. No path or URL loading by the reader. |
+| Source | PDF 1.0–1.7 or 2.0 header at the beginning of bytes, bounded final footer, rejection of sources exceeding the limit. No path or URL loading by the reader. |
 | Syntax | Token lengths, depth and value counts; name and string escapes; bounded arrays and dictionaries; duplicate keys and out-of-range numbers rejected. |
 | Cursors | Each view has bounds; out-of-view reads and movement are rejected. Compressed objects are parsed in separate slices. |
 | Xref | Offsets, generations, types and ranges checked; big-endian fields without integer overflow; non-overlapping subsections and `/Index` ranges. |
