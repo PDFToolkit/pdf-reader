@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "835cc468587263be78b13da7934a2260",
+    "content-hash": "d5032bcbabc1ec08de120028c24c4b5a",
     "packages": [
         {
             "name": "roukmoute/pdf",
-            "version": "v0.4.0",
+            "version": "v0.5.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PDFToolkit/pdf.git",
-                "reference": "6c2aa11449267a196d09f3302a8dd9c5200d9f11"
+                "reference": "74a03e821cfa1e9c78a2f86ade7a2bc26cfa05b8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PDFToolkit/pdf/zipball/6c2aa11449267a196d09f3302a8dd9c5200d9f11",
-                "reference": "6c2aa11449267a196d09f3302a8dd9c5200d9f11",
+                "url": "https://api.github.com/repos/PDFToolkit/pdf/zipball/74a03e821cfa1e9c78a2f86ade7a2bc26cfa05b8",
+                "reference": "74a03e821cfa1e9c78a2f86ade7a2bc26cfa05b8",
                 "shasum": ""
             },
             "require": {
@@ -28,9 +28,9 @@
             },
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^3.0",
-                "pdftoolkit/pdf-fonts": "^0.1.2",
-                "pdftoolkit/pdf-images": "^0.1.2",
-                "pdftoolkit/pdf-reader": "^0.1.2",
+                "pdftoolkit/pdf-fonts": "^0.1.4",
+                "pdftoolkit/pdf-images": "^0.1.4",
+                "pdftoolkit/pdf-reader": "^0.1.4",
                 "phpstan/phpstan": "^2.1",
                 "phpunit/phpunit": "^12.0"
             },
@@ -40,7 +40,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.4.x-dev"
+                    "dev-master": "0.5.x-dev"
                 }
             },
             "autoload": {
@@ -48,33 +48,7 @@
                     "PDF\\": "src/"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "PDF\\Tests\\": "tests/"
-                }
-            },
-            "scripts": {
-                "test": [
-                    "phpunit"
-                ],
-                "analyse": [
-                    "phpstan analyse --no-progress"
-                ],
-                "format": [
-                    "php-cs-fixer fix"
-                ],
-                "format:check": [
-                    "php-cs-fixer fix --dry-run --diff"
-                ],
-                "check": [
-                    "@test",
-                    "@analyse",
-                    "@format:check"
-                ],
-                "example": [
-                    "@php examples/hello-world.php"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -97,7 +71,7 @@
                 "issues": "https://github.com/PDFToolkit/pdf/issues",
                 "source": "https://github.com/PDFToolkit/pdf"
             },
-            "time": "2026-10-13T18:16:10+00:00"
+            "time": "2026-10-13T23:42:54+00:00"
         }
     ],
     "packages-dev": [

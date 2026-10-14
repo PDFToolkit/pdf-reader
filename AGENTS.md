@@ -18,3 +18,4 @@
 - Keep the reader's guides beside its code. Maintain shared guides, site tooling and publication in [PDFToolkit/pdftoolkit.github.io](https://github.com/PDFToolkit/pdftoolkit.github.io), serving [the documentation root](https://pdftoolkit.github.io/) and [reader entrypoint](https://pdftoolkit.github.io/modules/reader/).
 - After a reader release, update the documentation site's released-source pins and provenance to its published version and exact tag commit. Build module guides and API documentation from that pinned source, verify source links, and publish the site update independently of the core package.
 - Report the versions and release links when the work is complete.
+- Publish and verify stable releases on Packagist. Fresh consumers must install through the default Composer repositories without VCS or path repository configuration. Keep package documentation links current in Composer metadata.

@@ -28,7 +28,7 @@ Describe incompatible changes and the required migration in the changelog and re
 - Publish a changed dependency before packages that require its new API. Check the actual dependency graph, including development dependencies, before choosing a publication order.
 - For later releases, when a core change and a module change depend on each other for development checks, validate them together locally first. Publish the dependency with development dependencies on compatible, already released modules, then publish the changed modules. Update the dedicated documentation site's released-source pins after publishing the changed packages.
 - Update lock files using the declared repositories. Outside the initial bootstrap exception below, their PDFToolkit source references must identify real commits from the selected published tags.
-- Verify installation in a fresh consumer project with stable package versions. Test both the affected module and the core alone; installing the core must not install optional modules.
+- Verify installation in a fresh consumer project with stable package versions through Packagist, without VCS or path repositories in its Composer configuration. Test both the affected module and the core alone; installing the core must not install optional modules.
 - Shared guides, API generation, site tooling and publication live in [PDFToolkit/pdftoolkit.github.io](https://github.com/PDFToolkit/pdftoolkit.github.io), published at [the documentation root](https://pdftoolkit.github.io/). Module guides remain beside their code and are rendered at [the reader entrypoint](https://pdftoolkit.github.io/modules/reader/).
 - After a module release, update the site's released-source pins and provenance with the published version and selected tag's exact commit. Rebuild module guides and API documentation from those pinned sources, verify that source links identify the same commit, and publish the site update independently of package releases.
 
@@ -67,7 +67,8 @@ Before creating the tag, check that the name is absent both locally and remotely
 
 1. Compare `git rev-parse "$RELEASE_TAG^{commit}"` and the remote peeled tag reference with `RELEASE_COMMIT`. Both must identify the validated commit.
 2. Confirm the GitHub release is published, has the correct tag and notes, and is not a draft or prerelease unless a prerelease was deliberately selected.
-3. Verify checks triggered by the tag, package installation from that version, and any documentation deployment affected by the release.
-4. Report each affected package's version and GitHub release URL.
+3. Verify checks triggered by the tag and Packagist's version metadata. Its selected stable version and source reference must match the published tag and validated commit. Check that the GitHub synchronization remains enabled; if indexation is delayed, trigger a package update and verify the metadata again.
+4. Verify package installation from that exact stable version in a fresh consumer without VCS or path repositories, and any documentation deployment affected by the release.
+5. Report each affected package's version, Packagist page and GitHub release URL.
 
 Never force-update, delete and recreate, or move an existing published tag. Never append new changes to an old release. Correct a published package with a new version. Do not publish unrelated changes while resolving a release problem.

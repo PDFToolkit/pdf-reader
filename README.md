@@ -12,18 +12,17 @@ pour les noms, chaînes, nombres, tableaux, dictionnaires et identifiants.
 
 ## Installer
 
-Les paquets ne sont pas encore publiés sur Packagist. Ajouter les deux dépôts
-VCS au projet Composer :
+Le package est disponible sur
+[Packagist](https://packagist.org/packages/pdftoolkit/pdf-reader). Dans le projet
+consommateur :
 
 ```console
-composer config repositories.pdf vcs https://github.com/PDFToolkit/pdf
-composer config repositories.pdf-reader vcs https://github.com/PDFToolkit/pdf-reader
 composer require "pdftoolkit/pdf-reader:^0.1"
 ```
 
 Le lecteur utilise le core `roukmoute/pdf:^0.2 || ^0.3 || ^0.4 || ^0.5`,
-installé automatiquement par Composer. Les deux dépôts VCS doivent être déclarés
-ici, car Composer ne reprend pas les dépôts configurés dans les dépendances.
+installé automatiquement par Composer. PHP 8.3 ou supérieur sur une plateforme
+64 bits et les extensions `ctype`, `iconv` et `zlib` sont requis pour cet ensemble.
 Le fichier `composer.lock` du projet consommateur fixe les versions et les
 révisions utilisées.
 

@@ -10,10 +10,11 @@
         "object-model",
         "php"
     ],
-    "homepage": "https://github.com/PDFToolkit/pdf-reader",
+    "homepage": "https://pdftoolkit.github.io/modules/reader/",
     "support": {
         "issues": "https://github.com/PDFToolkit/pdf-reader/issues",
-        "source": "https://github.com/PDFToolkit/pdf-reader"
+        "source": "https://github.com/PDFToolkit/pdf-reader",
+        "docs": "https://pdftoolkit.github.io/modules/reader/"
     },
     "require": {
         "php": "^8.3",
@@ -26,12 +27,6 @@
         "phpstan/phpstan": "^2.1",
         "phpunit/phpunit": "^12.0"
     },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/PDFToolkit/pdf"
-        }
-    ],
     "license": "MIT",
     "authors": [
         {
