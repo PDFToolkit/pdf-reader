@@ -4,6 +4,10 @@
 
 ## Unreleased
 
+## 0.2.1 - 2026-10-14
+
+- Supprimer une ancienne phrase de refus de PDF 2.0 des deux README et aligner l’alias de développement sur la branche 0.2.
+
 ## 0.2.0 — 2026-10-14
 
 ### Syntaxe PDF 2.0

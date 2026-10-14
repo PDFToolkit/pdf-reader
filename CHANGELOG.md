@@ -4,6 +4,10 @@ English | [Français](CHANGELOG.fr.md)
 
 ## Unreleased
 
+## 0.2.1 - 2026-10-14
+
+- Remove a stale PDF 2.0 rejection sentence from both README editions and align the development branch alias with 0.2.
+
 ## 0.2.0 — 2026-10-14
 
 ### PDF 2.0 syntax

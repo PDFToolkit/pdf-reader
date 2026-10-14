@@ -145,7 +145,7 @@ pour extraire du texte ou rendre une page.
 | Héritage | Ressources, MediaBox, CropBox et rotation effectifs ; CropBox utilise MediaBox par défaut et rotation zéro si absente. |
 | Contenu des pages | Un flux ou un tableau de flux, conservés dans l'ordre ; lecture et décodage séparés. |
 
-Les fichiers chiffrés, les références hybrides `/XRefStm`, PDF 2.0 et les codecs
+Les fichiers chiffrés, les références hybrides `/XRefStm` et les codecs
 non implémentés sont refusés explicitement. Un flux utilisant un codec inconnu
 peut être conservé sous forme encodée ; demander son décodage provoque
 `UnsupportedPdfFeature`.

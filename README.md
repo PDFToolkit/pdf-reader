@@ -141,7 +141,7 @@ encodings are not interpreted to extract text or render a page.
 | Inheritance | Effective resources, MediaBox, CropBox and rotation; CropBox defaults to MediaBox and absent rotation defaults to zero. |
 | Page contents | A stream or an array of streams, kept in order; separate reading and decoding. |
 
-Encrypted files, hybrid `/XRefStm` references, PDF 2.0 and unimplemented codecs
+Encrypted files, hybrid `/XRefStm` references and unimplemented codecs
 are explicitly rejected. A stream using an unknown codec can be preserved in
 encoded form; requesting decoding raises `UnsupportedPdfFeature`.
 
