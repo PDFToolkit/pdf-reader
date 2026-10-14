@@ -2,6 +2,11 @@
 
 [English](../architecture.md) | Français
 
+La version 0.1.8 accepte le core 0.7 en plus des versions antérieures prises en
+charge. Le lecteur interprète toujours PDF 1.0 à 1.7. Les métadonnées, espaces
+de noms structurels et extensions cryptographiques PDF 2.0 du writer du core
+n’étendent pas le parseur d’entrée.
+
 Le lecteur transforme des octets PDF en un graphe consultable d'objets. Il
 conserve les références comme des valeurs explicites et utilise les primitives
 de [PDFToolkit/pdf](https://github.com/PDFToolkit/pdf). Les clauses de référence

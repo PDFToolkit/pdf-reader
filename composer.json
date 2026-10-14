@@ -1,7 +1,7 @@
 {
     "name": "pdftoolkit/pdf-reader",
     "type": "library",
-    "description": "An explicit, bounded object reader for ISO 32000-1 PDF 1.7",
+    "description": "An explicit, bounded PDF 1.0-1.7 object reader for PHP 8.3+",
     "keywords": [
         "pdf",
         "pdf-1.7",
@@ -20,7 +20,7 @@
         "php": "^8.3",
         "ext-ctype": "*",
         "ext-zlib": "*",
-        "roukmoute/pdf": "^0.2 || ^0.3 || ^0.4 || ^0.5 || ^0.6"
+        "roukmoute/pdf": "^0.2 || ^0.3 || ^0.4 || ^0.5 || ^0.6 || ^0.7"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.0",

@@ -2,6 +2,10 @@
 
 English | [Français](fr/architecture.md)
 
+Version 0.1.8 accepts core 0.7 alongside its earlier supported releases. The
+reader continues to interpret PDF 1.0–1.7. PDF 2.0 metadata, structure namespaces
+and cryptographic extensions in the core writer do not extend the input parser.
+
 The reader transforms PDF bytes into a browsable object graph. It retains
 references as explicit values and uses primitives from
 [PDFToolkit/pdf](https://github.com/PDFToolkit/pdf). The reference clauses are

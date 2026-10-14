@@ -22,15 +22,16 @@ consommateur :
 composer require "pdftoolkit/pdf-reader:^0.1"
 ```
 
-Le lecteur utilise le core `roukmoute/pdf:^0.2 || ^0.3 || ^0.4 || ^0.5 || ^0.6`,
+Le lecteur utilise le core `roukmoute/pdf:^0.2 || ^0.3 || ^0.4 || ^0.5 || ^0.6 || ^0.7`,
 installé automatiquement par Composer. PHP 8.3 ou supérieur sur une plateforme
 64 bits et les extensions `ctype`, `iconv` et `zlib` sont requis pour cet ensemble.
 Le fichier `composer.lock` du projet consommateur fixe les versions et les
 révisions utilisées.
 
-Le core 0.6 peut être installé sans changer l’API du lecteur. Cette
-compatibilité de dépendance n’ajoute pas la lecture de PDF 2.0 : les entrées
-prises en charge restent les PDF 1.0 à 1.7.
+Les cores 0.6 et 0.7 peuvent être installés sans changer l’API du lecteur.
+Le core 0.7 ajoute au writer des mécanismes de métadonnées, de balisage et de
+sécurité PDF 2.0. Le lecteur conserve les entrées PDF 1.0 à 1.7 ; cette
+compatibilité n’ajoute ni analyse PDF 2.0, ni déchiffrement, ni import.
 
 ## Lire les pages
 

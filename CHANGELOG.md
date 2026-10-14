@@ -4,6 +4,15 @@ English | [Français](CHANGELOG.fr.md)
 
 ## Unreleased
 
+## 0.1.8 — 2026-10-14
+
+### Compatibility and scope
+
+- Accepts stable core `roukmoute/pdf:^0.2 || ^0.3 || ^0.4 || ^0.5 || ^0.6 || ^0.7`.
+- Locks publication checks to released core `0.6.2`, retaining stable production dependencies and existing development tool versions.
+- Preserves the reader API, cumulative limits and PDF 1.0–1.7 input coverage. Core 0.7 writer features do not add PDF 2.0 parsing, decryption or import.
+- Requires PHP 8.3 or later; CI validates PHP 8.3, 8.4 and 8.5 and the independent PDF oracles.
+
 ## 0.1.7 — 2026-10-14
 
 ### Compatibility

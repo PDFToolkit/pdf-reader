@@ -4,6 +4,15 @@
 
 ## Unreleased
 
+## 0.1.8 — 2026-10-14
+
+### Compatibilité et périmètre
+
+- Accepte le core stable `roukmoute/pdf:^0.2 || ^0.3 || ^0.4 || ^0.5 || ^0.6 || ^0.7`.
+- Verrouille les vérifications de publication sur le core publié `0.6.2`, avec des dépendances de production stables et les mêmes versions d’outils de développement.
+- Conserve l’API du lecteur, les limites cumulatives et la couverture des entrées PDF 1.0 à 1.7. Les fonctionnalités du writer 0.7 n’ajoutent ni analyse PDF 2.0, ni déchiffrement, ni import.
+- Exige PHP 8.3 ou supérieur ; la CI valide PHP 8.3, 8.4 et 8.5 ainsi que les oracles PDF indépendants.
+
 ## 0.1.7 — 2026-10-14
 
 ### Compatibilité

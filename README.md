@@ -21,13 +21,15 @@ application:
 composer require "pdftoolkit/pdf-reader:^0.1"
 ```
 
-The reader uses `roukmoute/pdf:^0.2 || ^0.3 || ^0.4 || ^0.5 || ^0.6`, installed
+The reader uses `roukmoute/pdf:^0.2 || ^0.3 || ^0.4 || ^0.5 || ^0.6 || ^0.7`, installed
 automatically by Composer. PHP 8.3 or newer on a 64-bit platform and the `ctype`,
 `iconv` and `zlib` extensions are required for this combination. The application's
 `composer.lock` records the selected versions and revisions.
 
-Core 0.6 can be installed without changing the reader API. This dependency
-compatibility does not add PDF 2.0 reading: supported input remains PDF 1.0–1.7.
+Core 0.6 and 0.7 can be installed without changing the reader API. Core 0.7
+adds PDF 2.0 metadata, tagging and security mechanisms to the writer. The
+reader still accepts PDF 1.0–1.7 input; this dependency compatibility does
+not add PDF 2.0 parsing, decryption or import.
 
 ## Read pages
 
