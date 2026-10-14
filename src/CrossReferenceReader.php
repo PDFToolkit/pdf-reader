@@ -177,7 +177,7 @@ final readonly class CrossReferenceReader
     private function section(int $offset, DictionaryType $trailer, array $entries): Section
     {
         if ($trailer->has('Encrypt')) {
-            throw new UnsupportedPdfFeature('Encrypted PDF files are not supported by this reader.', $offset);
+            throw new EncryptedPdfException($offset);
         }
         if ($trailer->has('XRefStm')) {
             throw new UnsupportedPdfFeature('Hybrid-reference PDF files are not supported by this reader.', $offset);

@@ -58,7 +58,7 @@ final class ReadingPdf20Test extends TestCase
         $trailer = strrpos($bytes, 'trailer');
         self::assertNotFalse($trailer);
         $bytes = substr_replace($bytes, '/Encrypt 1 0 R ', strpos($bytes, '<<', $trailer) + 2, 0);
-        $this->expectException(UnsupportedPdfFeature::class);
+        $this->expectException(\PDF\Reading\EncryptedPdfException::class);
         (new DocumentReader())->read(new FileBytes($bytes));
     }
 
