@@ -1,152 +1,148 @@
-# Architecture du lecteur
+# Reader architecture
 
-Le lecteur transforme des octets PDF en un graphe consultable d'objets. Il
-conserve les références comme des valeurs explicites et utilise les primitives
-de [PDFToolkit/pdf](https://github.com/PDFToolkit/pdf). Les clauses de référence
-sont ISO 32000-1, 7.2–7.5 pour la structure et 7.7.3 pour les pages ; le PDF
-de norme reste dans le dépôt du modèle.
+English | [Français](fr/architecture.md)
 
-## Deux paquets et une dépendance
+The reader transforms PDF bytes into a browsable object graph. It retains
+references as explicit values and uses primitives from
+[PDFToolkit/pdf](https://github.com/PDFToolkit/pdf). The reference clauses are
+ISO 32000-1, 7.2–7.5 for structure and 7.7.3 for pages; the standard PDF remains
+in the model repository.
 
-`roukmoute/pdf` définit les primitives et leur écriture. `pdftoolkit/pdf-reader`
-ajoute les mécanismes de lecture sous `PDF\Reading`. Composer relie le lecteur
-au modèle ; aucune dépendance inverse ne relie le writer au lecteur.
+## Two packages and one dependency
 
-Une chaîne lue devient un `StringType`, un nom un `NameType`, un tableau un
-`ArrayType`, un dictionnaire un `DictionaryType`. Les objets ne sont pas
-transformés en tableaux associatifs applicatifs ni en chaînes JSON. Les chaînes
-PDF restent des octets ; leur interprétation textuelle appartient aux couches
-qui connaissent le contexte et l'encodage.
+`roukmoute/pdf` defines primitives and their writing. `pdftoolkit/pdf-reader`
+adds reading mechanisms under `PDF\Reading`. Composer connects the reader to
+the model; there is no reverse dependency from the writer to the reader.
 
-Deux types appartiennent au document source : `ObjectReference` identifie un
-objet sans porter sa cible, et `EncodedStream` conserve un dictionnaire avec
-ses octets encodés. Ils implémentent `BasicType` pour rester utilisables dans
-les mêmes tableaux et dictionnaires. Leur `toPdf()` lève une exception : un
-import doit reconstruire les références du document destinataire avant que
-l'écriture puisse être correcte. Aucun pont d'import n'est encore implémenté.
+A parsed string becomes a `StringType`, a name a `NameType`, an array an
+`ArrayType`, and a dictionary a `DictionaryType`. Objects are not transformed
+into application associative arrays or JSON strings. PDF strings remain bytes;
+text interpretation belongs to layers that know the context and encoding.
 
-## Pipeline de lecture
+Two types belong to the source document: `ObjectReference` identifies an object
+without carrying its target, and `EncodedStream` retains a dictionary and its
+encoded bytes. They implement `BasicType` so they can be used in the same
+arrays and dictionaries. Their `toPdf()` throws an exception: an import must
+rebuild references in the destination document before writing can be correct.
+No import bridge is implemented yet.
+
+## Reading pipeline
 
 ```mermaid
 flowchart TD
     A[FileBytes] --> B[DocumentReader]
     B --> C[CrossReferenceReader]
-    C --> D[Section et Index]
+    C --> D[Section and Index]
     B --> E[ReadDocument]
     D --> E
     E --> F[IndirectObjectReader]
-    F --> G[ByteCursor et SyntaxParser]
+    F --> G[ByteCursor and SyntaxParser]
     E --> H[ObjectStreamReader]
     E --> I[StreamDecoder]
-    I --> J[Décodeurs et prédicteurs]
+    I --> J[Decoders and predictors]
     E --> K[PageTreeReader]
-    K --> L[ReadPageTree et ReadPage]
+    K --> L[ReadPageTree and ReadPage]
     E --> M[PageContentsReader]
     L --> M
-    M --> N[PageContents et EncodedStream]
+    M --> N[PageContents and EncodedStream]
 ```
 
-`DocumentReader` contrôle le header et le dernier footer, lit la chaîne de
-révisions `/Prev` et assemble l'index effectif. Il parcourt les sections de la
-plus récente à la plus ancienne. Une entrée récente masque les anciennes,
-y compris lorsqu'elle marque un objet comme libre. Le trailer effectif conserve
-également les valeurs les plus récentes. Le catalogue est résolu et contrôlé
-avant que `read()` ne retourne le document.
+`DocumentReader` checks the header and final footer, reads the `/Prev` revision
+chain and assembles the effective index. It traverses sections from newest to
+oldest. A newer entry overrides earlier entries, including when it marks an
+object as free. The effective trailer also retains the newest values.
+The catalog is resolved and checked before `read()` returns the document.
 
-`CrossReferenceReader` lit les tables traditionnelles ou les flux xref. Les
-champs structuraux d'un flux xref doivent être directs : aucun résolveur n'est
-encore disponible pendant la construction de l'index. Les plages sont bornées,
-les générations contrôlées et les champs binaires lus en big endian sans
-dépassement d'entier. Les sections hybrides et le chiffrement sont refusés.
+`CrossReferenceReader` reads traditional tables or xref streams. An xref
+stream's structural fields must be direct: no resolver is available yet during
+index construction. Ranges are bounded, generations are checked and binary
+fields are read in big-endian order without integer overflow. Hybrid sections
+and encryption are rejected.
 
-`ReadDocument` possède la source, l'index, les limites et les caches. Il charge
-un objet à la demande, vérifie que son identifiant correspond à l'entrée xref,
-puis conserve la même instance pour les accès suivants. Une référence absente,
-libre ou de génération différente retourne un `NullType`. Les cycles normaux
-du graphe, comme `/Parent` et `/Kids`, restent des références ; la résolution
-d'un objet ne parcourt pas automatiquement ses voisins.
+`ReadDocument` owns the source, index, limits and caches. It loads an object
+on demand, checks that its identifier matches the xref entry, then retains the
+same instance for later accesses. A missing, free or different-generation
+reference returns a `NullType`. Normal graph cycles such as `/Parent` and
+`/Kids` remain references; resolving an object does not automatically traverse
+its neighbours.
 
-Un identifiant est local à son fichier. Il faut résoudre une référence avec le
-`ReadDocument` dont elle provient ; la même paire numéro/génération peut désigner
-un autre objet dans un autre document.
+An identifier is local to its file. Resolve a reference using the `ReadDocument`
+it came from; the same number/generation pair may identify a different object
+in another document.
 
-`ByteCursor` offre une vue bornée d'une chaîne d'octets avec positions absolues.
-`SyntaxParser` lit une valeur syntaxique sans résoudre ses références. Les
-lecteurs structuraux ajoutent ensuite le sens de `obj`, `endobj`, `stream` et
-des entrées de dictionnaire. `/Length` détermine l'étendue binaire du flux :
-un marqueur `endstream` dans ses données reste une donnée.
+`ByteCursor` provides a bounded view of a byte string with absolute positions.
+`SyntaxParser` reads a syntax value without resolving references. Structural
+readers then add the meaning of `obj`, `endobj`, `stream` and dictionary entries.
+`/Length` determines the stream's binary extent: an `endstream` marker inside
+its data remains data.
 
-`ObjectStreamReader` contrôle `/N`, `/First` et les couples numéro/offset.
-Chaque membre est analysé dans sa propre vue bornée, puis son numéro est
-comparé à l'entrée xref qui le désigne. Le conteneur et les membres ont une
-génération zéro ; un membre ne peut pas être un stream ni une simple référence.
-`/Extends` décrit une collection de flux et ne déclenche pas de recherche
-automatique dans un autre conteneur.
+`ObjectStreamReader` checks `/N`, `/First` and number/offset pairs. Each member
+is parsed in its own bounded view, then its number is compared with the xref
+entry identifying it. The container and its members have generation zero;
+a member cannot be a stream or a simple reference. `/Extends` describes a
+collection of streams and does not trigger an automatic search in another
+container.
 
-## Résolution et décodage explicites
+## Explicit resolution and decoding
 
-`ReadDocument::resolve()` effectue une seule opération : résoudre une référence
-ou conserver une valeur directe. L'interface `ObjectResolver` permet aux
-lecteurs qui en ont besoin, notamment pour `/Length` et les paramètres de
-filtres, de recevoir ce service par construction ou par argument.
+`ReadDocument::resolve()` performs one operation: resolve a reference or
+preserve a direct value. The `ObjectResolver` interface lets readers that
+need this service, notably for `/Length` and filter parameters, receive it
+through construction or an argument.
 
-`EncodedStream::encodedBytes()` conserve les octets d'origine.
-`ReadDocument::streamData()` déclenche le décodage et garde le résultat dans
-un cache propre au document. `StreamDecoder` lit `/Filter` et `/DecodeParms`,
-applique la chaîne dans l'ordre du PDF, puis les prédicteurs lorsque présents.
-Les filtres sont des objets séparés, composables et testables.
+`EncodedStream::encodedBytes()` retains the original bytes.
+`ReadDocument::streamData()` triggers decoding and retains the result in a
+document-scoped cache. `StreamDecoder` reads `/Filter` and `/DecodeParms`,
+applies the chain in PDF order, then predictors when present. Filters are
+separate, composable, testable objects.
 
-Les caches, curseurs et compteurs sont mutables parce qu'ils représentent une
-lecture en cours. Les identifiants, références, sections et limites sont des
-valeurs immuables. Aucun singleton, état global, fabrique statique ou service
-caché dans un objet de valeur n'est nécessaire.
+Caches, cursors and counters are mutable because they represent an ongoing
+read. Identifiers, references, sections and limits are immutable values.
+No singleton, global state, static factory or service hidden in a value object
+is needed.
 
-## Pages comme objets du document source
+## Pages as source document objects
 
-`PageTreeReader` reçoit un `ReadDocument` et ses `PageTreeLimits`. Une demande
-`read()` crée son état de parcours dans `PageTreeTraversal`. Une pile de
-`PageTreeFrame` suit les enfants dans l'ordre de `/Kids` et compte les feuilles
-de chaque branche au retour. Les références déjà visitées permettent de refuser
-les cycles et les descendants répétés ; les `/Parent` doivent correspondre aux
-parents réellement parcourus. Le lecteur rend un `ReadPageTree` seulement après
-la vérification des comptes de l'arbre entier.
+`PageTreeReader` receives a `ReadDocument` and its `PageTreeLimits`. A `read()`
+request creates traversal state in `PageTreeTraversal`. A `PageTreeFrame` stack
+follows children in `/Kids` order and counts each branch's leaves on return.
+Previously visited references allow cycles and repeated descendants to be
+rejected; `/Parent` entries must match the parents actually traversed.
+The reader returns a `ReadPageTree` only after checking the entire tree's counts.
 
-`PageAttributeReader` résout les quatre entrées héritables en utilisant
-`ReadDocument` comme `ObjectResolver`. Il produit des `PageInheritance`
-partiels jusqu'à la feuille, où les valeurs par défaut deviennent effectives.
-Cette distinction évite de figer un CropBox par défaut sur le MediaBox d'un
-ancêtre si une page remplace ce MediaBox plus bas dans l'arbre.
-Les ressources sont choisies comme un dictionnaire entier, sans fusion.
+`PageAttributeReader` resolves the four inheritable entries using `ReadDocument`
+as its `ObjectResolver`. It produces partial `PageInheritance` values down to
+the leaf, where defaults become effective. This distinction prevents a default
+CropBox from being fixed to an ancestor's MediaBox when a page overrides that
+MediaBox lower in the tree. Resources are selected as a complete dictionary,
+without merging.
 
-Un `ReadPage` conserve le document qui possède sa référence, son dictionnaire
-source et ses `PageAttributes` effectifs. Ces derniers gardent des objets PDF,
-dont l'entier de rotation brut. La normalisation de l'orientation est une
-demande distincte ; elle ne réécrit pas les valeurs de la source.
+A `ReadPage` retains the document that owns its reference, its source dictionary
+and its effective `PageAttributes`. The latter retain PDF objects, including
+the raw rotation integer. Normalising orientation is a separate request;
+it does not rewrite source values.
 
-`PageContentsReader` compose ce service avec une limite de flux par page. Il
-résout l'entrée locale `/Contents` dans le document propriétaire et retourne
-un `PageContents` ordonné d'`EncodedStream`. Il n'hérite pas cette entrée,
-ne concatène pas les flux et n'exécute pas les filtres. Le décodage reste
-une demande à `ReadDocument::streamData()`, qui utilise ses caches et budgets.
-Le [guide des pages](pages.md) explique cet assemblage avec les fixtures
-indépendantes.
+`PageContentsReader` composes this service with a per-page stream limit. It
+resolves the local `/Contents` entry in the owning document and returns an
+ordered `PageContents` collection of `EncodedStream` values. It does not
+inherit this entry, concatenate streams or execute filters. Decoding remains
+a request to `ReadDocument::streamData()`, which uses its caches and budgets.
+The [page guide](pages.md) explains this composition using independent fixtures.
 
-## Budgets et frontières
+## Budgets and boundaries
 
-Un `ReaderLimits` décrit les plafonds. Un `ReadBudget`, créé pour chaque appel
-à `DocumentReader::read()`, additionne les valeurs analysées, les entrées xref,
-les octets conservés et les octets produits par les étapes de décodage.
-Les plafonds sont partagés par les lecteurs du même document ; ils ne repartent
-pas de zéro à chaque
-référence ou filtre.
+`ReaderLimits` describes ceilings. A `ReadBudget`, created for each
+`DocumentReader::read()` call, adds up parsed values, xref entries, retained
+bytes and bytes produced by decoding stages. Ceilings are shared by readers
+of the same document; they do not restart at zero for each reference or filter.
 
-La bibliothèque reçoit des `FileBytes`. L'application choisit le fichier,
-autorise sa lecture, borne son chargement et gère ses ressources. Les actions
-JavaScript, URI ou de lancement restent des dictionnaires ; la bibliothèque
-ne les exécute pas. Un flux externe n'est jamais chargé depuis `/F`.
+The library receives `FileBytes`. The application selects the file, authorises
+reading, bounds loading and manages resources. JavaScript, URI and launch
+actions remain dictionaries; the library does not execute them. An external
+stream is never loaded from `/F`.
 
-Cette étape fournit la syntaxe, la résolution structurelle et le parcours de
-pages. Les futurs imports, interpréteurs de contenu et moteurs de formulaire
-pourront les composer sans ajouter ces responsabilités au parseur.
+This stage provides syntax, structural resolution and page traversal. Future
+importers, content interpreters and form engines can compose them without
+adding those responsibilities to the parser.
 
-[Composants](components.md) · [Sécurité](security.md) · [README](../README.md)
+[Components](components.md) · [Security](security.md) · [README](../README.md)

@@ -1,59 +1,59 @@
-# PDF externes de test
+# External test PDFs
 
-Ces cinq petits documents sont créés indépendamment du writer PHP de ce dépôt.
-Le texte, les dictionnaires et les données binaires sont des contenus originaux
-du projet, distribués sous sa licence MIT. Aucun PDF tiers n'est repris.
+English | [Français](README.fr.md)
 
-`tools/build_reader_fixtures.py` crée le document de départ avec **pypdf 6.20.1**,
-puis **qpdf 12.4.2** produit une représentation avec flux d'objets et flux xref.
-Les autres variantes ajoutent des révisions traditionnelles : les offsets,
-entrées xref et liens `/Prev` sont calculés directement en Python ; les valeurs
-des objets et des trailers sont sérialisées par pypdf.
+These five small documents are created independently of this repository's PHP
+writer. Text, dictionaries and binary data are original project content,
+distributed under its MIT licence. No third-party PDF is reused.
 
-Les versions sont fixées, les identifiants de fichier sont déterministes et
-aucune date variable n'est ajoutée. Les tests PHP lisent les binaires commités
-et ne nécessitent ni Python, ni pypdf, ni qpdf.
+`tools/build_reader_fixtures.py` creates the initial document with **pypdf 6.20.1**,
+then **qpdf 12.4.2** produces a representation with object streams and an xref
+stream. Other variants add traditional revisions: offsets, xref entries and
+`/Prev` links are calculated directly in Python; object and trailer values
+are serialised by pypdf.
 
-| Fichier | Cas exercé |
+Versions are pinned, file identifiers are deterministic and no variable date
+is added. PHP tests read committed binaries and do not require Python, pypdf
+or qpdf.
+
+| File | Exercised case |
 | --- | --- |
-| `classic.pdf` | PDF 1.7, xref traditionnel, une page Helvetica ; chaînes octales et hexadécimales, nom échappé, tableau et dictionnaire imbriqués ; flux de 297 octets dont `/Length` est la référence `7 0 R`. |
-| `object-streams.pdf` | Même document réécrit par qpdf : catalogue dans le flux d'objets `1 0` (`/N 6`, `/First 34`) ; flux xref `10 0` avec `/W [1 2 1]`, Flate et prédicteur PNG 12 (`/Columns 4`). |
-| `incremental.pdf` | Deux révisions ; l'objet Info `1 0` est remplacé, son titre devient `Updated revision` ; `/Prev` pointe sur l'ancien xref. Les octets de `classic.pdf` sont intégralement conservés en préfixe. |
-| `deleted-object.pdf` | Deux révisions ; l'objet `9 0` devient libre, avec génération suivante 1 et liste libre mise à jour. La référence du catalogue vers `9 0 R` doit résoudre à null. |
-| `reused-generation.pdf` | Trois révisions ; le numéro supprimé est réutilisé comme `9 1`, contenant `reused generation one`. `9 0 R` reste null ; `9 1 R` résout la nouvelle valeur. |
+| `classic.pdf` | PDF 1.7, traditional xref, one Helvetica page; octal and hexadecimal strings, escaped name, nested array and dictionary; 297-byte stream whose `/Length` is reference `7 0 R`. |
+| `object-streams.pdf` | Same document rewritten by qpdf: catalog in object stream `1 0` (`/N 6`, `/First 34`); xref stream `10 0` with `/W [1 2 1]`, Flate and PNG predictor 12 (`/Columns 4`). |
+| `incremental.pdf` | Two revisions; Info object `1 0` is replaced and its title becomes `Updated revision`; `/Prev` points to the old xref. All `classic.pdf` bytes are preserved as a prefix. |
+| `deleted-object.pdf` | Two revisions; object `9 0` becomes free, with next generation 1 and an updated free list. The catalog's `9 0 R` reference must resolve to null. |
+| `reused-generation.pdf` | Three revisions; the deleted number is reused as `9 1`, containing `reused generation one`. `9 0 R` stays null; `9 1 R` resolves to the new value. |
 
-Chaque page contient le texte `Independent reader fixture` dans un flux de
-contenu de 58 octets. Le catalogue contient aussi les 256 valeurs d'octet dans
-`/FixtureBinary`, la chaîne `A (nested) \ line` suivie d'un saut de ligne, d'une
-tabulation et de `end` dans `/FixtureLiteral`, et le nom `/A name/#()` dans
-`/FixtureName`. `/FixtureData` désigne un flux binaire indépendant : ses octets
-contiennent notamment `endstream`, `endobj`, `xref`, `startxref` et `%%EOF`.
-Seule sa longueur réelle permet de le lire correctement.
+Every page contains `Independent reader fixture` in a 58-byte content stream.
+The catalog also contains all 256 byte values in `/FixtureBinary`, the string
+`A (nested) \ line` followed by a newline, a tab and `end` in `/FixtureLiteral`,
+and the name `/A name/#()` in `/FixtureName`. `/FixtureData` identifies an
+independent binary stream: its bytes include `endstream`, `endobj`, `xref`,
+`startxref` and `%%EOF`. Only its actual length allows it to be read correctly.
 
-`manifest.json` consigne les identifiants utiles, longueurs, hashes SHA-256 et
-offsets du dernier xref. Les numéros changent dans la variante qpdf ; un lecteur
-doit suivre les références plutôt que supposer les numéros du document initial.
+`manifest.json` records useful identifiers, lengths, SHA-256 hashes and final
+xref offsets. Numbers change in the qpdf variant; a reader must follow
+references rather than assume the initial document's numbers.
 
-## Reproduire et contrôler
+## Reproduce and check
 
-Dans un environnement Python de développement, installer `pypdf==6.20.1` et
-rendre qpdf 12.4.2 disponible, puis exécuter depuis la racine du dépôt :
+In a Python development environment, install `pypdf==6.20.1` and make qpdf 12.4.2
+available, then run from the repository root:
 
 ```console
 python tools/build_reader_fixtures.py --qpdf qpdf
 python tools/build_reader_fixtures.py --qpdf qpdf --check
 ```
 
-`--qpdf` accepte également le chemin complet de l'exécutable. `--check` recrée
-les fichiers dans un dossier temporaire et compare leurs octets aux fixtures,
-sans les modifier. Le script valide chaque fichier avec `qpdf --check`, puis
-lit sa page, son texte et ses valeurs binaires avec `PdfReader(strict=True)`.
-Il vérifie également les préfixes des révisions et le remplacement des
-métadonnées. qpdf confirme explicitement les valeurs nulles des objets supprimés
-et des références dont la génération n'est plus courante, ainsi que la valeur
-de `9 1` après réutilisation.
+`--qpdf` also accepts the full executable path. `--check` recreates files in a
+temporary directory and compares their bytes with the fixtures without changing
+them. The script validates every file using `qpdf --check`, then reads its page,
+text and binary values using `PdfReader(strict=True)`. It also checks revision
+prefixes and metadata replacement. qpdf explicitly confirms null values for
+deleted objects and outdated-generation references, and the value of `9 1`
+after reuse.
 
-pypdf 6.20.1 conserve une ancienne entrée utilisée lorsqu'il résout la génération
-initiale d'un objet ensuite supprimé : il ne sert donc pas d'oracle pour ce cas.
-L'état effectif attendu suit ISO 32000-1, 7.3.9 et 7.5.4–7.5.6, et est confirmé
-avec qpdf. Les tests du lecteur PHP doivent exercer cette distinction.
+pypdf 6.20.1 retains an old in-use entry when resolving the initial generation
+of a subsequently deleted object, so it is not used as the oracle for that
+case. Expected effective state follows ISO 32000-1, 7.3.9 and 7.5.4–7.5.6 and
+is confirmed with qpdf. PHP reader tests must exercise this distinction.

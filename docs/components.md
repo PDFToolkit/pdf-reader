@@ -1,121 +1,120 @@
-# Référence des composants
+# Component reference
 
-Le namespace racine est `PDF\Reading`. Les primitives telles que `DictionaryType`,
-`ArrayType`, `NameType`, `IntegerType`, `StringType` et `ObjectIdentifier` viennent
-du [modèle PDF partagé](https://github.com/PDFToolkit/pdf/tree/master/src/Syntax).
+English | [Français](fr/components.md)
 
-## Document et objets source
+The root namespace is `PDF\Reading`. Primitives such as `DictionaryType`,
+`ArrayType`, `NameType`, `IntegerType`, `StringType` and `ObjectIdentifier` come
+from the [shared PDF model](https://github.com/PDFToolkit/pdf/tree/master/src/Syntax).
 
-| Composant | Construction et rôle |
+## Document and source objects
+
+| Component | Construction and role |
 | --- | --- |
-| `FileBytes` | `new FileBytes($bytes)` conserve les octets fournis explicitement. Aucun accès fichier ou réseau. |
-| `DocumentReader` | `new DocumentReader($limits)` ; `read(FileBytes): ReadDocument` ouvre le document structurel. Les limites ont une valeur par défaut explicite. |
-| `ReadDocument` | Porte source, header, trailer effectif, index, budgets et caches. Construction habituelle par `DocumentReader`. |
-| `ObjectResolver` | Interface `resolve(BasicType): BasicType`. Résout une référence dans un document sans parcourir tout le graphe. |
-| `ObjectReference` | `new ObjectReference(ObjectIdentifier)` ; propriété `identifier`. La référence porte un identifiant, sans cible ni résolveur. Sa sérialisation est refusée. |
-| `EncodedStream` | `new EncodedStream(DictionaryType, string)` ; `dictionary()` et `encodedBytes()` exposent la structure et les octets d'origine. Sa sérialisation est refusée. |
+| `FileBytes` | `new FileBytes($bytes)` retains explicitly supplied bytes. No file or network access. |
+| `DocumentReader` | `new DocumentReader($limits)`; `read(FileBytes): ReadDocument` opens the structural document. Limits have explicit defaults. |
+| `ReadDocument` | Carries the source, header, effective trailer, index, budgets and caches. Normally constructed by `DocumentReader`. |
+| `ObjectResolver` | `resolve(BasicType): BasicType` interface. Resolves a reference in a document without traversing the entire graph. |
+| `ObjectReference` | `new ObjectReference(ObjectIdentifier)`; `identifier` property. The reference carries an identifier, without a target or resolver. Serialisation is rejected. |
+| `EncodedStream` | `new EncodedStream(DictionaryType, string)`; `dictionary()` and `encodedBytes()` expose structure and original bytes. Serialisation is rejected. |
 
-### Méthodes de `ReadDocument`
+### `ReadDocument` methods
 
-| Méthode | Résultat et comportement |
+| Method | Result and behaviour |
 | --- | --- |
-| `header(): FileHeader` | Version déclarée dans le header physique. Une éventuelle `/Version` du catalogue reste accessible dans son dictionnaire. |
-| `trailer(): DictionaryType` | Trailer effectif, assemblé en donnant la priorité aux révisions récentes. Dans un document à flux xref, il contient les entrées de son dictionnaire. |
-| `catalog(): DictionaryType` | Résout `/Root` ; contrôle `/Type /Catalog`, la référence `/Pages` et la version déclarée. |
-| `object(ObjectIdentifier): BasicType` | Charge l'objet désigné ; retourne null pour un objet absent, libre, indisponible ou de génération différente. |
-| `resolve(BasicType): BasicType` | Appelle `object()` pour une référence ; conserve une valeur directe inchangée. |
-| `streamData(EncodedStream): string` | Décode le flux sous les budgets du document. Les accès suivants réutilisent le résultat. |
+| `header(): FileHeader` | Version declared in the physical header. An optional catalog `/Version` remains accessible in its dictionary. |
+| `trailer(): DictionaryType` | Effective trailer, assembled with priority given to recent revisions. In an xref-stream document it contains that stream dictionary's entries. |
+| `catalog(): DictionaryType` | Resolves `/Root`; checks `/Type /Catalog`, the `/Pages` reference and declared version. |
+| `object(ObjectIdentifier): BasicType` | Loads the identified object; returns null for a missing, free, unavailable or different-generation object. |
+| `resolve(BasicType): BasicType` | Calls `object()` for a reference; preserves a direct value unchanged. |
+| `streamData(EncodedStream): string` | Decodes the stream under document budgets. Subsequent accesses reuse the result. |
 
-Ces opérations chargent le graphe de base. Les services de pages ci-dessous
-ajoutent un parcours demandé explicitement ; le chargement du catalogue seul
-ne visite pas cet arbre.
+These operations load the base graph. The page services below add explicitly
+requested traversal; loading the catalog alone does not visit that tree.
 
-## Pages, héritage et contenu
+## Pages, inheritance and contents
 
-| Composant | Construction et rôle |
+| Component | Construction and role |
 | --- | --- |
-| `PageTreeReader` | `new PageTreeReader(ReadDocument, PageTreeLimits)` ; `read(): ReadPageTree` parcourt l'arbre complet dans l'ordre de `/Kids`. Contrôle les types, comptes, parents, cycles, identités répétées et plafonds. |
-| `ReadPageTree` | Collection immuable comptable et itérable, produite après validation. Propriétés `document`, `root` et `pages` ; `page(int $index): ReadPage` commence à zéro et refuse un indice hors collection. |
-| `ReadPage` | Vue immuable d'une feuille : propriétés `document`, `reference`, `dictionary` et `attributes`. Le dictionnaire source est conservé. |
-| `PageAttributes` | Ressources effectives `DictionaryType`, MediaBox et CropBox `Rectangle`, rotation `IntegerType`. `normalizedRotation(): int` dérive une orientation 0/90/180/270, sans remplacer l'entier d'origine. |
-| `PageInheritance` | Valeurs partielles d'un ancêtre, toutes facultatives. `effective(): PageAttributes` exige Resources/MediaBox et applique les valeurs par défaut uniquement à la feuille. |
-| `PageAttributeReader` | Reçoit un `ObjectResolver`. `read(DictionaryType, PageInheritance): PageInheritance` résout les quatre entrées héritables et leurs types sans visiter le contenu des ressources. |
-| `PageTreeTraversal` | État d'une opération de parcours : pile explicite, identités déjà visitées, ordre des feuilles et comptes des sous-arbres. |
-| `PageTreeFrame` | Une branche en cours : référence, héritage, compte déclaré et enfants restant à visiter. Vérifie son compte une fois ses descendants visités. |
-| `PageTreeLimits` | Plafonds strictement positifs : `maxDepth` 64, `maxNodes` 100 000 et `maxPages` 100 000 par défaut. |
-| `PageContentsReader` | `new PageContentsReader(ReadDocument, PageContentLimits)` ; `read(ReadPage): PageContents` résout le contenu local d'une page du même document. |
-| `PageContents` | Collection immuable comptable et itérable : propriétés `page` et `streams`, conservés dans l'ordre. Aucune concaténation ni décompression. |
-| `PageContentLimits` | Plafond `maxStreams` strictement positif, 1 024 par page par défaut. |
+| `PageTreeReader` | `new PageTreeReader(ReadDocument, PageTreeLimits)`; `read(): ReadPageTree` traverses the complete tree in `/Kids` order. Checks types, counts, parents, cycles, repeated identities and ceilings. |
+| `ReadPageTree` | Immutable countable, iterable collection produced after validation. Properties `document`, `root` and `pages`; `page(int $index): ReadPage` is zero-based and rejects an out-of-range index. |
+| `ReadPage` | Immutable leaf view: properties `document`, `reference`, `dictionary` and `attributes`. Retains the source dictionary. |
+| `PageAttributes` | Effective resources as `DictionaryType`, MediaBox and CropBox as `Rectangle`, rotation as `IntegerType`. `normalizedRotation(): int` derives a 0/90/180/270 orientation without replacing the original integer. |
+| `PageInheritance` | An ancestor's partial values, all optional. `effective(): PageAttributes` requires Resources/MediaBox and applies defaults only at the leaf. |
+| `PageAttributeReader` | Receives an `ObjectResolver`. `read(DictionaryType, PageInheritance): PageInheritance` resolves the four inheritable entries and their types without visiting resource contents. |
+| `PageTreeTraversal` | State for one traversal operation: explicit stack, visited identities, leaf order and subtree counts. |
+| `PageTreeFrame` | A branch in progress: reference, inheritance, declared count and remaining children. Validates its count after visiting its descendants. |
+| `PageTreeLimits` | Strictly positive ceilings: defaults are `maxDepth` 64, `maxNodes` 100,000 and `maxPages` 100,000. |
+| `PageContentsReader` | `new PageContentsReader(ReadDocument, PageContentLimits)`; `read(ReadPage): PageContents` resolves local contents of a page from the same document. |
+| `PageContents` | Immutable countable, iterable collection: properties `page` and `streams`, preserved in order. No concatenation or decompression. |
+| `PageContentLimits` | Strictly positive `maxStreams` ceiling, default 1,024 per page. |
 
-Les quatre entrées héritables sont `Resources`, `MediaBox`, `CropBox` et
-`Rotate`. Un Resources local remplace le dictionnaire hérité sans fusion.
-Null est traité comme une absence. CropBox utilise MediaBox par défaut et
-Rotate utilise zéro ; les autres attributs de page restent consultables dans
-le dictionnaire source. Contents n'est jamais hérité. Absence, null et tableau
-vide donnent une collection de contenu vide.
+The four inheritable entries are `Resources`, `MediaBox`, `CropBox` and `Rotate`.
+Local Resources replaces the inherited dictionary without merging. Null is
+treated as absence. CropBox defaults to MediaBox and Rotate to zero; other
+page attributes remain accessible in the source dictionary. Contents is never
+inherited. Absence, null and an empty array yield an empty content collection.
 
-Les budgets de `ReadDocument` restent partagés pendant ces opérations.
-Les plafonds d'arbre et de contenu sont propres à chaque demande de parcours
-ou de lecture. Consulter le [guide des pages](pages.md) pour un exemple expliqué.
+`ReadDocument` budgets remain shared during these operations. Tree and content
+ceilings belong to each traversal or reading request. See the
+[page guide](pages.md) for an explained example.
 
-## Syntaxe et structures
+## Syntax and structures
 
-| Composant | Rôle |
+| Component | Role |
 | --- | --- |
-| `ByteCursor` | Vue bornée de bytes, construite avec un offset et une fin facultative. `position()`, `remaining()`, `peek()`, `read()`, `seek()`, `eof()` et `skipWhitespaceAndComments()` contrôlent son déplacement. |
-| `SyntaxParser` | Reçoit un curseur, des limites et éventuellement un budget. `read()` lit une valeur PDF ; `unsignedInteger()`, `keyword()` et `atKeyword()` servent aux lecteurs structuraux. Ne résout pas les références. |
-| `IndirectObjectReader` | Reçoit source, limites et budget. `read($offset, $expected, $resolver)` contrôle l'enveloppe d'un objet, son identifiant et l'étendue exacte d'un stream. |
-| `CrossReferenceReader` | Reçoit source, limites, budget et décodeur. `read($offset)` produit une `CrossReference\Section` depuis une table ou un flux xref. |
-| `ObjectStreamReader` | Reçoit limites et budget. `read($stream, $decodedBytes, $resolver)` analyse les membres d'un ObjStm dans leurs tranches respectives. |
-| `DictionaryAccess` | Accès structurel typé à un dictionnaire, avec un `ObjectResolver` facultatif : `value()`, `integer()` et `hasName()`. |
+| `ByteCursor` | Bounded byte view, constructed with an offset and optional end. `position()`, `remaining()`, `peek()`, `read()`, `seek()`, `eof()` and `skipWhitespaceAndComments()` control movement. |
+| `SyntaxParser` | Receives a cursor, limits and optional budget. `read()` reads a PDF value; `unsignedInteger()`, `keyword()` and `atKeyword()` support structural readers. Does not resolve references. |
+| `IndirectObjectReader` | Receives source, limits and budget. `read($offset, $expected, $resolver)` validates an object's envelope, identifier and exact stream extent. |
+| `CrossReferenceReader` | Receives source, limits, budget and decoder. `read($offset)` produces a `CrossReference\Section` from a table or xref stream. |
+| `ObjectStreamReader` | Receives limits and budget. `read($stream, $decodedBytes, $resolver)` parses ObjStm members in their respective slices. |
+| `DictionaryAccess` | Typed structural access to a dictionary, with an optional `ObjectResolver`: `value()`, `integer()` and `hasName()`. |
 
-### Namespace `PDF\Reading\CrossReference`
+### `PDF\Reading\CrossReference` namespace
 
-| Composant | Rôle |
+| Component | Role |
 | --- | --- |
-| `EntryKind` | Enum distinguant les entrées `Free`, `Uncompressed`, `Compressed` et `Unavailable`. |
-| `Entry` | Valeur portant numéro, type et deux champs propres au type. `generation()` donne la génération effective ; les membres comprimés ont génération zéro. |
-| `Section` | Valeur d'une révision : offset, trailer, offset `/Prev` facultatif et liste d'entrées. |
-| `Index` | Index sparse effectif, construit avec des sections de la plus récente à la plus ancienne. `entry($number)` retrouve l'entrée qui prévaut. |
+| `EntryKind` | Enum distinguishing `Free`, `Uncompressed`, `Compressed` and `Unavailable` entries. |
+| `Entry` | Value carrying a number, type and two type-specific fields. `generation()` gives the effective generation; compressed members have generation zero. |
+| `Section` | Revision value: offset, trailer, optional `/Prev` offset and entry list. |
+| `Index` | Effective sparse index, constructed from newest to oldest sections. `entry($number)` retrieves the prevailing entry. |
 
-L'index conserve les entrées libres récentes pour empêcher qu'un ancien objet
-supprimé réapparaisse. Les types xref inconnus restent indisponibles et se
-résolvent à null.
+The index retains recent free entries to prevent a deleted old object from
+reappearing. Unknown xref types remain unavailable and resolve to null.
 
-## Filtres et prédicteurs
+## Filters and predictors
 
 `StreamDecoder::decode(EncodedStream, ReadBudget, ?ObjectResolver): string`
-interprète la chaîne `/Filter` et ses `/DecodeParms`. Les noms de filtre complets
-sont utilisés. Un filtre inconnu est refusé au moment du décodage, sans empêcher
-la conservation de ses octets encodés.
+interprets the `/Filter` chain and its `/DecodeParms`. Full filter names are
+used. An unknown filter is rejected at decoding time without preventing its
+encoded bytes from being retained.
 
-### Namespace `PDF\Reading\Filters`
+### `PDF\Reading\Filters` namespace
 
-| Composant | Rôle |
+| Component | Role |
 | --- | --- |
-| `Decoder` | Interface `decode(string, ReadBudget): string` des transformations. |
-| `FlateDecoder` | Décompression zlib progressive en petites tranches, avec contrôle des données invalides, tronquées ou suivies d'octets supplémentaires. |
-| `AsciiHexDecoder` | Décodage ASCIIHex : blancs PDF, chiffres hexadécimaux et dernier demi-octet éventuel. |
-| `Ascii85Decoder` | Décodage ASCII85, blocs complets ou partiels et raccourci `z`. |
-| `RunLengthDecoder` | Décodage des répétitions et segments littéraux RunLength. |
-| `PredictorParameters` | Valeur `Predictor`, `Colors`, `BitsPerComponent`, `Columns`. Prédicteurs 1, 2 ou 10–15 ; les prédicteurs actifs requièrent des composants de 8 bits. |
-| `PredictorDecoder` | Reconstruction des lignes TIFF ou PNG après Flate. Les tags de ligne PNG désignent l'algorithme appliqué. |
-| `DecodedBytes` | Accumulateur contrôlant la limite d'une sortie et le budget cumulé avant de retenir une tranche. |
+| `Decoder` | Transformations' `decode(string, ReadBudget): string` interface. |
+| `FlateDecoder` | Incremental zlib decompression in small slices, with checks for invalid or truncated data and trailing bytes. |
+| `AsciiHexDecoder` | ASCIIHex decoding: PDF whitespace, hexadecimal digits and an optional final nibble. |
+| `Ascii85Decoder` | ASCII85 decoding, complete or partial blocks and the `z` shorthand. |
+| `RunLengthDecoder` | Decodes RunLength repetitions and literal segments. |
+| `PredictorParameters` | `Predictor`, `Colors`, `BitsPerComponent`, `Columns` value. Predictors 1, 2 or 10–15; active predictors require 8-bit components. |
+| `PredictorDecoder` | Reconstructs TIFF or PNG rows after Flate. PNG row tags identify the applied algorithm. |
+| `DecodedBytes` | Accumulator checking the output limit and cumulative budget before retaining a slice. |
 
-DCTDecode, JPXDecode, CCITTFaxDecode, JBIG2Decode, LZWDecode et Crypt ne sont
-pas implémentés. La lecture structurelle d'un flux image peut donc réussir,
-tandis que sa demande de décodage est refusée.
+DCTDecode, JPXDecode, CCITTFaxDecode, JBIG2Decode, LZWDecode and Crypt are not
+implemented. Structural reading of an image stream may therefore succeed
+while a decoding request is rejected.
 
-## Limites et diagnostics
+## Limits and diagnostics
 
-| Composant | Rôle |
+| Component | Role |
 | --- | --- |
-| `ReaderLimits` | Valeur immuable des plafonds, configurables par arguments nommés. Tous doivent être strictement positifs. |
-| `ReadBudget` | Compteurs cumulatifs de valeurs analysées, entrées xref, octets conservés et octets décodés, propres à une lecture. |
-| `ParseException` | Erreur de structure ou de budget ; propriété `offset` facultative pour la position dans les bytes. |
-| `UnsupportedPdfFeature` | Sous-type de `ParseException`, distinguant un mécanisme volontairement non pris en charge. |
+| `ReaderLimits` | Immutable ceiling values, configurable through named arguments. All must be strictly positive. |
+| `ReadBudget` | Cumulative counters for parsed values, xref entries, retained bytes and decoded bytes, scoped to one read. |
+| `ParseException` | Structure or budget error; optional `offset` property for a position in bytes. |
+| `UnsupportedPdfFeature` | `ParseException` subtype distinguishing a deliberately unsupported mechanism. |
 
-Exemple de configuration :
+Configuration example:
 
 ```php
 use PDF\Reading\DocumentReader;
@@ -131,8 +130,8 @@ $reader = new DocumentReader(new ReaderLimits(
 ));
 ```
 
-Les appels de bas niveau peuvent recevoir un budget fourni explicitement.
-Pour conserver les mêmes plafonds sur toute une lecture, utiliser le même
-`ReaderLimits` et le même `ReadBudget` dans les composants composés.
+Low-level calls can receive an explicitly supplied budget. To retain the same
+ceilings throughout a read, use the same `ReaderLimits` and `ReadBudget`
+within the composed components.
 
-[Architecture](architecture.md) · [Sécurité et valeurs par défaut](security.md)
+[Architecture](architecture.md) · [Security and defaults](security.md)

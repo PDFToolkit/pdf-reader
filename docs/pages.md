@@ -1,16 +1,18 @@
-# Lire les pages et leur héritage
+# Read pages and their inheritance
 
-Un catalogue PDF désigne, par `/Pages`, la racine d'un arbre. Ses branches sont
-des dictionnaires `/Pages` ; ses feuilles sont des dictionnaires `/Page`.
-Le tableau `/Kids` donne l'ordre des descendants. `/Count` annonce le nombre
-de feuilles d'une branche, tandis que `/Parent` relie un descendant à son parent.
-Lire le seul `/Count` de la racine ne suffit donc pas à vérifier les pages.
-Ces règles viennent d'ISO 32000-1, 7.7.3 et des tableaux 29 et 30.
+English | [Français](fr/pages.md)
 
-## Un parcours demandé explicitement
+A PDF catalog identifies a tree root through `/Pages`. Its branches are
+`/Pages` dictionaries; its leaves are `/Page` dictionaries. The `/Kids` array
+gives descendant order. `/Count` declares a branch's leaf count, while `/Parent`
+connects a descendant to its parent. Reading only the root's `/Count` therefore
+does not validate pages. These rules come from ISO 32000-1, 7.7.3 and tables
+29 and 30.
 
-Après avoir obtenu un `ReadDocument` avec `DocumentReader::read()`, construire
-le lecteur d'arbre avec ce document et les plafonds du parcours :
+## Explicitly requested traversal
+
+After obtaining a `ReadDocument` with `DocumentReader::read()`, construct the
+tree reader with this document and traversal ceilings:
 
 ```php
 use PDF\Reading\PageTreeLimits;
@@ -31,60 +33,58 @@ foreach ($tree as $index => $page) {
 }
 ```
 
-`read()` suit les enfants dans l'ordre de `/Kids` et ne retourne sa collection
-qu'après la vérification de l'arbre entier. Chaque branche doit annoncer le
-nombre de feuilles réellement rencontrées. La racine ne doit pas avoir de
-`/Parent` ; les autres branches et les pages doivent désigner leur parent
-immédiat. Les cycles, références répétées et valeurs structurelles incohérentes
-provoquent une `ParseException`.
+`read()` follows children in `/Kids` order and returns its collection only after
+checking the entire tree. Each branch must declare the number of leaves
+actually encountered. The root must not have a `/Parent`; other branches and
+pages must identify their immediate parent. Cycles, repeated references and
+inconsistent structural values raise a `ParseException`.
 
-`ReadPageTree` implémente `Countable` et `IteratorAggregate`. `count($tree)`
-donne le nombre de pages validées ; `$tree->page(0)` donne la première page.
-La collection expose sa référence racine, son document et ses pages.
-Chaque `ReadPage` conserve une référence source, le dictionnaire résolu et le
-document qui les possède. Les `PageAttributes` calculés sont des objets PDF :
-un `DictionaryType` de ressources, deux `Rectangle` et un `IntegerType`.
-Le parcours ne transforme pas ces valeurs en tableaux associatifs applicatifs.
+`ReadPageTree` implements `Countable` and `IteratorAggregate`. `count($tree)`
+gives the validated page count; `$tree->page(0)` gives the first page.
+The collection exposes its root reference, document and pages. Each `ReadPage`
+retains a source reference, resolved dictionary and their owning document.
+Calculated `PageAttributes` are PDF objects: a resource `DictionaryType`, two
+`Rectangle` values and an `IntegerType`. Traversal does not transform these
+values into application associative arrays.
 
-## Les valeurs effectives d'une page
+## A page's effective values
 
-Quatre entrées peuvent être héritées : `/Resources`, `/MediaBox`, `/CropBox`
-et `/Rotate`. Une valeur présente sur la page prévaut ; sinon, on cherche
-l'ancêtre le plus proche qui la définit. Une entrée null est traitée comme
-absente, conformément aux règles des dictionnaires PDF. `/Resources` et
-`/MediaBox` sont obligatoires après cette recherche. `/CropBox` utilise
-`/MediaBox` par défaut ;
-`/Rotate` vaut zéro par défaut et doit être un multiple de 90 degrés.
+Four entries can be inherited: `/Resources`, `/MediaBox`, `/CropBox` and
+`/Rotate`. A value present on the page takes precedence; otherwise the closest
+ancestor defining it is used. A null entry is treated as absent, as required by
+PDF dictionary rules. `/Resources` and `/MediaBox` are required after this
+search. `/CropBox` defaults to `/MediaBox`; `/Rotate` defaults to zero and must
+be a multiple of 90 degrees.
 
-L'héritage choisit une valeur complète. Un dictionnaire `/Resources` local ne
-fusionne pas ses catégories avec celles du parent : même vide, il remplace
-les ressources héritées. Le dictionnaire source doit rester consultable afin
-de distinguer les entrées réellement écrites des valeurs effectives calculées.
+Inheritance selects a complete value. A local `/Resources` dictionary does
+not merge its categories with the parent's: even when empty, it replaces
+inherited resources. The source dictionary remains accessible to distinguish
+actually written entries from calculated effective values.
 
-`PageAttributes::rotate` conserve l'entier PDF d'origine. Sa méthode
-`normalizedRotation()` donne une orientation de 0, 90, 180 ou 270 degrés : une
-rotation de `-90` reste un `IntegerType(-90)` et correspond à 270 degrés.
-Les coordonnées des rectangles sont également conservées. Le lecteur ne
-calcule pas de transformation de dessin ni de position dans un écran.
+`PageAttributes::rotate` retains the original PDF integer. Its
+`normalizedRotation()` method gives an orientation of 0, 90, 180 or 270 degrees:
+a rotation of `-90` remains an `IntegerType(-90)` and corresponds to 270 degrees.
+Rectangle coordinates are preserved as well. The reader does not calculate
+a drawing transformation or screen position.
 
-Les autres entrées restent locales à la page. En particulier, `/Contents`
-n'est pas hérité, pas plus que `/BleedBox`, `/TrimBox`, `/ArtBox` ou `/UserUnit`.
-Les valeurs effectives de ces dernières entrées ne sont pas calculées par
-ce parcours ; l'application peut consulter leur définition et leur valeur
-source avec les objets du modèle partagé.
+Other entries remain local to the page. In particular, `/Contents` is not
+inherited, nor are `/BleedBox`, `/TrimBox`, `/ArtBox` or `/UserUnit`.
+Effective values for those last entries are not calculated by this traversal;
+the application can inspect their definition and source value through the
+shared model's objects.
 
-## Des flux de contenu distincts
+## Separate content streams
 
-Une page peut omettre `/Contents` : elle n'a alors aucun flux de contenu.
-Lorsqu'il existe, cet objet désigne un seul flux ou un tableau de flux.
-L'ordre du tableau fait partie du document. Un découpage entre deux flux
-ne délimite pas forcément des opérations de dessin indépendantes : selon
-ISO 32000-1, 7.8.2, leur effet correspond à une concaténation dans cet ordre.
+A page may omit `/Contents`, in which case it has no content streams. When
+present, this object identifies a single stream or an array of streams.
+Array order is part of the document. Splitting between two streams does not
+necessarily delimit independent drawing operations: under ISO 32000-1, 7.8.2,
+their effect corresponds to concatenation in that order.
 
-Conserver les objets de flux et leur ordre permet de choisir ensuite quand
-les décoder. Une demande de décodage produit des octets, sans interpréter
-les opérateurs, résoudre les polices ou extraire le texte visible. Des données
-compressées inconnues peuvent rester consultables sous leur forme encodée.
+Preserving stream objects and their order allows decoding to be requested
+later. Decoding produces bytes without interpreting operators, resolving fonts
+or extracting visible text. Unknown compressed data can remain accessible in
+encoded form.
 
 ```php
 use PDF\Reading\PageContentLimits;
@@ -111,16 +111,16 @@ foreach ($tree as $pageIndex => $page) {
 }
 ```
 
-`PageContents` garde la page propriétaire et une liste d'`EncodedStream`.
-`read()` refuse une page appartenant à un autre `ReadDocument`. Une entrée
-absente ou null et un tableau vide donnent une collection vide. Une entrée
-non vide doit se résoudre à un flux ou à un tableau dont chaque élément se
-résout à un flux ; aucun élément invalide n'est ignoré.
+`PageContents` retains its owning page and a list of `EncodedStream` values.
+`read()` rejects a page belonging to another `ReadDocument`. An absent or null
+entry and an empty array yield an empty collection. A nonempty entry must
+resolve to a stream or an array in which each element resolves to a stream;
+no invalid element is ignored.
 
-## Essayer avec les fixtures indépendantes
+## Try the independent fixtures
 
-L'[exemple exécutable](../examples/pages.php) utilise l'arbre à trois pages
-créé avec pypdf et qpdf. Depuis un checkout du lecteur :
+The [executable example](../examples/pages.php) uses the three-page tree created
+with pypdf and qpdf. From a reader checkout:
 
 ```console
 composer install
@@ -128,39 +128,35 @@ php examples/pages.php
 php examples/pages.php tests/Fixtures/page-tree/object-streams.pdf
 ```
 
-La première page hérite d'une branche : sa rotation brute est `-90` et elle
-possède deux flux. La deuxième définit ses propres ressources vides et une
-rotation zéro ; son CropBox vient de la sous-branche et ses deux flux sont
-référencés par un tableau indirect. La troisième reprend les attributs de
-la racine, avec rotation 90, et n'a aucun flux. La variante qpdf représente
-les mêmes pages dans un flux d'objets, avec d'autres numéros.
-La [description des fixtures](../tests/Fixtures/page-tree/README.md) donne
-les valeurs effectives et leur origine.
+The first page inherits from a branch: its raw rotation is `-90` and it has two
+streams. The second defines its own empty resources and zero rotation; its
+CropBox comes from the sub-branch and its two streams are referenced by an
+indirect array. The third uses root attributes, with rotation 90, and has no
+streams. The qpdf variant represents the same pages in an object stream with
+different numbers. The [fixture description](../tests/Fixtures/page-tree/README.md)
+lists the effective values and their origin.
 
-## Limiter le travail de chaque opération
+## Limit each operation's work
 
-| Limite | Valeur par défaut | Portée |
+| Limit | Default | Scope |
 | --- | --- | --- |
-| `PageTreeLimits::maxDepth` | 64 | Profondeur de l'arbre, racine incluse. |
-| `PageTreeLimits::maxNodes` | 100 000 | Nombre cumulé de branches et de feuilles visitées. |
-| `PageTreeLimits::maxPages` | 100 000 | Nombre de feuilles et borne des comptes déclarés. |
-| `PageContentLimits::maxStreams` | 1 024 | Nombre de flux dans le contenu d'une page. |
+| `PageTreeLimits::maxDepth` | 64 | Tree depth, including the root. |
+| `PageTreeLimits::maxNodes` | 100,000 | Cumulative count of visited branches and leaves. |
+| `PageTreeLimits::maxPages` | 100,000 | Leaf count and ceiling for declared counts. |
+| `PageContentLimits::maxStreams` | 1,024 | Number of streams in a page's contents. |
 
-Ces plafonds s'appliquent à une opération. Les limites de `ReaderLimits` et
-les budgets cumulatifs du document continuent de contrôler les objets chargés,
-les valeurs analysées, les octets retenus et le décodage. Un arbre peut avoir
-une grande profondeur avec des dictionnaires syntaxiquement peu imbriqués :
-la profondeur d'arbre nécessite donc son propre plafond.
-Le parcours utilise une pile explicite ; il n'appelle pas récursivement
-la pile PHP pour chaque descendant.
+These ceilings apply to one operation. `ReaderLimits` and cumulative document
+budgets continue to control loaded objects, parsed values, retained bytes and
+decoding. A tree may be deep while its dictionaries have little syntactic
+nesting: tree depth therefore needs its own ceiling. Traversal uses an explicit
+stack; it does not recursively use the PHP call stack for every descendant.
 
-## Portée des contrôles
+## Scope of checks
 
-Le parcours des pages vérifie la structure qu'il visite. Il ne rend pas le
-document et ne vérifie pas toutes les annotations, ressources, polices ou
-actions auxquelles ses pages peuvent faire référence. Ces références restent
-des données du document source ; elles ne deviennent pas des objets importés
-dans le writer.
+Page traversal validates the structure it visits. It does not render the
+document or validate all annotations, resources, fonts or actions its pages
+may reference. These references remain source document data; they do not
+become imported writer objects.
 
-[Architecture](architecture.md) · [Composants](components.md) ·
-[Contrôles de sécurité](security.md) · [README](../README.md)
+[Architecture](architecture.md) · [Components](components.md) ·
+[Security controls](security.md) · [README](../README.md)

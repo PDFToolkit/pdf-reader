@@ -19,3 +19,8 @@
 - After a reader release, update the documentation site's released-source pins and provenance to its published version and exact tag commit. Build module guides and API documentation from that pinned source, verify source links, and publish the site update independently of the core package.
 - Report the versions and release links when the work is complete.
 - Publish and verify stable releases on Packagist. Fresh consumers must install through the default Composer repositories without VCS or path repository configuration. Keep package documentation links current in Composer metadata.
+
+## Documentation languages
+
+- Use English by default for public documentation and maintain complete French counterparts with reciprocal language links.
+- Update both languages together, preserving API identifiers, normative source wording and executable example behaviour. Verify equivalent links and examples in both languages.

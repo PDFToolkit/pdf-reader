@@ -1,115 +1,110 @@
-# Contrôles de sécurité du lecteur
+# Reader security controls
 
-Le lecteur analyse des octets PDF externes. Cette documentation décrit les
-protections implémentées et les scénarios couverts par les tests du projet.
-Elle ne constitue pas un audit externe ni une garantie d'absence de
-vulnérabilité. Le périmètre inclut la syntaxe, la résolution des objets, les
-révisions, les pages et les filtres pris en charge.
+English | [Français](fr/security.md)
 
-## Surfaces contrôlées
+The reader parses external PDF bytes. This documentation describes implemented
+protections and scenarios covered by the project's tests. It is not an external
+audit or a guarantee of freedom from vulnerabilities. Scope includes syntax,
+object resolution, revisions, pages and supported filters.
 
-| Surface | Contrôles et tests |
+## Checked surfaces
+
+| Surface | Controls and tests |
 | --- | --- |
-| Source | Header PDF 1.0–1.7 au début des bytes, footer final borné, refus des sources dépassant la limite. Aucun chargement de chemin ou d'URL par le lecteur. |
-| Syntaxe | Longueurs des tokens, profondeur et nombre de valeurs ; échappements des noms et chaînes ; tableaux et dictionnaires bornés ; refus des clés dupliquées et des nombres hors plage. |
-| Curseurs | Chaque vue possède des bornes ; les lectures et déplacements hors vue sont refusés. Les objets comprimés sont analysés dans des tranches séparées. |
-| Xref | Offsets, générations, types et plages vérifiés ; champs big endian sans dépassement d'entier ; sous-sections et `/Index` sans chevauchement. |
-| Révisions | Chaîne `/Prev` bornée et cycles détectés ; les entrées récentes, y compris libres, masquent les anciennes. Une génération périmée se résout à null. |
-| Objets | Identifiant réel comparé à l'entrée xref ; chargements récursifs bornés et cycles de chargement détectés ; caches propres au document. |
-| Arbre de pages | Parcours avec pile explicite ; limites propres de profondeur, de nœuds et de feuilles ; refus des cycles, descendants répétés, comptes incohérents et liens Parent incorrects. |
-| Héritage | Types des ressources, rectangles et rotations vérifiés ; quatre entrées héritables seulement ; ressources locales remplaçant les valeurs héritées sans fusion ; rotation multiple de 90. |
-| Contenus de page | Page liée à son document source ; nombre de flux borné avant résolution du tableau ; chaque élément doit désigner un flux ; aucun héritage, décodage ou interprétation automatique. |
-| Streams | Étendue déterminée exclusivement par `/Length`. Les marqueurs de fin contenus dans les données binaires ne découpent pas le flux. Les longueurs indirectes utilisent le résolveur borné. |
-| Données conservées | Budget cumulé des noms, chaînes et octets encodés, contrôlé avant leur conservation ; des vues répétées ou chevauchantes ne peuvent pas multiplier ces copies sans plafond. |
-| ObjStm | Contrôle de `/N`, `/First`, numéros et offsets ; une valeur par tranche ; validation du numéro désigné par l'index xref ; génération zéro et longueur non comprimée. |
-| Décompression | Limite sur chaque sortie, budget cumulé sur toutes les étapes et longueur de chaîne de filtres ; décompression Flate progressive ; refus des données tronquées et des lignes de prédicteur invalides. |
-| Mécanismes externes | Pas d'exécution d'actions PDF ou JavaScript. Le décodage des streams `/F`, `/FFilter` ou `/FDecodeParms` externes est refusé. |
-| Écriture | Références et streams externes refusent leur sérialisation sans import et remappage ; aucun fichier de sortie n'est ouvert par le lecteur. |
+| Source | PDF 1.0–1.7 header at the beginning of bytes, bounded final footer, rejection of sources exceeding the limit. No path or URL loading by the reader. |
+| Syntax | Token lengths, depth and value counts; name and string escapes; bounded arrays and dictionaries; duplicate keys and out-of-range numbers rejected. |
+| Cursors | Each view has bounds; out-of-view reads and movement are rejected. Compressed objects are parsed in separate slices. |
+| Xref | Offsets, generations, types and ranges checked; big-endian fields without integer overflow; non-overlapping subsections and `/Index` ranges. |
+| Revisions | Bounded `/Prev` chain and cycle detection; newer entries, including free ones, override older entries. An outdated generation resolves to null. |
+| Objects | Actual identifier compared with the xref entry; bounded recursive loading and loading-cycle detection; document-scoped caches. |
+| Page tree | Explicit traversal stack; dedicated depth, node and leaf limits; rejection of cycles, repeated descendants, inconsistent counts and incorrect Parent links. |
+| Inheritance | Resource, rectangle and rotation types checked; only four inheritable entries; local resources replace inherited values without merging; rotation must be a multiple of 90. |
+| Page contents | Page tied to its source document; stream count bounded before array resolution; every element must identify a stream; no automatic inheritance, decoding or interpretation. |
+| Streams | Extent determined exclusively by `/Length`. End markers inside binary data do not split the stream. Indirect lengths use the bounded resolver. |
+| Retained data | Cumulative budget for names, strings and encoded bytes, checked before retention; repeated or overlapping views cannot multiply copies without a ceiling. |
+| ObjStm | `/N`, `/First`, numbers and offsets checked; one value per slice; number identified by the xref index validated; generation zero and uncompressed length. |
+| Decompression | Limit on each output, cumulative budget across all stages and bounded filter-chain length; incremental Flate decompression; truncated data and invalid predictor rows rejected. |
+| External mechanisms | No execution of PDF or JavaScript actions. Decoding external `/F`, `/FFilter` or `/FDecodeParms` streams is rejected. |
+| Writing | External references and streams reject serialisation without import and remapping; the reader opens no output file. |
 
-Les tests [ReadingSyntaxTest](../tests/ReadingSyntaxTest.php),
+Tests [ReadingSyntaxTest](../tests/ReadingSyntaxTest.php),
 [ReadingFiltersTest](../tests/ReadingFiltersTest.php),
 [ReadingDocumentTest](../tests/ReadingDocumentTest.php),
 [ReadingFileStructureTest](../tests/ReadingFileStructureTest.php),
-[ReadingRetentionTest](../tests/ReadingRetentionTest.php) et
-[ReadingPagesTest](../tests/ReadingPagesTest.php) exercent ces frontières.
-Les cinq [fixtures externes](../tests/Fixtures/pdf/README.md) proviennent d'un
-générateur pypdf et d'une transformation qpdf, indépendants du writer PHP.
-Les deux [fixtures de pages](../tests/Fixtures/page-tree/README.md) ajoutent
-un arbre à plusieurs niveaux, des attributs hérités ou locaux et des tableaux
-de contenus directs ou indirects, y compris des données binaires.
-Leur reproduction vérifie les bytes, les lectures strictes et les résultats
-structurels attendus. Une bonne lecture de ces fixtures ne démontre pas la
-conformité à tous les PDF possibles.
+[ReadingRetentionTest](../tests/ReadingRetentionTest.php) and
+[ReadingPagesTest](../tests/ReadingPagesTest.php) exercise these boundaries.
+The five [external fixtures](../tests/Fixtures/pdf/README.md) come from a pypdf
+generator and qpdf transformation, independently of the PHP writer.
+The two [page fixtures](../tests/Fixtures/page-tree/README.md) add a multilevel
+tree, inherited or local attributes and direct or indirect content arrays,
+including binary data. Reproduction verifies bytes, strict reading and expected
+structural results. Successfully reading these fixtures does not demonstrate
+conformance for every possible PDF.
 
-## Limites par défaut
+## Default limits
 
-| Propriété de `ReaderLimits` | Plafond |
+| `ReaderLimits` property | Ceiling |
 | --- | --- |
-| `maxFileBytes` | 64 MiB de source. |
-| `maxDepth` | 64 niveaux de syntaxe ou de chargement indirect. |
-| `maxTokenBytes` | 1 MiB par token ; borne également la recherche du footer. |
-| `maxContainerEntries` | 100 000 entrées dans un conteneur. |
-| `maxObjects` | 100 000 pour le plafond d'objets et la borne des numéros structuraux. |
-| `maxCrossReferenceEntries` | 200 000 entrées cumulées sur les révisions. |
-| `maxRevisions` | 64 sections dans la chaîne `/Prev`. |
-| `maxDecodedStreamBytes` | 64 MiB pour une sortie de décodage. |
-| `maxTotalDecodedBytes` | 128 MiB cumulés sur les étapes de décodage. |
-| `maxFilters` | 16 filtres dans une chaîne. |
-| `maxParsedValues` | 500 000 valeurs syntaxiques cumulées. |
-| `maxRetainedBytes` | 128 MiB cumulés pour les noms, chaînes et octets de streams conservés. |
+| `maxFileBytes` | 64 MiB source. |
+| `maxDepth` | 64 levels of syntax or indirect loading. |
+| `maxTokenBytes` | 1 MiB per token; also bounds the footer search. |
+| `maxContainerEntries` | 100,000 entries in a container. |
+| `maxObjects` | 100,000 for the object ceiling and structural object-number bound. |
+| `maxCrossReferenceEntries` | 200,000 entries accumulated across revisions. |
+| `maxRevisions` | 64 sections in the `/Prev` chain. |
+| `maxDecodedStreamBytes` | 64 MiB for one decoding output. |
+| `maxTotalDecodedBytes` | 128 MiB accumulated across decoding stages. |
+| `maxFilters` | 16 filters in a chain. |
+| `maxParsedValues` | 500,000 cumulative syntax values. |
+| `maxRetainedBytes` | 128 MiB accumulated for retained names, strings and stream bytes. |
 
-Le budget décodé compte les sorties intermédiaires, par exemple la sortie
-Flate puis la sortie du prédicteur. Les flux xref et les flux d'objets utilisent
-le même budget que les autres flux. Un accès au résultat déjà décodé dans le
-cache de `ReadDocument` ne déclenche pas un nouveau décodage.
+The decoded budget counts intermediate outputs, for example the Flate output
+followed by the predictor output. Xref and object streams use the same budget
+as other streams. Accessing an already decoded result in the `ReadDocument`
+cache does not trigger decoding again.
 
-Ces plafonds sont des limites de travail, pas une promesse sur le maximum de
-mémoire PHP consommée. La source, les objets, les dictionnaires et les caches
-occupent de la mémoire supplémentaire. Un décodeur natif peut aussi produire
-une tranche temporaire avant son contrôle. Les valeurs par défaut doivent
-être adaptées au budget mémoire et aux quotas de l'application.
+These ceilings limit work; they are not a promise about maximum PHP memory
+consumption. The source, objects, dictionaries and caches consume additional
+memory. A native decoder may also produce a temporary slice before checking
+it. Defaults must be adjusted to the application's memory budget and quotas.
 
-Les opérations de pages ajoutent leurs plafonds : `PageTreeLimits` autorise
-par défaut 64 niveaux, 100 000 nœuds et 100 000 pages ; `PageContentLimits`
-autorise 1 024 flux par page. Ces compteurs appartiennent à une opération.
-Les objets chargés et les octets décodés restent soumis aux budgets cumulatifs
-du même `ReadDocument`. Consulter le [guide des pages](pages.md)
-pour les configurer explicitement.
+Page operations add their own ceilings: `PageTreeLimits` defaults to 64 levels,
+100,000 nodes and 100,000 pages; `PageContentLimits` allows 1,024 streams per page.
+These counters belong to one operation. Loaded objects and decoded bytes
+remain subject to the same `ReadDocument`'s cumulative budgets. See the
+[page guide](pages.md) to configure them explicitly.
 
-## Responsabilités de l'application
+## Application responsibilities
 
-L'application choisit et autorise l'origine des bytes. Elle doit borner leur
-acquisition avant de construire `FileBytes`, notamment pour un upload ou une
-réponse réseau. `maxFileBytes` est contrôlé lorsque les bytes sont déjà fournis
-au lecteur. Il ne contrôle pas le téléchargement ou l'ouverture d'un fichier
-réalisés en amont.
+The application chooses and authorises the origin of bytes. It must bound
+their acquisition before constructing `FileBytes`, notably for an upload or
+network response. `maxFileBytes` is checked when bytes have already been supplied
+to the reader. It does not control an earlier download or file opening.
 
-Le lecteur ne supprime pas les actions, pièces jointes ou autres objets
-potentiellement actifs du PDF. Leur existence est conservée comme donnée.
-Présenter ou redistribuer ensuite le fichier original reste une décision de
-l'application ; la réussite de la lecture n'est pas une certification que le
-document peut être ouvert sans risque par n'importe quel logiciel.
+The reader does not remove actions, attachments or other potentially active
+PDF objects. Their existence is retained as data. Showing or redistributing
+the original file remains an application decision; successful reading does
+not certify that any software can open the document safely.
 
-La résolution est à la demande. L'ouverture contrôle le catalogue et les xref,
-mais ne visite pas tous les objets ni toutes les ressources. Un défaut dans un
-objet non encore chargé peut être signalé lors d'un accès ultérieur. Le lecteur
-ne répare pas les fichiers endommagés et refuse les mécanismes non pris en
-charge, notamment le chiffrement et les références hybrides.
+Resolution is on demand. Opening checks the catalog and xref structures but
+does not visit every object or resource. A defect in an object not loaded yet
+may be reported during a later access. The reader does not repair damaged
+files and rejects unsupported mechanisms, notably encryption and hybrid
+references.
 
-Les diagnostics et valeurs extraites ne doivent pas être envoyés dans une
-page HTML sans échappement ni publiés sans contrôle d'accès. Les données
-contenues dans les dictionnaires, noms et chaînes proviennent du document.
-L'application décide de ce qu'elle peut journaliser ou présenter.
+Diagnostics and extracted values must not be sent to an HTML page without
+escaping or published without access controls. Data in dictionaries, names
+and strings comes from the document. The application decides what it can
+log or present.
 
-## Vérifications et dépendances
+## Checks and dependencies
 
-La CI exécute les tests, l'analyse statique et le contrôle de format sur PHP
-8.3, 8.4 et 8.5. `composer audit --locked` vérifie les avis disponibles pour les
-dépendances verrouillées ; ce contrôle ne constitue pas un audit du code du
-lecteur et dépend des informations connues au moment de son exécution.
+CI runs tests, static analysis and formatting checks on PHP 8.3, 8.4 and 8.5.
+`composer audit --locked` checks available advisories for locked dependencies;
+it is not an audit of the reader's code and depends on information known at
+the time it runs.
 
-PHP, zlib, le serveur, les outils de validation et les logiciels ouvrant les
-PDF ont leurs propres surfaces de sécurité, hors du périmètre des tests de
-cette bibliothèque.
+PHP, zlib, the server, validation tools and software opening PDFs have their
+own security surfaces, outside this library's test scope.
 
-[Signalements privés](../SECURITY.md) · [Architecture](architecture.md)
+[Private reporting](../SECURITY.md) · [Architecture](architecture.md)

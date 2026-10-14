@@ -1,36 +1,35 @@
 # PDF Reader
 
-Lecteur PHP de PDF externes, construit autour des objets de **ISO 32000-1:2008**.
-Il expose les dictionnaires, tableaux, références et flux du document avec une
-résolution explicite. PHP **8.3 minimum** ; la CI exécute les vérifications sur
-PHP **8.3, 8.4 et 8.5**.
+English | [Français](README.fr.md)
 
-Ce dépôt complète [PDFToolkit/pdf](https://github.com/PDFToolkit/pdf), qui fournit
-les primitives et le writer. `pdftoolkit/pdf-reader` dépend de ce modèle ; le
-modèle ne dépend pas du lecteur. Les deux paquets utilisent les mêmes objets
-pour les noms, chaînes, nombres, tableaux, dictionnaires et identifiants.
+A PHP reader for external PDFs, built around the objects of **ISO 32000-1:2008**.
+It exposes document dictionaries, arrays, references and streams with explicit
+resolution. Requires **PHP 8.3** or newer; CI runs checks on **PHP 8.3, 8.4 and 8.5**.
 
-## Installer
+This repository complements [PDFToolkit/pdf](https://github.com/PDFToolkit/pdf),
+which provides the primitives and writer. `pdftoolkit/pdf-reader` depends on
+that model; the model does not depend on the reader. Both packages use the
+same objects for names, strings, numbers, arrays, dictionaries and identifiers.
 
-Le package est disponible sur
-[Packagist](https://packagist.org/packages/pdftoolkit/pdf-reader). Dans le projet
-consommateur :
+## Installation
+
+The package is available on
+[Packagist](https://packagist.org/packages/pdftoolkit/pdf-reader). In your
+application:
 
 ```console
 composer require "pdftoolkit/pdf-reader:^0.1"
 ```
 
-Le lecteur utilise le core `roukmoute/pdf:^0.2 || ^0.3 || ^0.4 || ^0.5`,
-installé automatiquement par Composer. PHP 8.3 ou supérieur sur une plateforme
-64 bits et les extensions `ctype`, `iconv` et `zlib` sont requis pour cet ensemble.
-Le fichier `composer.lock` du projet consommateur fixe les versions et les
-révisions utilisées.
+The reader uses `roukmoute/pdf:^0.2 || ^0.3 || ^0.4 || ^0.5`, installed
+automatically by Composer. PHP 8.3 or newer on a 64-bit platform and the `ctype`,
+`iconv` and `zlib` extensions are required for this combination. The application's
+`composer.lock` records the selected versions and revisions.
 
-## Lire les pages
+## Read pages
 
-Cet exemple se lance depuis un checkout du lecteur après `composer install`.
-Le chargement du fichier est effectué par l'application ; le lecteur reçoit
-uniquement ses octets.
+Run this example from a reader checkout after `composer install`.
+The application loads the file; the reader receives only its bytes.
 
 ```php
 <?php
@@ -72,30 +71,30 @@ foreach ($tree as $index => $page) {
 }
 ```
 
-`PageTreeReader::read()` parcourt les branches `/Pages` et les feuilles `/Page`
-dans l'ordre de `/Kids`. Il vérifie chaque `/Count`, les relations `/Parent`,
-l'unicité des descendants et les limites du parcours. Le `ReadPageTree` obtenu
-est comptable et itérable ; `page(0)` désigne sa première page. Chaque `ReadPage`
-garde son document, sa référence et son dictionnaire source, puis expose ses
-`PageAttributes` effectifs : ressources, MediaBox, CropBox et rotation.
+`PageTreeReader::read()` traverses `/Pages` branches and `/Page` leaves in
+`/Kids` order. It checks every `/Count`, `/Parent` relationship, descendant
+identity and traversal limit. The resulting `ReadPageTree` is countable and
+iterable; `page(0)` identifies its first page. Each `ReadPage` retains its
+document, reference and source dictionary, then exposes its effective
+`PageAttributes`: resources, MediaBox, CropBox and rotation.
 
-`DictionaryType::get()` retourne toujours la valeur stockée : une référence
-reste un `ObjectReference`. `ReadDocument::resolve()` charge cette référence dans le
-document concerné et laisse une valeur directe inchangée. Les objets déjà lus
-sont conservés dans un cache propre au document ; aucun registre global,
-singleton ou résolution cachée dans les valeurs.
+`DictionaryType::get()` always returns the stored value: a reference remains
+an `ObjectReference`. `ReadDocument::resolve()` loads that reference in the
+relevant document and leaves a direct value unchanged. Previously read objects
+are kept in a document-scoped cache; there is no global registry, singleton
+or resolution hidden inside values.
 
-Les attributs hérités utilisent l'ancêtre le plus proche qui les définit.
-Un dictionnaire de ressources local remplace les ressources héritées, sans
-fusion. Le [guide des pages](docs/pages.md) explique cet héritage et distingue
-les valeurs écrites des valeurs effectives. Le parcours ne charge pas les
-contenus ni toutes les ressources de chaque page.
+Inherited attributes use the closest ancestor that defines them. A local
+resource dictionary replaces inherited resources without merging them.
+The [page guide](docs/pages.md) explains inheritance and distinguishes written
+values from effective values. Traversal does not load contents or every resource
+of each page.
 
-## Lire les octets d'un flux
+## Read stream bytes
 
-`PageContentsReader` résout `/Contents` en une collection ordonnée de flux
-encodés. Il reçoit le document et sa propre limite de flux par page.
-À la suite de l'exemple précédent, pour la première page de cette fixture :
+`PageContentsReader` resolves `/Contents` into an ordered collection of encoded
+streams. It receives the document and its own per-page stream limit.
+Continuing the preceding example with the first page of this fixture:
 
 ```php
 use PDF\Reading\PageContentLimits;
@@ -113,41 +112,38 @@ foreach ($contents as $stream) {
 }
 ```
 
-Une page sans `/Contents`, avec null ou un tableau vide donne une collection
-vide. Les flux d'un tableau sont conservés dans leur ordre, sans concaténation
-ni décodage automatiques. Un `EncodedStream` garde son dictionnaire et ses octets
-d'origine ; `streamData()` demande leur décodage. Le résultat reste une suite
-d'octets : les opérateurs de dessin, polices et encodages ne sont pas interprétés
-pour extraire du texte ou rendre une page.
+A page with no `/Contents`, null or an empty array yields an empty collection.
+Array streams keep their order, without automatic concatenation or decoding.
+An `EncodedStream` retains its dictionary and original bytes; `streamData()`
+requests decoding. The result remains bytes: drawing operators, fonts and
+encodings are not interpreted to extract text or render a page.
 
-## Couverture actuelle
+## Current coverage
 
-| Mécanisme | Lecture disponible |
+| Mechanism | Available reading |
 | --- | --- |
-| Syntaxe | Noms et chaînes échappés, entiers et réels, booléens, null, tableaux, dictionnaires, références indirectes. |
-| Structure | Headers PDF 1.0 à 1.7 ; objets indirects et flux délimités par `/Length`, y compris une longueur indirecte. |
-| Xref traditionnel | Sous-sections, offsets, générations, objets libres et révisions liées par `/Prev`. |
-| Flux xref | Champs `/W`, plages `/Index`, types libres, directs ou comprimés ; types inconnus donnant un objet indisponible. |
-| Flux d'objets | Membres de `/ObjStm`, avec validation de l'en-tête, des offsets et du numéro attendu. |
-| Filtres | FlateDecode, ASCIIHexDecode, ASCII85Decode et RunLengthDecode ; chaînes de filtres et paramètres explicites. |
-| Prédicteurs | TIFF 2 et PNG 10 à 15, avec composants de 8 bits. |
-| Résolution | Un objet absent, libre ou de génération différente donne `NullType`. |
-| Arbre de pages | Parcours ordonné complet, vérification de chaque `/Count` et `/Parent`, refus des cycles ou descendants répétés, limites propres au parcours. |
-| Héritage | Ressources, MediaBox, CropBox et rotation effectifs ; CropBox utilise MediaBox par défaut et rotation zéro si absente. |
-| Contenu des pages | Un flux ou un tableau de flux, conservés dans l'ordre ; lecture et décodage séparés. |
+| Syntax | Escaped names and strings, integers and reals, booleans, null, arrays, dictionaries, indirect references. |
+| Structure | PDF 1.0 to 1.7 headers; indirect objects and streams delimited by `/Length`, including indirect lengths. |
+| Traditional xref | Subsections, offsets, generations, free objects and revisions linked by `/Prev`. |
+| Xref streams | `/W` fields, `/Index` ranges, free, direct or compressed types; unknown types yield an unavailable object. |
+| Object streams | `/ObjStm` members, with header, offset and expected object number validation. |
+| Filters | FlateDecode, ASCIIHexDecode, ASCII85Decode and RunLengthDecode; explicit filter chains and parameters. |
+| Predictors | TIFF 2 and PNG 10 to 15, with 8-bit components. |
+| Resolution | A missing, free or different-generation object yields `NullType`. |
+| Page tree | Complete ordered traversal, checks for every `/Count` and `/Parent`, rejection of cycles or repeated descendants, dedicated traversal limits. |
+| Inheritance | Effective resources, MediaBox, CropBox and rotation; CropBox defaults to MediaBox and absent rotation defaults to zero. |
+| Page contents | A stream or an array of streams, kept in order; separate reading and decoding. |
 
-Les fichiers chiffrés, les références hybrides `/XRefStm`, PDF 2.0 et les codecs
-non implémentés sont refusés explicitement. Un flux utilisant un codec inconnu
-peut être conservé sous forme encodée ; demander son décodage provoque
-`UnsupportedPdfFeature`.
+Encrypted files, hybrid `/XRefStm` references, PDF 2.0 and unimplemented codecs
+are explicitly rejected. A stream using an unknown codec can be preserved in
+encoded form; requesting decoding raises `UnsupportedPdfFeature`.
 
-L'import vers le writer, la réécriture, la fusion, l'extraction de texte, le
-rendu, les formulaires, les signatures et la réparation des PDF restent des
-mécanismes à construire. Les références et flux externes refusent leur
-sérialisation : réutiliser leurs numéros dans un nouveau document serait
-incorrect sans import et remappage explicites.
+Import into the writer, rewriting, merging, text extraction, rendering, forms,
+signatures and PDF repair remain to be implemented. External references and
+streams reject serialisation: reusing their numbers in a new document would
+be incorrect without explicit import and remapping.
 
-## Développement
+## Development
 
 ```console
 composer install
@@ -155,27 +151,27 @@ composer check
 composer audit --locked
 ```
 
-Les tests couvrent la syntaxe, les filtres, les structures, les pages et les
-budgets. Les [cinq fixtures de structure](tests/Fixtures/pdf/README.md) et les
-[deux fixtures de pages](tests/Fixtures/page-tree/README.md) sont
-générées avec pypdf et qpdf, indépendamment du writer PHP ; leurs octets et leurs
-résultats sont vérifiés lors de la reproduction.
+Tests cover syntax, filters, structures, pages and budgets. The
+[five structure fixtures](tests/Fixtures/pdf/README.md) and
+[two page fixtures](tests/Fixtures/page-tree/README.md) are generated with pypdf
+and qpdf, independently of the PHP writer; their bytes and results are checked
+when reproduced.
 
-Le lecteur vérifie une structure lorsqu'elle est chargée. Ouvrir le catalogue
-n'effectue pas un audit exhaustif de tous les objets du fichier. Consulter les
-[contrôles de sécurité et leurs limites](docs/security.md) avant de choisir les
-budgets d'un service recevant des uploads.
+The reader validates a structure when it is loaded. Opening the catalog does
+not perform an exhaustive audit of every object in the file. Consult the
+[security controls and limits](docs/security.md) before choosing budgets for
+an upload service.
 
 ## Documentation
 
-- [Architecture et frontières des objets](docs/architecture.md)
-- [Pages, héritage et flux de contenu](docs/pages.md)
-- [Référence des composants](docs/components.md)
-- [Contrôles de sécurité](docs/security.md)
-- [Politique de signalement](SECURITY.md)
+- [Architecture and object boundaries](docs/architecture.md)
+- [Pages, inheritance and content streams](docs/pages.md)
+- [Component reference](docs/components.md)
+- [Security controls](docs/security.md)
+- [Reporting policy](SECURITY.md)
 - [Changelog](CHANGELOG.md)
-- [Documentation du module lecteur](https://pdftoolkit.github.io/modules/reader/)
-- [Documentation commune des objets, du writer et des modules](https://pdftoolkit.github.io/)
-- [Norme PDF 1.7 incluse dans le dépôt du modèle](https://github.com/PDFToolkit/pdf/blob/master/PDF32000_2008.pdf)
+- [Reader module documentation](https://pdftoolkit.github.io/modules/reader/)
+- [Shared documentation for objects, the writer and modules](https://pdftoolkit.github.io/)
+- [PDF 1.7 standard included in the model repository](https://github.com/PDFToolkit/pdf/blob/master/PDF32000_2008.pdf)
 
-Licence [MIT](LICENSE).
+[MIT](LICENSE) licence.

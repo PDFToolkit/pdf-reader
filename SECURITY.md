@@ -1,36 +1,37 @@
-# Politique de sécurité
+# Security policy
 
-Le lecteur reçoit des documents externes. Les contrôles et limites actuels
-sont décrits dans [docs/security.md](docs/security.md). Ils doivent être
-complétés par les contrôles d'accès, quotas et budgets de l'application.
+English | [Français](SECURITY.fr.md)
 
-## Versions prises en charge
+The reader accepts external documents. Current controls and limits are
+explained in [docs/security.md](docs/security.md). They must be supplemented
+by the application's access controls, quotas and budgets.
 
-La série `0.1.x` est prise en charge. Les corrections de sécurité sont publiées
-dans cette série. PHP 8.3 minimum est requis ; PHP 8.3, 8.4 et 8.5 sont vérifiés
-en CI. Utiliser une version PHP maintenue avec ses correctifs.
+## Supported versions
 
-## Signaler une vulnérabilité
+The `0.1.x` series is supported and receives security fixes. PHP 8.3 or newer
+is required; PHP 8.3, 8.4 and 8.5 are checked in CI. Use a maintained PHP version
+with its updates.
 
-Utiliser le [signalement privé GitHub](https://github.com/PDFToolkit/pdf-reader/security/advisories/new)
-lorsque disponible. Ne pas publier une charge exploitable, un document
-confidentiel ou des identifiants dans une issue publique.
+## Report a vulnerability
 
-Si le signalement privé est indisponible, ouvrir une issue demandant un canal
-confidentiel, sans révéler les détails d'exploitation.
+Use [GitHub private reporting](https://github.com/PDFToolkit/pdf-reader/security/advisories/new)
+when available. Do not publish an exploitable payload, confidential document
+or credentials in a public issue.
 
-Un rapport utile précise :
+If private reporting is unavailable, open an issue requesting a confidential
+channel without revealing exploitation details.
 
-- La révision du lecteur et celle de `roukmoute/pdf` utilisées.
-- La version PHP, les extensions concernées et les `ReaderLimits` configurés.
-- La surface touchée, le comportement observé et l'impact attendu.
-- Une reproduction minimale, idéalement avec un PDF synthétique sans donnée personnelle.
+A useful report includes:
 
-Les mécanismes explicitement non pris en charge sont signalés par
-`UnsupportedPdfFeature`. Un dépassement de budget attendu est signalé par
-`ParseException`. Un contournement de ces contrôles, une consommation non bornée
-ou une confusion dans la résolution des objets peut constituer un problème
-de sécurité et mérite un signalement.
+- The reader and `roukmoute/pdf` revisions used.
+- The PHP version, relevant extensions and configured `ReaderLimits`.
+- The affected surface, observed behaviour and expected impact.
+- A minimal reproduction, preferably a synthetic PDF without personal data.
 
-Le modèle et le writer ont leur propre
-[politique de sécurité](https://github.com/PDFToolkit/pdf/blob/master/SECURITY.md).
+Explicitly unsupported mechanisms raise `UnsupportedPdfFeature`. An expected
+budget overrun raises `ParseException`. Bypassing these checks, unbounded resource
+consumption or confusion in object resolution may be a security issue and
+should be reported.
+
+The model and writer have their own
+[security policy](https://github.com/PDFToolkit/pdf/blob/master/SECURITY.md).
