@@ -4,6 +4,11 @@
 
 ## Unreleased
 
+## 0.2.2 - 2026-10-15
+
+- Exposer un trailer chiffré vérifié via `EncryptedPdfException`, tout en conservant la compatibilité des gestionnaires `UnsupportedPdfFeature`. L'application peut déclencher l'authentification par type d'exception plutôt que par recherche dans le diagnostic.
+- Vérifier cette exception sur des entrées PDF 1.7 et PDF 2.0 et documenter la frontière d'authentification en français et en anglais.
+
 ## 0.2.1 - 2026-10-14
 
 - Supprimer une ancienne phrase de refus de PDF 2.0 des deux README et aligner l’alias de développement sur la branche 0.2.

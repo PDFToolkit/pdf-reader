@@ -4,6 +4,11 @@ English | [Français](CHANGELOG.fr.md)
 
 ## Unreleased
 
+## 0.2.2 - 2026-10-15
+
+- Expose a verified encrypted trailer as `EncryptedPdfException`, retaining compatibility with `UnsupportedPdfFeature` handlers. Applications can dispatch authentication by exception type rather than matching diagnostic text.
+- Verify this exception for PDF 1.7 and PDF 2.0 inputs and document the authentication boundary in English and French.
+
 ## 0.2.1 - 2026-10-14
 
 - Remove a stale PDF 2.0 rejection sentence from both README editions and align the development branch alias with 0.2.

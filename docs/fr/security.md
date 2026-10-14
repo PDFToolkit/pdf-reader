@@ -8,6 +8,12 @@ Elle ne constitue pas un audit externe ni une garantie d'absence de
 vulnérabilité. Le périmètre inclut la syntaxe, la résolution des objets, les
 révisions, les pages et les filtres pris en charge.
 
+Une véritable entrée `/Encrypt` du trailer lève `EncryptedPdfException`, un
+sous-type de `UnsupportedPdfFeature`. Une application peut orienter cette
+condition explicite vers son fournisseur d'authentification sans rechercher des
+mots dans les messages d'erreur. Les autres mécanismes non pris en charge
+conservent leur erreur ; le lecteur n'authentifie ni ne déchiffre le document.
+
 ## Surfaces contrôlées
 
 | Surface | Contrôles et tests |

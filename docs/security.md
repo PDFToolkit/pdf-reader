@@ -7,6 +7,11 @@ protections and scenarios covered by the project's tests. It is not an external
 audit or a guarantee of freedom from vulnerabilities. Scope includes syntax,
 object resolution, revisions, pages and supported filters.
 
+An actual `/Encrypt` trailer entry raises `EncryptedPdfException`, a subtype of
+`UnsupportedPdfFeature`. Applications can route this explicit condition to an
+authentication provider without matching words in error messages. Other unsupported
+mechanisms retain their original errors; the reader does not authenticate or decrypt.
+
 ## Checked surfaces
 
 | Surface | Controls and tests |
