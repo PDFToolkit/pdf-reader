@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "roukmoute/pdf",
-            "version": "v0.5.3",
+            "version": "v0.5.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PDFToolkit/pdf.git",
-                "reference": "74a03e821cfa1e9c78a2f86ade7a2bc26cfa05b8"
+                "reference": "c9d2e51b1ceceec2a3589693cd8168ea3800c3c7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PDFToolkit/pdf/zipball/74a03e821cfa1e9c78a2f86ade7a2bc26cfa05b8",
-                "reference": "74a03e821cfa1e9c78a2f86ade7a2bc26cfa05b8",
+                "url": "https://api.github.com/repos/PDFToolkit/pdf/zipball/c9d2e51b1ceceec2a3589693cd8168ea3800c3c7",
+                "reference": "c9d2e51b1ceceec2a3589693cd8168ea3800c3c7",
                 "shasum": ""
             },
             "require": {
@@ -28,9 +28,9 @@
             },
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^3.0",
-                "pdftoolkit/pdf-fonts": "^0.1.4",
-                "pdftoolkit/pdf-images": "^0.1.4",
-                "pdftoolkit/pdf-reader": "^0.1.4",
+                "pdftoolkit/pdf-fonts": "^0.1.5",
+                "pdftoolkit/pdf-images": "^0.1.5",
+                "pdftoolkit/pdf-reader": "^0.1.5",
                 "phpstan/phpstan": "^2.1",
                 "phpunit/phpunit": "^12.0"
             },
@@ -59,7 +59,7 @@
                 }
             ],
             "description": "An explicit object model and writer for ISO 32000-1 PDF 1.7",
-            "homepage": "https://github.com/PDFToolkit/pdf",
+            "homepage": "https://pdftoolkit.github.io/modules/core/",
             "keywords": [
                 "iso-32000-1",
                 "object-model",
@@ -68,10 +68,11 @@
                 "php"
             ],
             "support": {
+                "docs": "https://pdftoolkit.github.io/modules/core/",
                 "issues": "https://github.com/PDFToolkit/pdf/issues",
                 "source": "https://github.com/PDFToolkit/pdf"
             },
-            "time": "2026-10-13T23:42:54+00:00"
+            "time": "2026-10-14T00:48:06+00:00"
         }
     ],
     "packages-dev": [
