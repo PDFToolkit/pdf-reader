@@ -4,6 +4,15 @@
 
 ## Unreleased
 
+## 0.1.7 — 2026-10-14
+
+### Compatibilité
+
+- Accepte le core stable `roukmoute/pdf:^0.2 || ^0.3 || ^0.4 || ^0.5 || ^0.6`.
+- Verrouille les validations de publication sur le core publié `0.5.5`, sans modifier les versions ou commits des outils de développement.
+- Vérifie le module inchangé avec le candidat du core 0.6 sous PHP 8.3, 8.4 et 8.5.
+- Conserve l’API du lecteur, ses limites et sa couverture des entrées PDF 1.0 à 1.7 ; la lecture de PDF 2.0 n’est pas ajoutée.
+
 ## 0.1.6 — 2026-10-14
 
 ### Documentation bilingue

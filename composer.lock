@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d5032bcbabc1ec08de120028c24c4b5a",
+    "content-hash": "cabb2ca8d3d5bef7157cca594ee9ab1f",
     "packages": [
         {
             "name": "roukmoute/pdf",
-            "version": "v0.5.4",
+            "version": "v0.5.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PDFToolkit/pdf.git",
-                "reference": "c9d2e51b1ceceec2a3589693cd8168ea3800c3c7"
+                "reference": "fa1b199e5f2ee7be3abc179eaf311073d7f89e27"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PDFToolkit/pdf/zipball/c9d2e51b1ceceec2a3589693cd8168ea3800c3c7",
-                "reference": "c9d2e51b1ceceec2a3589693cd8168ea3800c3c7",
+                "url": "https://api.github.com/repos/PDFToolkit/pdf/zipball/fa1b199e5f2ee7be3abc179eaf311073d7f89e27",
+                "reference": "fa1b199e5f2ee7be3abc179eaf311073d7f89e27",
                 "shasum": ""
             },
             "require": {
@@ -28,9 +28,9 @@
             },
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^3.0",
-                "pdftoolkit/pdf-fonts": "^0.1.5",
-                "pdftoolkit/pdf-images": "^0.1.5",
-                "pdftoolkit/pdf-reader": "^0.1.5",
+                "pdftoolkit/pdf-fonts": "^0.1.6",
+                "pdftoolkit/pdf-images": "^0.1.6",
+                "pdftoolkit/pdf-reader": "^0.1.6",
                 "phpstan/phpstan": "^2.1",
                 "phpunit/phpunit": "^12.0"
             },
@@ -72,7 +72,7 @@
                 "issues": "https://github.com/PDFToolkit/pdf/issues",
                 "source": "https://github.com/PDFToolkit/pdf"
             },
-            "time": "2026-10-14T00:48:06+00:00"
+            "time": "2026-10-14T07:17:37+00:00"
         }
     ],
     "packages-dev": [
