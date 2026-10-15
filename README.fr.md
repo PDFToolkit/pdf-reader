@@ -20,22 +20,27 @@ Le package est disponible sur
 consommateur :
 
 ```console
-composer require "pdftoolkit/pdf-reader:^0.3"
+composer require "pdftoolkit/pdf-reader:^0.4"
 ```
 
-Le lecteur utilise le core `roukmoute/pdf:^0.7.1 || ^0.8 || ^0.9`,
+Le lecteur utilise le core `roukmoute/pdf:^0.9`,
 installé automatiquement par Composer. PHP 8.3 ou supérieur sur une plateforme
 64 bits et les extensions `ctype`, `iconv` et `zlib` sont requis pour cet ensemble.
 Le fichier `composer.lock` du projet consommateur fixe les versions et les
 révisions utilisées.
 
-La version 0.3 accepte la syntaxe PDF 1.0–1.7 et PDF 2.0, y compris la version
+La version 0.4 accepte la syntaxe PDF 1.0–1.7 et PDF 2.0, y compris la version
 `/Version /2.0` du catalogue, avec les mêmes lecteurs bornés d’objets et de flux.
 Les dictionnaires PDF 2.0 deviennent accessibles aux interprètes optionnels,
 dont `pdftoolkit/pdf-to-html` ; cela n’interprète pas chaque mécanisme PDF 2.0.
 L’authentification Standard par mot de passe est explicite ; les autres handlers
 de sécurité, codecs non pris en charge, rendu et import restent des limites.
 Consulter le [guide d’authentification](docs/fr/authentication.md).
+
+Le lecteur 0.4 authentifie les MAC des PDF sources avec des identifiants explicites
+avant l’interprétation du contenu, en mode autonome ou attaché à une signature.
+`SourceIntegrityPolicy::RequirePdfMac` permet d’exiger cette intégrité.
+Le [guide MAC source](docs/fr/source-mac.md) précise la couverture et les limites.
 
 ## Lire les pages
 

@@ -2,7 +2,12 @@
 
 [English](CHANGELOG.md) | Français
 
-## Unreleased
+## 0.4.0 - 2026-10-15
+
+- Exiger le core stable 0.9 et suivre les chaînes physiques de références sous
+  limites : null terminal, génération indisponible, cycles et profondeur.
+  Les entrées MAC null optionnelles sont absentes ; les vraies valeurs gardent
+  les contraintes de présence directe de TS 32004.
 
 - Vérifier nativement les MAC PDF source ISO/TS 32004 avant l’interprétation
   du contenu chiffré : Standalone, AttachedToSig et horodatages documentaires,

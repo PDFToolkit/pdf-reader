@@ -19,21 +19,26 @@ The package is available on
 application:
 
 ```console
-composer require "pdftoolkit/pdf-reader:^0.3"
+composer require "pdftoolkit/pdf-reader:^0.4"
 ```
 
-The reader uses `roukmoute/pdf:^0.7.1 || ^0.8 || ^0.9`, installed
+The reader uses `roukmoute/pdf:^0.9`, installed
 automatically by Composer. PHP 8.3 or newer on a 64-bit platform and the `ctype`,
 `iconv` and `zlib` extensions are required for this combination. The application's
 `composer.lock` records the selected versions and revisions.
 
-Version 0.3 accepts PDF 1.0–1.7 and PDF 2.0 syntax, including the catalog
+Version 0.4 accepts PDF 1.0–1.7 and PDF 2.0 syntax, including the catalog
 `/Version /2.0` override, using the same bounded object and stream readers.
 This makes PDF 2.0 dictionaries available to optional interpreters such as
 `pdftoolkit/pdf-to-html`; it does not interpret every PDF 2.0 feature.
 Standard-handler password authentication is opt-in; unsupported security handlers,
 codecs, rendering and importing remain explicit limits. See the
 [authentication guide](docs/authentication.md) for construction and boundaries.
+
+Reader 0.4 authenticates source PDF MACs with explicit credentials before content
+interpretation. Both standalone and signature-attached locations are supported;
+applications can require integrity with `SourceIntegrityPolicy::RequirePdfMac`.
+See the [source MAC guide](docs/source-mac.md) for exact coverage and limits.
 
 ## Read pages
 

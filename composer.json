@@ -1,7 +1,7 @@
 {
     "name": "pdftoolkit/pdf-reader",
     "type": "library",
-    "description": "An explicit, bounded PDF 1.0-2.0 object reader for PHP 8.3+",
+    "description": "A bounded PDF object reader with native password and source PDF MAC authentication for PHP 8.3+",
     "keywords": [
         "pdf",
         "pdf-1.7",
@@ -21,7 +21,7 @@
         "php": "^8.3",
         "ext-ctype": "*",
         "ext-zlib": "*",
-        "roukmoute/pdf": "^0.7.1 || ^0.8 || ^0.9"
+        "roukmoute/pdf": "^0.9"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.0",
@@ -71,7 +71,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "0.3.x-dev"
+            "dev-master": "0.4.x-dev"
         }
     }
 }

@@ -2,7 +2,11 @@
 
 English | [Français](CHANGELOG.fr.md)
 
-## Unreleased
+## 0.4.0 - 2026-10-15
+
+- Require stable core 0.9 and follow bounded physical reference chains, including
+  null terminals, unavailable generations, cycle and depth checks. Optional null
+  MAC entries are absent; real values retain TS 32004 directness requirements.
 
 - Verify ISO/TS 32004 source PDF MACs natively before encrypted content is
   interpreted: Standalone, AttachedToSig and document timestamps, Standard R5–R7,
