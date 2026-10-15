@@ -145,13 +145,13 @@ final class ReadingDocumentTest extends TestCase
         (new DocumentReader())->read(new FileBytes($bytes));
     }
 
-    public function testHybridTrailerIsExplicitlyRejected(): void
+    public function testInvalidHybridOffsetIsExplicitlyRejected(): void
     {
         $bytes = $this->bytes('classic');
         $trailer = strrpos($bytes, 'trailer');
         self::assertNotFalse($trailer);
         $bytes = substr_replace($bytes, '/XRefStm 1 ', strpos($bytes, '<<', $trailer) + 2, 0);
-        $this->expectException(UnsupportedPdfFeature::class);
+        $this->expectException(ParseException::class);
         (new DocumentReader())->read(new FileBytes($bytes));
     }
 

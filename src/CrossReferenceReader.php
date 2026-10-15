@@ -11,6 +11,7 @@ use PDF\Syntax\FileStructure\ByteOffset;
 use PDF\Syntax\Object\ArrayType;
 use PDF\Syntax\Object\DictionaryType;
 use PDF\Syntax\Object\IntegerType;
+use PDF\Syntax\Object\NullType;
 
 /** ISO 32000-1, 7.5.4 and 7.5.8: bounded table and stream cross-references. */
 final readonly class CrossReferenceReader
@@ -67,10 +68,26 @@ final readonly class CrossReferenceReader
                 throw new ParseException('A cross-reference entry exceeds trailer Size.', $offset);
             }
         }
+        $auxiliary = $trailer->get('XRefStm');
+        if ($auxiliary !== null && !$auxiliary instanceof NullType) {
+            if (!$auxiliary instanceof IntegerType || $auxiliary->integer() < 1 || $auxiliary->integer() >= $offset) {
+                throw new ParseException('XRefStm must be a direct offset before its traditional cross-reference table.', $offset);
+            }
+            // ISO 32000-1, 7.5.8.4: auxiliary stream entries override this table;
+            // the stream's Prev is ignored, and the traditional trailer owns the revision.
+            $supplement = $this->stream($auxiliary->integer(), true);
+            $supplementSize = (new DictionaryAccess($supplement->trailer))->integer('Size', 1, $size);
+            foreach ($supplement->entries as $entry) {
+                if ($entry->number >= $supplementSize) {
+                    throw new ParseException('An auxiliary cross-reference entry exceeds its declared Size.', $offset);
+                }
+                $entries[$entry->number] = $entry;
+            }
+        }
         return $this->section($offset, $trailer, array_values($entries));
     }
 
-    private function stream(int $offset): Section
+    private function stream(int $offset, bool $auxiliary = false): Section
     {
         $object = (new IndirectObjectReader($this->source, $this->limits, $this->budget))->read($offset);
         $stream = $object->value;
@@ -144,7 +161,11 @@ final readonly class CrossReferenceReader
                 $entries[] = $entry;
             }
         }
-        return $this->section($offset, $stream->dictionary(), $entries);
+        if ($stream->dictionary()->has('XRefStm')) {
+            throw new ParseException('An xref stream cannot contain a recursive XRefStm entry.', $offset);
+        }
+        return $auxiliary ? new Section(new ByteOffset($offset), $stream->dictionary(), null, ...$entries)
+            : $this->section($offset, $stream->dictionary(), $entries);
     }
 
     private function unsignedField(ByteCursor $cursor, int $width): int
@@ -176,11 +197,8 @@ final readonly class CrossReferenceReader
     /** @param list<Entry> $entries */
     private function section(int $offset, DictionaryType $trailer, array $entries): Section
     {
-        if ($trailer->has('XRefStm')) {
-            throw new UnsupportedPdfFeature('Hybrid-reference PDF files are not supported by this reader.', $offset);
-        }
         $previous = $trailer->get('Prev');
-        if ($previous !== null && (!$previous instanceof IntegerType || $previous->integer() < 0 || $previous->integer() >= strlen($this->source->bytes))) {
+        if ($previous !== null && !$previous instanceof NullType && (!$previous instanceof IntegerType || $previous->integer() < 0 || $previous->integer() >= strlen($this->source->bytes))) {
             throw new ParseException('Prev must be a direct offset within the file.', $offset);
         }
         return new Section(new ByteOffset($offset), $trailer, $previous instanceof IntegerType ? new ByteOffset($previous->integer()) : null, ...$entries);
