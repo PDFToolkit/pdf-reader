@@ -320,6 +320,19 @@ final class ReadingFiltersTest extends TestCase
         (new StreamDecoder())->decode(new EncodedStream($dictionary, 'local bytes'), new ReadBudget(new ReaderLimits()));
     }
 
+    public function testAnExternalFileReferenceResolvingToNullIsEquivalentToAbsence(): void
+    {
+        $resolver = new class implements ObjectResolver {
+            public function resolve(BasicType $value): BasicType
+            {
+                return $value instanceof ObjectReference ? new NullType() : $value;
+            }
+        };
+        $dictionary = new DictionaryType(new Entry(new NameType('F'), new ObjectReference(new ObjectIdentifier(new ObjectNumber(99)))));
+        self::assertSame('local bytes', (new StreamDecoder())->decode(new EncodedStream($dictionary, 'local bytes'),
+            new ReadBudget(new ReaderLimits()), $resolver));
+    }
+
     public function testIndirectFilterArraysAndPredictorEntriesUseTheExplicitResolver(): void
     {
         $references = [];

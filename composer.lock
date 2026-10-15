@@ -4,33 +4,34 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "91797461de0336230e50b539ac0cfa30",
+    "content-hash": "0f84ca8f2433d74e50ccab64dda24a50",
     "packages": [
         {
             "name": "roukmoute/pdf",
-            "version": "v0.6.2",
+            "version": "v0.7.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PDFToolkit/pdf.git",
-                "reference": "c20aa8f5a7c54afa556ba4a962250783ce25d9b5"
+                "reference": "f27dc57dfb69553d180153ae81209b2f1e8cb418"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PDFToolkit/pdf/zipball/c20aa8f5a7c54afa556ba4a962250783ce25d9b5",
-                "reference": "c20aa8f5a7c54afa556ba4a962250783ce25d9b5",
+                "url": "https://api.github.com/repos/PDFToolkit/pdf/zipball/f27dc57dfb69553d180153ae81209b2f1e8cb418",
+                "reference": "f27dc57dfb69553d180153ae81209b2f1e8cb418",
                 "shasum": ""
             },
             "require": {
                 "ext-ctype": "*",
                 "ext-iconv": "*",
                 "ext-zlib": "*",
-                "php": "^8.3"
+                "php": "^8.3",
+                "php-64bit": "*"
             },
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^3.0",
-                "pdftoolkit/pdf-fonts": "^0.1.7",
-                "pdftoolkit/pdf-images": "^0.1.7",
-                "pdftoolkit/pdf-reader": "^0.1.7",
+                "pdftoolkit/pdf-fonts": "^0.1.8",
+                "pdftoolkit/pdf-images": "^0.1.8",
+                "pdftoolkit/pdf-reader": "^0.1.9",
                 "phpstan/phpstan": "^2.1",
                 "phpunit/phpunit": "^12.0"
             },
@@ -40,7 +41,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.6.x-dev"
+                    "dev-master": "0.7.x-dev"
                 }
             },
             "autoload": {
@@ -58,23 +59,27 @@
                     "email": "contact@roukmoute.fr"
                 }
             ],
-            "description": "An explicit PDF object model and writer with ISO 32000-1 PDF 1.7 and initial ISO 32000-2 PDF 2.0 support",
+            "description": "Explicit PDF 1.7 and PDF 2.0 objects and writing, with modern signatures, AES-GCM, PDF MAC, metadata and tagged-structure validation",
             "homepage": "https://pdftoolkit.github.io/modules/core/",
             "keywords": [
+                "AES-GCM",
                 "iso-32000-1",
                 "iso-32000-2",
                 "object-model",
                 "pdf",
                 "pdf-1.7",
                 "pdf-2.0",
-                "php"
+                "pdf-mac",
+                "php",
+                "tagged-pdf",
+                "xmp"
             ],
             "support": {
                 "docs": "https://pdftoolkit.github.io/modules/core/",
                 "issues": "https://github.com/PDFToolkit/pdf/issues",
                 "source": "https://github.com/PDFToolkit/pdf"
             },
-            "time": "2026-10-14T12:33:18+00:00"
+            "time": "2026-10-14T16:56:10+00:00"
         }
     ],
     "packages-dev": [

@@ -21,12 +21,15 @@
         "php": "^8.3",
         "ext-ctype": "*",
         "ext-zlib": "*",
-        "roukmoute/pdf": "^0.2 || ^0.3 || ^0.4 || ^0.5 || ^0.6 || ^0.7"
+        "roukmoute/pdf": "^0.7.1 || ^0.8"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.0",
         "phpstan/phpstan": "^2.1",
         "phpunit/phpunit": "^12.0"
+    },
+    "suggest": {
+        "ext-openssl": "Required only when explicitly selecting native AES password authentication."
     },
     "license": "MIT",
     "authors": [
@@ -68,7 +71,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "0.2.x-dev"
+            "dev-master": "0.3.x-dev"
         }
     }
 }

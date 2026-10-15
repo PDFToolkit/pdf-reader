@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PDF\Reading;
 
 use PDF\Reading\CrossReference\Index;
+use PDF\Reading\Security\DocumentAuthentication;
 use PDF\Syntax\FileStructure\FileHeader;
 use PDF\Syntax\Object\DictionaryObject\Entry;
 use PDF\Syntax\Object\DictionaryType;
@@ -13,7 +14,7 @@ use PDF\Syntax\Object\NullType;
 /** Read PDF 1.0–2.0 syntax; source access and upload policy belong to the application. */
 final readonly class DocumentReader
 {
-    public function __construct(private ReaderLimits $limits = new ReaderLimits())
+    public function __construct(private ReaderLimits $limits = new ReaderLimits(), private ?DocumentAuthentication $authentication = null)
     {
     }
 
@@ -58,17 +59,25 @@ final readonly class DocumentReader
         } while ($offset !== null);
         /** @var list<Entry> $entries */
         $entries = array_values($trailerEntries);
-        $document = new ReadDocument($source, new FileHeader($header[1]), new DictionaryType(...$entries), new Index(...$sections), $this->limits, $budget, $decoder);
+        $fileHeader = new FileHeader($header[1]);
+        $trailer = new DictionaryType(...$entries);
+        $index = new Index(...$sections);
+        $document = new ReadDocument($source, $fileHeader, $trailer, $index, $this->limits, $budget, $decoder);
         // A null dictionary value is equivalent to absence, including a reference that resolves to null.
         // The completed index is required here; resolution keeps the same document's cumulative budgets.
         $encryption = $document->trailer()->get('Encrypt');
+        $encryptionObject = $encryption instanceof ObjectReference ? $encryption->identifier : null;
         if ($encryption !== null) {
             $encryption = $document->resolve($encryption);
             if (!$encryption instanceof NullType) {
                 if (!$encryption instanceof DictionaryType) {
                     throw new ParseException('An Encrypt entry must resolve to an encryption dictionary.', $sections[0]->offset->value);
                 }
-                throw new EncryptedPdfException($sections[0]->offset->value);
+                if ($this->authentication === null) {
+                    throw new EncryptedPdfException($sections[0]->offset->value);
+                }
+                $decryption = $this->authentication->authenticate($document, $encryption, $encryptionObject);
+                $document = new ReadDocument($source, $fileHeader, $trailer, $index, $this->limits, $budget, $decoder, $decryption);
             }
         }
         $document->catalog();

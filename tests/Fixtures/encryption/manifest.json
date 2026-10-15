@@ -1,0 +1,32 @@
+[
+  {
+    "file": "qpdf-r2-40-metadata-encrypted.pdf",
+    "bytes": 1814,
+    "sha256": "5ab35be0a95bb9bdb7c8241cc87dd816d350b5ac7ea5cff408720e21650e4b28"
+  },
+  {
+    "file": "qpdf-r3-128-metadata-encrypted.pdf",
+    "bytes": 1817,
+    "sha256": "d9d566a93d23a6b83ec77ce73bd164360adf180a66da5df16033a6b21f202133"
+  },
+  {
+    "file": "qpdf-r4-128-metadata-clear.pdf",
+    "bytes": 2199,
+    "sha256": "bd2b72dbf46733edb18bd76e9534e0b2399ec279011ae6118c40f262e8d1b9bb"
+  },
+  {
+    "file": "qpdf-r4-128-metadata-encrypted.pdf",
+    "bytes": 2221,
+    "sha256": "078cf88822d396b37de49473e68f717c27784a9526cbc93fbb6c25090494b3d4"
+  },
+  {
+    "file": "qpdf-r5-metadata-clear.pdf",
+    "bytes": 2433,
+    "sha256": "8d04283a0f2ac7ca94c042fc80192412a212616637cfc4e93819f13642080099"
+  },
+  {
+    "file": "qpdf-r5-metadata-encrypted.pdf",
+    "bytes": 2455,
+    "sha256": "7cda36c4f30a59a89c073a79ba89349e9d0cbd04b9105e099496198d9de263fb"
+  }
+]

@@ -6,6 +6,8 @@ namespace PDF\Reading;
 
 use PDF\Reading\CrossReference\EntryKind;
 use PDF\Reading\CrossReference\Index;
+use PDF\Reading\Security\DocumentDecryption;
+use PDF\Reading\Security\ReadPermissions;
 use PDF\Syntax\FileStructure\BasicType;
 use PDF\Syntax\FileStructure\FileHeader;
 use PDF\Syntax\Object\DictionaryType;
@@ -34,6 +36,7 @@ final class ReadDocument implements ObjectResolver
         private readonly ReaderLimits $limits,
         private readonly ReadBudget $budget,
         private readonly StreamDecoder $decoder,
+        private readonly ?DocumentDecryption $decryption = null,
     ) {
         $this->decoded = new \SplObjectStorage();
     }
@@ -46,6 +49,11 @@ final class ReadDocument implements ObjectResolver
     public function trailer(): DictionaryType
     {
         return $this->fileTrailer;
+    }
+
+    public function permissions(): ?ReadPermissions
+    {
+        return $this->decryption?->permissions;
     }
 
     public function catalog(): DictionaryType
@@ -95,6 +103,9 @@ final class ReadDocument implements ObjectResolver
                     if ($identifier->generationNumber->value !== 0 || ($length instanceof ObjectReference && $this->index->entry($length->identifier->objectNumber->value)?->kind === EntryKind::Compressed)) {
                         throw new ParseException('An object stream must have generation zero and an uncompressed Length object.');
                     }
+                }
+                if ($this->decryption !== null) {
+                    $value = $this->decryption->object($value, $identifier, $this, $this->budget);
                 }
             }
             $this->objects[$number] = $value;

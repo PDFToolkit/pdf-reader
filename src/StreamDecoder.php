@@ -31,7 +31,7 @@ final readonly class StreamDecoder
     {
         $dictionary = $stream->dictionary();
         foreach (['F', 'FFilter', 'FDecodeParms'] as $externalKey) {
-            $value = $dictionary->get($externalKey);
+            $value = $this->resolved($dictionary->get($externalKey), $resolver);
             if ($value !== null && !$value instanceof NullType) {
                 throw new UnsupportedPdfFeature('Decoding external-file streams is not supported.');
             }

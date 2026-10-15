@@ -14,7 +14,7 @@ final readonly class EncodedStream implements BasicType
 {
     use SerializesPdf;
 
-    public function __construct(public DictionaryType $dictionary, public string $bytes)
+    public function __construct(public DictionaryType $dictionary, public string $bytes, private ?string $originalBytes = null)
     {
     }
 
@@ -26,6 +26,12 @@ final readonly class EncodedStream implements BasicType
     public function encodedBytes(): string
     {
         return $this->bytes;
+    }
+
+    /** The source ciphertext when authenticated, otherwise the original encoded bytes. */
+    public function originalEncodedBytes(): string
+    {
+        return $this->originalBytes ?? $this->bytes;
     }
 
     public function toPdf(SerializationContext $context): string
