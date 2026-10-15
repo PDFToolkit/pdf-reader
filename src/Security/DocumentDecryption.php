@@ -7,6 +7,7 @@ namespace PDF\Reading\Security;
 use PDF\Reading\EncodedStream;
 use PDF\Reading\ObjectResolver;
 use PDF\Reading\ObjectReference;
+use PDF\Reading\ObjectIdentityResolver;
 use PDF\Reading\ParseException;
 use PDF\Reading\ReadBudget;
 use PDF\Syntax\FileStructure\BasicType;
@@ -177,6 +178,8 @@ final readonly class DocumentDecryption
         // Compare the actual PDF identity without loading the metadata stream recursively.
         // A /Type /Metadata elsewhere does not make its payload document-level metadata.
         $metadata = $catalog->get('Metadata');
-        return $metadata instanceof ObjectReference && (string) $metadata->identifier === (string) $identifier;
+        return $metadata instanceof ObjectReference && ($resolver instanceof ObjectIdentityResolver
+            ? $resolver->refersTo($metadata, $identifier)
+            : (string) $metadata->identifier === (string) $identifier);
     }
 }

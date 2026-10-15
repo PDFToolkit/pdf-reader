@@ -84,9 +84,9 @@ final readonly class DocumentReader
         // A null dictionary value is equivalent to absence, including a reference that resolves to null.
         // The completed index is required here; resolution keeps the same document's cumulative budgets.
         $encryption = $document->trailer()->get('Encrypt');
-        $encryptionObject = $encryption instanceof ObjectReference ? $encryption->identifier : null;
         if ($encryption !== null) {
-            $encryption = $document->resolve($encryption);
+            $resolved = $document->resolveWithIdentity($encryption);
+            $encryption = $resolved->value;
             if (!$encryption instanceof NullType) {
                 if (!$encryption instanceof DictionaryType) {
                     throw new ParseException('An Encrypt entry must resolve to an encryption dictionary.', $sections[0]->offset->value);
@@ -94,7 +94,7 @@ final readonly class DocumentReader
                 if ($this->authentication === null) {
                     throw new EncryptedPdfException($sections[0]->offset->value);
                 }
-                $decryption = $this->authentication->authenticate($document, $encryption, $encryptionObject);
+                $decryption = $this->authentication->authenticate($document, $encryption, $resolved->terminalId);
                 $document = new ReadDocument($source, $fileHeader, $trailer, $index, $this->limits, $budget, $decoder, $decryption, $physical);
             }
         }

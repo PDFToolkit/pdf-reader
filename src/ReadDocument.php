@@ -18,7 +18,7 @@ use PDF\Syntax\Object\IndirectObject\ObjectNumber;
 use PDF\Syntax\Object\NullType;
 
 /** A read-only PDF graph with explicit resolution and caches scoped to this document. */
-final class ReadDocument implements ObjectResolver
+final class ReadDocument implements ObjectIdentityResolver
 {
     /** @var array<int, BasicType> */
     private array $objects = [];
@@ -89,16 +89,40 @@ final class ReadDocument implements ObjectResolver
 
     public function resolve(BasicType $value): BasicType
     {
+        return $this->resolveWithIdentity($value)->value;
+    }
+
+    /** @internal Preserve terminal identity when a security exemption belongs to one actual object. */
+    public function resolveWithIdentity(BasicType $value): ResolvedValue
+    {
+        return $this->follow($value);
+    }
+
+    public function refersTo(ObjectReference $reference, ObjectIdentifier $identifier): bool
+    {
+        $result = $this->follow($reference, $identifier);
+        return $result->terminalId !== null && (string) $result->terminalId === (string) $identifier;
+    }
+
+    private function follow(BasicType $value, ?ObjectIdentifier $stop = null): ResolvedValue
+    {
         $seen = [];
+        $terminal = null;
         while ($value instanceof ObjectReference) {
             $identity = $value->identifier->objectNumber->value . ':' . $value->identifier->generationNumber->value;
             if (isset($seen[$identity]) || count($seen) >= $this->limits->maxDepth) {
                 throw new ParseException('An indirect-reference chain contains a cycle or exceeds its depth limit.');
             }
             $seen[$identity] = true;
+            $terminal = $value->identifier;
+            // The caller is processing this actual stream already. Loading it
+            // again would recurse; identity, including generation, is sufficient.
+            if ($stop !== null && (string) $terminal === (string) $stop) {
+                return new ResolvedValue($value, $terminal);
+            }
             $value = $this->object($value->identifier);
         }
-        return $value;
+        return new ResolvedValue($value, $terminal);
     }
 
     public function object(ObjectIdentifier $identifier): BasicType
