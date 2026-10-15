@@ -15,7 +15,8 @@ Une capacité `StandardPasswordAuthentication` injectée authentifie avant
 l’interprétation du catalogue, vérifie les permissions chiffrées R5–R7 et
 déchiffre les objets une seule fois sous les budgets du document.
 Voir le [guide d’authentification](authentication.md) pour R2–R7, la préparation
-des mots de passe et les refus explicites de PDF MAC et de clé publique source.
+des mots de passe, la [vérification des PDF MAC source](source-mac.md) et le refus
+de l’authentification par clé publique source.
 
 ## Surfaces contrôlées
 
@@ -26,6 +27,7 @@ des mots de passe et les refus explicites de PDF MAC et de clé publique source.
 | Curseurs | Chaque vue possède des bornes ; les lectures et déplacements hors vue sont refusés. Les objets comprimés sont analysés dans des tranches séparées. |
 | Xref | Offsets, générations, types et plages vérifiés ; champs big endian sans dépassement d'entier ; sous-sections et `/Index` sans chevauchement. |
 | Révisions | Chaîne `/Prev` bornée et cycles détectés ; les entrées récentes, y compris libres, masquent les anciennes. Une génération périmée se résout à null. |
+| MAC source | Vérification liée à la clé Standard R5–R7 avant le contenu, étendue du véritable jeton source, couverture exacte du fichier entier, syntaxe autonome stricte, bourrage de signature borné, CMS/HMAC et condensats. La politique obligatoire refuse aussi les sources claires ou privées de protection. |
 | Objets | Identifiant réel comparé à l'entrée xref ; chargements récursifs bornés et cycles de chargement détectés ; caches propres au document. |
 | Arbre de pages | Parcours avec pile explicite ; limites propres de profondeur, de nœuds et de feuilles ; refus des cycles, descendants répétés, comptes incohérents et liens Parent incorrects. |
 | Héritage | Types des ressources, rectangles et rotations vérifiés ; quatre entrées héritables seulement ; ressources locales remplaçant les valeurs héritées sans fusion ; rotation multiple de 90. |

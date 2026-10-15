@@ -164,3 +164,16 @@ pourront les composer sans ajouter ces responsabilités au parseur.
 Après authentification, les chaînes et flux sont déchiffrés une seule fois
 dans le document qui possède la clé. `originalEncodedBytes()` conserve le
 ciphertext ; `encodedBytes()` fournit les octets prêts pour les codecs.
+
+## Provenance de l’intégrité source
+
+L’authentification reçoit le graphe brut avant la création du graphe déchiffré.
+`SourceRevision` conserve le dernier trailer physique séparément du trailer
+effectif hérité. Les étendues de chaînes établies par le parseur identifient le
+véritable jeton MAC ou Contents ; les tranches de flux d’objets ne peuvent pas
+inventer de positions dans le fichier original. Le vérificateur lie ces octets
+chiffrés exacts à la clé de fichier authentifiée avant l’interprétation du
+catalogue. Le résultat reste dans le contexte de déchiffrement immuable.
+`SourceIntegrityPolicy::RequirePdfMac` refuse aussi une source sans indice MAC.
+Cette politique ne valide pas la confiance dans une signature numérique :
+consulter le [contrat MAC borné](source-mac.md).

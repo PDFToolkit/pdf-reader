@@ -4,6 +4,18 @@
 
 ## Unreleased
 
+- Vérifier nativement les MAC PDF source ISO/TS 32004 avant l’interprétation
+  du contenu chiffré : Standalone, AttachedToSig et horodatages documentaires,
+  Standard R5–R7, provenance exacte des jetons et couverture de tout le fichier courant.
+- Ajouter une politique d’intégrité obligatoire explicite, les bornes CMS et
+  de bourrage de signature, les vérifications cryptographiques du core et le
+  refus des MAC malformés, absents, supprimés ou périmés. Aucune confiance PKI
+  ni opération réseau n’est impliquée.
+- Vérifier 15 PDF positifs indépendants et 14 adverses avec pyHanko,
+  cryptography, pypdf et qpdf, ainsi que les régressions natives de falsification
+  et de budgets. Documenter construction, politique applicative et limites des
+  oracles dans les deux langues.
+
 ## 0.3.2 - 2026-10-15
 
 - Accepter le core stable `^0.9` en conservant les séries précédemment prises en charge.

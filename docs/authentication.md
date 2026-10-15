@@ -76,9 +76,10 @@ plaintext consumes the shared document budget. Import and writing still require
 an explicit remapping layer; authenticated source objects cannot be serialized
 directly into a new document.
 
-Source PDF MAC verification (`KDFSalt`/`AuthCode`) and public-key authentication
-are not implemented by this password capability. Such sources are explicitly
-rejected before protected content is interpreted. Unsupported image codecs
+Source PDF MAC verification (`KDFSalt`/`AuthCode`) is performed before protected
+content is interpreted, for Standard R5–R7. See the [PDF MAC guide](source-mac.md)
+for both locations, exact byte coverage, required-integrity policy and boundaries.
+Public-key authentication remains explicitly unsupported. Unsupported image codecs
 remain separate from decryption. Successful authentication does not certify
 that an original PDF is safe to execute in another application.
 

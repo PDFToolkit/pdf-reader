@@ -4,6 +4,16 @@ English | [Français](CHANGELOG.fr.md)
 
 ## Unreleased
 
+- Verify ISO/TS 32004 source PDF MACs natively before encrypted content is
+  interpreted: Standalone, AttachedToSig and document timestamps, Standard R5–R7,
+  exact source-token provenance and complete latest-file coverage.
+- Add explicit required-integrity policy, bounded CMS and signature padding,
+  cryptographic checks through the core verifier and fail-closed malformed,
+  missing, stripped or stale MAC handling. No PKI or network operation is implied.
+- Exercise 15 independently generated positive and 14 adverse PDF files with
+  pyHanko, cryptography, pypdf and qpdf, plus native tampering/budget regressions.
+  Document construction, application policy and oracle boundaries in both languages.
+
 ## 0.3.2 - 2026-10-15
 
 - Accept stable core `^0.9` while retaining the previously supported core series.

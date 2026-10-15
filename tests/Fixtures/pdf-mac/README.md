@@ -29,7 +29,7 @@ python tools/validate_source_mac.py --php php --qpdf qpdf
 `--work-dir /explicit/output/directory` retains the generated outputs and manifest.
 Cryptographic keys, IVs and serial numbers are fresh; regeneration validates the
 same behaviour and is not expected to reproduce the checked-in hashes.
-The tool additionally produces twelve malicious variants, refused by both the
+The tool additionally produces fourteen malicious variants, refused by both the
 independent validator and native reader. Several retain a correctly computed
 HMAC while violating source coverage, CMS cardinality or integrity claims.
 Unit tests verify the stored corpus and mutate each source before reading.

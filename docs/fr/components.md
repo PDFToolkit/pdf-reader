@@ -150,3 +150,13 @@ Le constructeur reçoit un `PdfDocEncodedPassword` pour R2–R4 ou un
 `Filters\LzwDecoder` reçoit la valeur `EarlyChange` du core ;
 `LzwCodeReader` borne la lecture MSB de 9 à 12 bits.
 Voir les [exemples et limites](authentication.md).
+
+`Security\SourcePdfMacVerification` reçoit une limite CMS explicite et vérifie
+la source avant déchiffrement. `SourceIntegrityPolicy` indique si une source non
+protégée est acceptable ; `ReadDocument::mac()` expose le `PdfMacLocation`
+vérifié sans décision de confiance dans une signature. `Security\PdfMacCoverage`
+contrôle l’identité et l’étendue du véritable jeton source. `SourceRevision`
+conserve le dernier trailer physique et les octets originaux ; `SourceStringSpans`
+associe les chaînes créées par le parseur à leur identité, sous le budget du
+document. Une chaîne issue d’un flux d’objets décodé ne peut pas se faire passer
+pour une étendue du fichier source. Voir les [PDF MAC source](source-mac.md).

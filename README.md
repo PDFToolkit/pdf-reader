@@ -147,7 +147,10 @@ encodings are not interpreted to extract text or render a page.
 
 Without explicit credentials, encrypted files raise `EncryptedPdfException`.
 Native Standard-handler authentication supports R2–R7 and named crypt filters;
-source PDF MAC verification and public-key authentication remain unsupported.
+source PDF MACs are verified before protected content is interpreted. Both
+standalone and signature-attached MACs are supported; applications can require
+one with `SourceIntegrityPolicy::RequirePdfMac`. Public-key authentication
+remains unsupported. See the [PDF MAC guide](docs/source-mac.md).
 Unimplemented codecs are explicitly rejected. A stream using an unknown codec can be preserved in
 encoded form; requesting decoding raises `UnsupportedPdfFeature`.
 

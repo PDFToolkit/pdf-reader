@@ -151,8 +151,11 @@ pour extraire du texte ou rendre une page.
 
 Sans credentials explicites, les fichiers chiffrés lèvent `EncryptedPdfException`.
 L’authentification native Standard prend en charge R2–R7 et les crypt filters
-nommés. La vérification des PDF MAC source et l’authentification par clé publique
-restent à implémenter. Un codec inconnu peut être conservé encodé ; son décodage
+nommés. Les PDF MAC source sont vérifiés avant l’interprétation du contenu
+protégé, avec les modes autonome et attaché à une signature. L’application
+peut en exiger un avec `SourceIntegrityPolicy::RequirePdfMac`.
+Consulter le [guide PDF MAC](docs/fr/source-mac.md). L’authentification par clé publique
+reste à implémenter. Un codec inconnu peut être conservé encodé ; son décodage
 lève `UnsupportedPdfFeature`.
 
 L'import vers le writer, la réécriture, la fusion, l'extraction de texte, le

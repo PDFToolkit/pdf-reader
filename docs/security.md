@@ -13,7 +13,8 @@ mean absence; other types are parse errors. An injected
 `StandardPasswordAuthentication` authenticates before catalog interpretation,
 checks encrypted R5–R7 permissions and decrypts objects once under shared budgets.
 See the [authentication guide](authentication.md) for R2–R7, explicit password
-preparation, and the unsupported source PDF MAC/public-key boundaries.
+preparation, [source PDF MAC verification](source-mac.md), and the unsupported
+public-key boundary.
 
 ## Checked surfaces
 
@@ -24,6 +25,7 @@ preparation, and the unsupported source PDF MAC/public-key boundaries.
 | Cursors | Each view has bounds; out-of-view reads and movement are rejected. Compressed objects are parsed in separate slices. |
 | Xref | Offsets, generations, types and ranges checked; big-endian fields without integer overflow; non-overlapping subsections and `/Index` ranges. |
 | Revisions | Bounded `/Prev` chain and cycle detection; newer entries, including free ones, override older entries. An outdated generation resolves to null. |
+| Source MAC | Standard R5–R7 key-bound verification before content, actual payload source spans, exact whole-file coverage, strict standalone framing, bounded signature padding, CMS/HMAC and digest checks. Required-integrity policy rejects clear or stripped sources too. |
 | Objects | Actual identifier compared with the xref entry; bounded recursive loading and loading-cycle detection; document-scoped caches. |
 | Page tree | Explicit traversal stack; dedicated depth, node and leaf limits; rejection of cycles, repeated descendants, inconsistent counts and incorrect Parent links. |
 | Inheritance | Resource, rectangle and rotation types checked; only four inheritable entries; local resources replace inherited values without merging; rotation must be a multiple of 90. |

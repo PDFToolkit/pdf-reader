@@ -80,9 +80,10 @@ consomme le budget commun du document. L’import et l’écriture nécessitent 
 une couche explicite de réattribution des références ; les objets source
 authentifiés ne peuvent pas être sérialisés directement dans un nouveau document.
 
-La vérification des PDF MAC source (`KDFSalt`/`AuthCode`) et l’authentification par
-clé publique ne sont pas implémentées par cette capacité. Ces fichiers sont
-refusés avant l’interprétation de leur contenu protégé. Les codecs image non pris
+Les PDF MAC source (`KDFSalt`/`AuthCode`) sont vérifiés avant l’interprétation
+du contenu protégé, pour Standard R5–R7. Le [guide PDF MAC](source-mac.md) décrit
+les deux emplacements, la couverture exacte, la politique obligatoire et les limites.
+L’authentification par clé publique reste explicitement refusée. Les codecs image non pris
 en charge restent distincts du déchiffrement. Une authentification réussie ne
 certifie pas que le PDF original peut être exécuté sans risque par un autre logiciel.
 

@@ -31,7 +31,7 @@ python tools/validate_source_mac.py --php php --qpdf qpdf
 `--work-dir /repertoire/de/sortie/explicite` conserve les PDF et le manifeste
 générés. Les clés, IV et numéros de série sont renouvelés : la régénération
 vérifie le même comportement sans reproduire les SHA-256 conservés.
-L’outil produit aussi douze variantes malveillantes, refusées par le validateur
+L’outil produit aussi quatorze variantes malveillantes, refusées par le validateur
 indépendant et le lecteur natif. Plusieurs gardent un HMAC correctement calculé
 en violant la couverture source, les cardinalités CMS ou les assertions
 d’intégrité. Les tests natifs contrôlent le corpus conservé et modifient chaque

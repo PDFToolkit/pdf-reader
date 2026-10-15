@@ -154,3 +154,15 @@ importers, content interpreters and form engines can compose them without
 adding those responsibilities to the parser.
 
 [Components](components.md) · [Security](security.md) · [README](../README.md)
+
+## Source-integrity provenance
+
+Authentication receives the raw graph before the decrypted graph is created.
+`SourceRevision` preserves the latest physical trailer separately from the
+effective inherited trailer. Parser-owned string spans identify the actual MAC
+or Contents token; object-stream slices cannot invent positions in the original
+file. The source MAC verifier binds these exact ciphertext bytes using the
+authenticated file key, before catalog interpretation. Verification status is
+kept in the immutable decryption context. `SourceIntegrityPolicy::RequirePdfMac`
+also rejects a source with no MAC indication. This policy does not validate
+digital-signature trust; see [the bounded MAC contract](source-mac.md).
