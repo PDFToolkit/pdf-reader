@@ -4,6 +4,14 @@
 
 ## Unreleased
 
+## 0.3.0 - 2026-10-15
+
+- Lire les références hybrides avec priorité du flux auxiliaire, y compris les documents linéarisés, et plafonds cumulés.
+- Décoder LZW EarlyChange 0/1 et les prédicteurs TIFF/PNG sur 1/2/4/8/16 bits.
+- Ajouter l’authentification Standard explicite R2–R7, les crypt filters nommés, les exceptions métadonnées/signatures et les permissions authentifiées. Conserver le ciphertext original séparément des octets prêts au décodage.
+- Vérifier 26 cas de filtres, six PDF hybrides et 24 fichiers chiffrés indépendamment ; conserver les limites explicites PDF MAC source, clé publique et codecs image.
+- Requérir le core stable ^0.7.1 ou ^0.8 ; PHP 8.3–8.5. Mettre à jour les deux langues.
+
 ## 0.2.3 - 2026-10-15
 
 - Résoudre la valeur effective `/Encrypt` du trailer avec le résolveur borné du document avant de lever `EncryptedPdfException`. Les valeurs null directes, indirectes et les références indisponibles suivent la sémantique PDF de null et ne déclenchent pas l'authentification ; les valeurs mal formées autres que des dictionnaires restent des erreurs d'analyse.

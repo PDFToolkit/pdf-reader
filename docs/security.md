@@ -7,13 +7,13 @@ protections and scenarios covered by the project's tests. It is not an external
 audit or a guarantee of freedom from vulnerabilities. Scope includes syntax,
 object resolution, revisions, pages and supported filters.
 
-An effective, non-null `/Encrypt` trailer entry resolving to a dictionary raises
-`EncryptedPdfException`, a subtype of `UnsupportedPdfFeature`. Applications can route this explicit condition to an
-authentication provider without matching words in error messages. Other unsupported
-mechanisms retain their original errors; the reader does not authenticate or decrypt.
-The completed cross-reference index and the document's bounded resolver verify the
-entry before catalog interpretation. Null values, including references resolving to
-null, mean absence and do not signal encryption. Non-dictionary values are parse errors.
+Without an authentication capability, an effective non-null `/Encrypt`
+entry resolving to a dictionary raises `EncryptedPdfException`. Null references
+mean absence; other types are parse errors. An injected
+`StandardPasswordAuthentication` authenticates before catalog interpretation,
+checks encrypted R5–R7 permissions and decrypts objects once under shared budgets.
+See the [authentication guide](authentication.md) for R2–R7, explicit password
+preparation, and the unsupported source PDF MAC/public-key boundaries.
 
 ## Checked surfaces
 
@@ -97,8 +97,8 @@ not certify that any software can open the document safely.
 Resolution is on demand. Opening checks the catalog and xref structures but
 does not visit every object or resource. A defect in an object not loaded yet
 may be reported during a later access. The reader does not repair damaged
-files and rejects unsupported mechanisms, notably encryption and hybrid
-references.
+files and rejects unsupported mechanisms, including unverified PDF MACs,
+public-key authentication and image-specific decompression codecs.
 
 Diagnostics and extracted values must not be sent to an HTML page without
 escaping or published without access controls. Data in dictionaries, names
@@ -116,3 +116,8 @@ PHP, zlib, the server, validation tools and software opening PDFs have their
 own security surfaces, outside this library's test scope.
 
 [Private reporting](../SECURITY.md) · [Architecture](architecture.md)
+
+Independent tests compare 26 LZW/predictor cases with qpdf, six hybrid files
+with pypdf/qpdf and 24 R2–R7 PDFs encrypted by qpdf or cryptography.
+Modified AES-GCM tags fail without returning plaintext. Authentication
+errors do not disclose credentials or document contents.

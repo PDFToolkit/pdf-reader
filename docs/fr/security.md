@@ -8,15 +8,14 @@ Elle ne constitue pas un audit externe ni une garantie d'absence de
 vulnérabilité. Le périmètre inclut la syntaxe, la résolution des objets, les
 révisions, les pages et les filtres pris en charge.
 
-Une entrée effective `/Encrypt` du trailer, non null et résolue en dictionnaire,
-lève `EncryptedPdfException`, un sous-type de `UnsupportedPdfFeature`. Une application peut orienter cette
-condition explicite vers son fournisseur d'authentification sans rechercher des
-mots dans les messages d'erreur. Les autres mécanismes non pris en charge
-conservent leur erreur ; le lecteur n'authentifie ni ne déchiffre le document.
-L'index complet des références croisées et le résolveur borné du document vérifient
-l'entrée avant l'interprétation du catalogue. Les valeurs null, y compris les
-références résolues en null, signifient l'absence et ne signalent pas un chiffrement.
-Les valeurs autres que des dictionnaires sont des erreurs d'analyse.
+Sans capacité d’authentification, une entrée `/Encrypt` effective non null
+et résolue en dictionnaire lève `EncryptedPdfException`. Les références null
+signifient l’absence ; une valeur d’un autre type est une erreur d’analyse.
+Une capacité `StandardPasswordAuthentication` injectée authentifie avant
+l’interprétation du catalogue, vérifie les permissions chiffrées R5–R7 et
+déchiffre les objets une seule fois sous les budgets du document.
+Voir le [guide d’authentification](authentication.md) pour R2–R7, la préparation
+des mots de passe et les refus explicites de PDF MAC et de clé publique source.
 
 ## Surfaces contrôlées
 
@@ -106,7 +105,8 @@ La résolution est à la demande. L'ouverture contrôle le catalogue et les xref
 mais ne visite pas tous les objets ni toutes les ressources. Un défaut dans un
 objet non encore chargé peut être signalé lors d'un accès ultérieur. Le lecteur
 ne répare pas les fichiers endommagés et refuse les mécanismes non pris en
-charge, notamment le chiffrement et les références hybrides.
+charge, notamment les PDF MAC non vérifiés, l’authentification par clé publique
+et les codecs de décompression propres aux images.
 
 Les diagnostics et valeurs extraites ne doivent pas être envoyés dans une
 page HTML sans échappement ni publiés sans contrôle d'accès. Les données
@@ -125,3 +125,8 @@ PDF ont leurs propres surfaces de sécurité, hors du périmètre des tests de
 cette bibliothèque.
 
 [Signalements privés](../../SECURITY.fr.md) · [Architecture](architecture.md)
+
+Les tests indépendants comparent 26 cas LZW/prédicteurs à qpdf, six documents
+hybrides à pypdf/qpdf et 24 PDF R2–R7 chiffrés par qpdf ou cryptography.
+Les tags AES-GCM modifiés échouent sans produire de plaintext. Les erreurs
+d’authentification ne révèlent ni credentials ni contenu du document.

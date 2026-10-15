@@ -2,10 +2,11 @@
 
 English | [Français](fr/architecture.md)
 
-Version 0.2 accepts PDF 1.0–1.7 and PDF 2.0 headers and catalog versions.
+Version 0.3 accepts PDF 1.0–1.7 and PDF 2.0 headers and catalog versions.
 The shared syntax and object-stream pipeline exposes the source dictionaries;
 semantic interpretation of tagging, fonts or metadata belongs to optional layers.
-Encrypted inputs and unsupported filters remain explicitly rejected.
+Unsupported filters remain explicitly rejected. Standard authentication is
+selected through an explicit capability ([guide](authentication.md)).
 
 The reader transforms PDF bytes into a browsable object graph. It retains
 references as explicit values and uses primitives from
@@ -62,7 +63,7 @@ The catalog is resolved and checked before `read()` returns the document.
 stream's structural fields must be direct: no resolver is available yet during
 index construction. Ranges are bounded, generations are checked and binary
 fields are read in big-endian order without integer overflow. Hybrid sections
-and encryption are rejected.
+merge their auxiliary `/XRefStm` entries over the table and retain the table’s `/Prev`.
 
 `ReadDocument` owns the source, index, limits and caches. It loads an object
 on demand, checks that its identifier matches the xref entry, then retains the
@@ -95,7 +96,9 @@ preserve a direct value. The `ObjectResolver` interface lets readers that
 need this service, notably for `/Length` and filter parameters, receive it
 through construction or an argument.
 
-`EncodedStream::encodedBytes()` retains the original bytes.
+`EncodedStream::encodedBytes()` exposes bytes ready for the remaining codecs.
+With authentication these are decrypted; `originalEncodedBytes()` preserves
+the original ciphertext. Object-stream members are not decrypted twice.
 `ReadDocument::streamData()` triggers decoding and retains the result in a
 document-scoped cache. `StreamDecoder` reads `/Filter` and `/DecodeParms`,
 applies the chain in PDF order, then predictors when present. Filters are

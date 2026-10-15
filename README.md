@@ -19,19 +19,21 @@ The package is available on
 application:
 
 ```console
-composer require "pdftoolkit/pdf-reader:^0.2"
+composer require "pdftoolkit/pdf-reader:^0.3"
 ```
 
-The reader uses `roukmoute/pdf:^0.2 || ^0.3 || ^0.4 || ^0.5 || ^0.6 || ^0.7`, installed
+The reader uses `roukmoute/pdf:^0.7.1 || ^0.8`, installed
 automatically by Composer. PHP 8.3 or newer on a 64-bit platform and the `ctype`,
 `iconv` and `zlib` extensions are required for this combination. The application's
 `composer.lock` records the selected versions and revisions.
 
-Version 0.2 accepts PDF 1.0–1.7 and PDF 2.0 syntax, including the catalog
+Version 0.3 accepts PDF 1.0–1.7 and PDF 2.0 syntax, including the catalog
 `/Version /2.0` override, using the same bounded object and stream readers.
 This makes PDF 2.0 dictionaries available to optional interpreters such as
 `pdftoolkit/pdf-to-html`; it does not interpret every PDF 2.0 feature.
-Encryption, unsupported filters, rendering and importing remain explicit limits.
+Standard-handler password authentication is opt-in; unsupported security handlers,
+codecs, rendering and importing remain explicit limits. See the
+[authentication guide](docs/authentication.md) for construction and boundaries.
 
 ## Read pages
 
@@ -121,7 +123,8 @@ foreach ($contents as $stream) {
 
 A page with no `/Contents`, null or an empty array yields an empty collection.
 Array streams keep their order, without automatic concatenation or decoding.
-An `EncodedStream` retains its dictionary and original bytes; `streamData()`
+An `EncodedStream` retains its dictionary and bytes ready for decompression;
+`originalEncodedBytes()` retains the original source ciphertext when authenticated; `streamData()`
 requests decoding. The result remains bytes: drawing operators, fonts and
 encodings are not interpreted to extract text or render a page.
 
@@ -133,16 +136,19 @@ encodings are not interpreted to extract text or render a page.
 | Structure | PDF 1.0–1.7 and 2.0 headers and catalog versions; indirect objects and streams delimited by `/Length`, including indirect lengths. |
 | Traditional xref | Subsections, offsets, generations, free objects and revisions linked by `/Prev`. |
 | Xref streams | `/W` fields, `/Index` ranges, free, direct or compressed types; unknown types yield an unavailable object. |
+| Hybrid xref | `/XRefStm` entries override the companion table; the table trailer owns `/Prev`; cumulative budgets cover both. |
 | Object streams | `/ObjStm` members, with header, offset and expected object number validation. |
-| Filters | FlateDecode, ASCIIHexDecode, ASCII85Decode and RunLengthDecode; explicit filter chains and parameters. |
-| Predictors | TIFF 2 and PNG 10 to 15, with 8-bit components. |
+| Filters | FlateDecode, LZWDecode (EarlyChange 0/1), ASCIIHexDecode, ASCII85Decode and RunLengthDecode; explicit filter chains and parameters. |
+| Predictors | TIFF 2 and PNG 10 to 15, with 1-, 2-, 4-, 8- and 16-bit components. |
 | Resolution | A missing, free or different-generation object yields `NullType`. |
 | Page tree | Complete ordered traversal, checks for every `/Count` and `/Parent`, rejection of cycles or repeated descendants, dedicated traversal limits. |
 | Inheritance | Effective resources, MediaBox, CropBox and rotation; CropBox defaults to MediaBox and absent rotation defaults to zero. |
 | Page contents | A stream or an array of streams, kept in order; separate reading and decoding. |
 
-Encrypted files, hybrid `/XRefStm` references and unimplemented codecs
-are explicitly rejected. A stream using an unknown codec can be preserved in
+Without explicit credentials, encrypted files raise `EncryptedPdfException`.
+Native Standard-handler authentication supports R2–R7 and named crypt filters;
+source PDF MAC verification and public-key authentication remain unsupported.
+Unimplemented codecs are explicitly rejected. A stream using an unknown codec can be preserved in
 encoded form; requesting decoding raises `UnsupportedPdfFeature`.
 
 Import into the writer, rewriting, merging, text extraction, rendering, forms,
@@ -174,6 +180,7 @@ an upload service.
 - [Architecture and object boundaries](docs/architecture.md)
 - [Pages, inheritance and content streams](docs/pages.md)
 - [Component reference](docs/components.md)
+- [Password authentication](docs/authentication.md)
 - [Security controls](docs/security.md)
 - [Reporting policy](SECURITY.md)
 - [Changelog](CHANGELOG.md)

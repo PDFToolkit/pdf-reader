@@ -11,11 +11,11 @@ du [modèle PDF partagé](https://github.com/PDFToolkit/pdf/tree/master/src/Synt
 | Composant | Construction et rôle |
 | --- | --- |
 | `FileBytes` | `new FileBytes($bytes)` conserve les octets fournis explicitement. Aucun accès fichier ou réseau. |
-| `DocumentReader` | `new DocumentReader($limits)` ; `read(FileBytes): ReadDocument` ouvre le document structurel. Les limites ont une valeur par défaut explicite. |
+| `DocumentReader` | `new DocumentReader($limits, $authentication)` ; `read(FileBytes): ReadDocument` ouvre le document structurel. Les limites ont une valeur par défaut explicite. |
 | `ReadDocument` | Porte source, header, trailer effectif, index, budgets et caches. Construction habituelle par `DocumentReader`. |
 | `ObjectResolver` | Interface `resolve(BasicType): BasicType`. Résout une référence dans un document sans parcourir tout le graphe. |
 | `ObjectReference` | `new ObjectReference(ObjectIdentifier)` ; propriété `identifier`. La référence porte un identifiant, sans cible ni résolveur. Sa sérialisation est refusée. |
-| `EncodedStream` | `new EncodedStream(DictionaryType, string)` ; `dictionary()` et `encodedBytes()` exposent la structure et les octets d'origine. Sa sérialisation est refusée. |
+| `EncodedStream` | `dictionary()` expose la structure ; `encodedBytes()` est prêt pour les codecs et `originalEncodedBytes()` conserve le ciphertext source. Sa sérialisation est refusée. |
 
 ### Méthodes de `ReadDocument`
 
@@ -100,12 +100,12 @@ la conservation de ses octets encodés.
 | `AsciiHexDecoder` | Décodage ASCIIHex : blancs PDF, chiffres hexadécimaux et dernier demi-octet éventuel. |
 | `Ascii85Decoder` | Décodage ASCII85, blocs complets ou partiels et raccourci `z`. |
 | `RunLengthDecoder` | Décodage des répétitions et segments littéraux RunLength. |
-| `PredictorParameters` | Valeur `Predictor`, `Colors`, `BitsPerComponent`, `Columns`. Prédicteurs 1, 2 ou 10–15 ; les prédicteurs actifs requièrent des composants de 8 bits. |
-| `PredictorDecoder` | Reconstruction des lignes TIFF ou PNG après Flate. Les tags de ligne PNG désignent l'algorithme appliqué. |
+| `PredictorParameters` | Valeur `Predictor`, `Colors`, `BitsPerComponent`, `Columns`. Prédicteurs 1, 2 ou 10–15 ; composants de 1, 2, 4, 8 et 16 bits. |
+| `PredictorDecoder` | Reconstruction des lignes TIFF ou PNG après Flate ou LZW. Les tags de ligne PNG désignent l'algorithme appliqué. |
 | `DecodedBytes` | Accumulateur contrôlant la limite d'une sortie et le budget cumulé avant de retenir une tranche. |
 
-DCTDecode, JPXDecode, CCITTFaxDecode, JBIG2Decode, LZWDecode et Crypt ne sont
-pas implémentés. La lecture structurelle d'un flux image peut donc réussir,
+DCTDecode, JPXDecode, CCITTFaxDecode et JBIG2Decode restent à implémenter.
+Crypt est appliqué par le contexte du document authentifié, avant les codecs. La lecture structurelle d'un flux image peut donc réussir,
 tandis que sa demande de décodage est refusée.
 
 ## Limites et diagnostics
@@ -138,3 +138,15 @@ Pour conserver les mêmes plafonds sur toute une lecture, utiliser le même
 `ReaderLimits` et le même `ReadBudget` dans les composants composés.
 
 [Architecture](architecture.md) · [Sécurité et valeurs par défaut](security.md)
+
+## Authentification et octets conservés
+
+`Security\StandardPasswordAuthentication` implémente `DocumentAuthentication`.
+Le constructeur reçoit un `PdfDocEncodedPassword` pour R2–R4 ou un
+`PreparedPassword` pour R5–R7. `ReadDocument::permissions()` expose un
+`ReadPermissions` immuable : `mask`, `access`, `revision`, `effectiveMask()`.
+`EncodedStream::originalEncodedBytes()` conserve les octets source ;
+`encodedBytes()` fournit les octets déchiffrés prêts pour la décompression.
+`Filters\LzwDecoder` reçoit la valeur `EarlyChange` du core ;
+`LzwCodeReader` borne la lecture MSB de 9 à 12 bits.
+Voir les [exemples et limites](authentication.md).

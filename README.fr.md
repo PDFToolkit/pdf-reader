@@ -20,20 +20,22 @@ Le package est disponible sur
 consommateur :
 
 ```console
-composer require "pdftoolkit/pdf-reader:^0.2"
+composer require "pdftoolkit/pdf-reader:^0.3"
 ```
 
-Le lecteur utilise le core `roukmoute/pdf:^0.2 || ^0.3 || ^0.4 || ^0.5 || ^0.6 || ^0.7`,
+Le lecteur utilise le core `roukmoute/pdf:^0.7.1 || ^0.8`,
 installé automatiquement par Composer. PHP 8.3 ou supérieur sur une plateforme
 64 bits et les extensions `ctype`, `iconv` et `zlib` sont requis pour cet ensemble.
 Le fichier `composer.lock` du projet consommateur fixe les versions et les
 révisions utilisées.
 
-La version 0.2 accepte la syntaxe PDF 1.0–1.7 et PDF 2.0, y compris la version
+La version 0.3 accepte la syntaxe PDF 1.0–1.7 et PDF 2.0, y compris la version
 `/Version /2.0` du catalogue, avec les mêmes lecteurs bornés d’objets et de flux.
 Les dictionnaires PDF 2.0 deviennent accessibles aux interprètes optionnels,
 dont `pdftoolkit/pdf-to-html` ; cela n’interprète pas chaque mécanisme PDF 2.0.
-Chiffrement, filtres non pris en charge, rendu et import restent des limites explicites.
+L’authentification Standard par mot de passe est explicite ; les autres handlers
+de sécurité, codecs non pris en charge, rendu et import restent des limites.
+Consulter le [guide d’authentification](docs/fr/authentication.md).
 
 ## Lire les pages
 
@@ -124,8 +126,9 @@ foreach ($contents as $stream) {
 
 Une page sans `/Contents`, avec null ou un tableau vide donne une collection
 vide. Les flux d'un tableau sont conservés dans leur ordre, sans concaténation
-ni décodage automatiques. Un `EncodedStream` garde son dictionnaire et ses octets
-d'origine ; `streamData()` demande leur décodage. Le résultat reste une suite
+ni décodage automatiques. Un `EncodedStream` garde son dictionnaire et les octets
+prêts au décodage ; `originalEncodedBytes()` conserve le ciphertext source après
+authentification. `streamData()` demande le décodage. Le résultat reste une suite
 d'octets : les opérateurs de dessin, polices et encodages ne sont pas interprétés
 pour extraire du texte ou rendre une page.
 
@@ -137,18 +140,20 @@ pour extraire du texte ou rendre une page.
 | Structure | Headers et versions de catalogue PDF 1.0–1.7 et 2.0 ; objets indirects et flux délimités par `/Length`, y compris une longueur indirecte. |
 | Xref traditionnel | Sous-sections, offsets, générations, objets libres et révisions liées par `/Prev`. |
 | Flux xref | Champs `/W`, plages `/Index`, types libres, directs ou comprimés ; types inconnus donnant un objet indisponible. |
+| Xref hybrides | Les entrées `/XRefStm` prévalent sur la table associée ; le trailer de la table porte `/Prev` ; budgets cumulés pour les deux. |
 | Flux d'objets | Membres de `/ObjStm`, avec validation de l'en-tête, des offsets et du numéro attendu. |
-| Filtres | FlateDecode, ASCIIHexDecode, ASCII85Decode et RunLengthDecode ; chaînes de filtres et paramètres explicites. |
-| Prédicteurs | TIFF 2 et PNG 10 à 15, avec composants de 8 bits. |
+| Filtres | FlateDecode, LZWDecode (EarlyChange 0/1), ASCIIHexDecode, ASCII85Decode et RunLengthDecode ; chaînes de filtres et paramètres explicites. |
+| Prédicteurs | TIFF 2 et PNG 10 à 15, avec composants de 1, 2, 4, 8 et 16 bits. |
 | Résolution | Un objet absent, libre ou de génération différente donne `NullType`. |
 | Arbre de pages | Parcours ordonné complet, vérification de chaque `/Count` et `/Parent`, refus des cycles ou descendants répétés, limites propres au parcours. |
 | Héritage | Ressources, MediaBox, CropBox et rotation effectifs ; CropBox utilise MediaBox par défaut et rotation zéro si absente. |
 | Contenu des pages | Un flux ou un tableau de flux, conservés dans l'ordre ; lecture et décodage séparés. |
 
-Les fichiers chiffrés, les références hybrides `/XRefStm` et les codecs
-non implémentés sont refusés explicitement. Un flux utilisant un codec inconnu
-peut être conservé sous forme encodée ; demander son décodage provoque
-`UnsupportedPdfFeature`.
+Sans credentials explicites, les fichiers chiffrés lèvent `EncryptedPdfException`.
+L’authentification native Standard prend en charge R2–R7 et les crypt filters
+nommés. La vérification des PDF MAC source et l’authentification par clé publique
+restent à implémenter. Un codec inconnu peut être conservé encodé ; son décodage
+lève `UnsupportedPdfFeature`.
 
 L'import vers le writer, la réécriture, la fusion, l'extraction de texte, le
 rendu, les formulaires, les signatures et la réparation des PDF restent des

@@ -4,6 +4,15 @@ English | [Français](CHANGELOG.fr.md)
 
 ## Unreleased
 
+## 0.3.0 - 2026-10-15
+
+- Read hybrid cross-references with auxiliary stream precedence and cumulative bounds.
+- Decode LZW EarlyChange 0/1 and TIFF/PNG predictors at 1/2/4/8/16 bits.
+- Add explicit Standard password authentication R2–R7, named crypt filters, metadata/signature exemptions and authenticated permissions. Preserve original ciphertext separately from bytes ready for decoding.
+- Verify 26 filter cases, six hybrid files and 24 independently encrypted files; retain explicit source PDF MAC, public-key and image-codec boundaries.
+- Require stable core ^0.7.1 or ^0.8; PHP 8.3–8.5. Update both documentation languages.
+
+
 ## 0.2.3 - 2026-10-15
 
 - Resolve the effective trailer `/Encrypt` value through the bounded document resolver before raising `EncryptedPdfException`. Direct null, indirect null and unavailable references follow PDF null semantics and do not trigger authentication; malformed non-dictionary values remain parse errors.

@@ -2,10 +2,11 @@
 
 [English](../architecture.md) | Français
 
-La version 0.2 accepte les headers et versions de catalogue PDF 1.0–1.7 et 2.0.
+La version 0.3 accepte les headers et versions de catalogue PDF 1.0–1.7 et 2.0.
 Le même pipeline syntaxique et de flux d’objets expose les dictionnaires source ;
 l’interprétation du balisage, des polices ou des métadonnées appartient aux couches
-optionnelles. Les entrées chiffrées et filtres non pris en charge restent refusés.
+optionnelles. Les filtres non pris en charge restent refusés ; l’authentification Standard est
+activée par une capacité explicite ([guide](authentication.md)).
 
 Le lecteur transforme des octets PDF en un graphe consultable d'objets. Il
 conserve les références comme des valeurs explicites et utilise les primitives
@@ -64,7 +65,8 @@ avant que `read()` ne retourne le document.
 champs structuraux d'un flux xref doivent être directs : aucun résolveur n'est
 encore disponible pendant la construction de l'index. Les plages sont bornées,
 les générations contrôlées et les champs binaires lus en big endian sans
-dépassement d'entier. Les sections hybrides et le chiffrement sont refusés.
+dépassement d'entier. Les sections hybrides appliquent la priorité du flux `/XRefStm` sur la table
+associée, tout en conservant le `/Prev` de celle-ci.
 
 `ReadDocument` possède la source, l'index, les limites et les caches. Il charge
 un objet à la demande, vérifie que son identifiant correspond à l'entrée xref,
@@ -97,7 +99,8 @@ ou conserver une valeur directe. L'interface `ObjectResolver` permet aux
 lecteurs qui en ont besoin, notamment pour `/Length` et les paramètres de
 filtres, de recevoir ce service par construction ou par argument.
 
-`EncodedStream::encodedBytes()` conserve les octets d'origine.
+`EncodedStream::encodedBytes()` fournit les octets prêts pour les codecs ;
+`originalEncodedBytes()` conserve les octets source, chiffrés le cas échéant.
 `ReadDocument::streamData()` déclenche le décodage et garde le résultat dans
 un cache propre au document. `StreamDecoder` lit `/Filter` et `/DecodeParms`,
 applique la chaîne dans l'ordre du PDF, puis les prédicteurs lorsque présents.
@@ -157,3 +160,7 @@ pages. Les futurs imports, interpréteurs de contenu et moteurs de formulaire
 pourront les composer sans ajouter ces responsabilités au parseur.
 
 [Composants](components.md) · [Sécurité](security.md) · [README](../../README.fr.md)
+
+Après authentification, les chaînes et flux sont déchiffrés une seule fois
+dans le document qui possède la clé. `originalEncodedBytes()` conserve le
+ciphertext ; `encodedBytes()` fournit les octets prêts pour les codecs.
