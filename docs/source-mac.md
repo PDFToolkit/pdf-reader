@@ -38,6 +38,11 @@ including one from which all encryption and MAC indications have been removed.
 An ordinary clear PDF cannot reveal that such indications once existed.
 Choose the required policy whenever the application expects protected input.
 
+`DocumentReader::sourceIntegrityPolicy()` exposes its configured policy.
+`requiringSourceIntegrity($policy)` composes an immutable reader with the same
+limits and credentials, preserving or strengthening the requirement. Passing
+`AcceptUnprotected` cannot relax a reader that already requires a PDF MAC.
+
 ## Exact source coverage
 
 The parser records the lexical source span of the actual security string,

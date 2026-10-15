@@ -131,6 +131,25 @@ final class ReadingPdfMacTest extends TestCase
         (new DocumentReader(sourceIntegrity: SourceIntegrityPolicy::RequirePdfMac))->read($source);
     }
 
+    public function testImmutableCompositionPreservesCredentialsAndCannotLowerRequiredIntegrity(): void
+    {
+        $permissive = new DocumentReader(authentication: new StandardPasswordAuthentication(new PreparedPassword('user')));
+        self::assertSame(SourceIntegrityPolicy::AcceptUnprotected, $permissive->sourceIntegrityPolicy());
+        $required = $permissive->requiringSourceIntegrity(SourceIntegrityPolicy::RequirePdfMac);
+        self::assertNotSame($permissive, $required);
+        self::assertSame(SourceIntegrityPolicy::RequirePdfMac, $required->sourceIntegrityPolicy());
+        self::assertSame($required, $required->requiringSourceIntegrity(SourceIntegrityPolicy::AcceptUnprotected));
+        self::assertSame('Standalone', $required->read($this->source('pyhanko-standalone-sha256.pdf'))->mac()?->value);
+    }
+
+    public function testImmutableCompositionPreservesTheOriginalSourceLimits(): void
+    {
+        $reader = (new DocumentReader(limits: new \PDF\Reading\ReaderLimits(maxFileBytes: 1)))->requiringSourceIntegrity(SourceIntegrityPolicy::RequirePdfMac);
+        $this->expectException(ParseException::class);
+        $this->expectExceptionMessage('file-byte limit');
+        $reader->read($this->source('pyhanko-standalone-sha256.pdf'));
+    }
+
     private function read(FileBytes $source, string $password = 'user'): ReadDocument
     {
         return (new DocumentReader(authentication: new StandardPasswordAuthentication(new PreparedPassword($password)), sourceIntegrity: SourceIntegrityPolicy::RequirePdfMac))->read($source);

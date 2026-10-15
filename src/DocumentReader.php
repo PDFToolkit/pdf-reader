@@ -20,6 +20,19 @@ final readonly class DocumentReader
     {
     }
 
+    public function sourceIntegrityPolicy(): SourceIntegrityPolicy
+    {
+        return $this->sourceIntegrity;
+    }
+
+    /** Immutable composition may strengthen integrity; it never relaxes an existing requirement. */
+    public function requiringSourceIntegrity(SourceIntegrityPolicy $policy): self
+    {
+        return $policy === SourceIntegrityPolicy::AcceptUnprotected || $this->sourceIntegrity === SourceIntegrityPolicy::RequirePdfMac
+            ? $this
+            : new self($this->limits, $this->authentication, $policy);
+    }
+
     public function read(FileBytes $source): ReadDocument
     {
         $length = strlen($source->bytes);

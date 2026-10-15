@@ -39,6 +39,11 @@ MAC ont été supprimés. Un PDF clair ordinaire ne permet pas de déduire qu’
 ont existé. Choisir la politique obligatoire lorsque l’application attend une
 entrée protégée.
 
+`DocumentReader::sourceIntegrityPolicy()` expose la politique configurée.
+`requiringSourceIntegrity($policy)` compose un lecteur immuable avec les mêmes
+limites et identifiants, en conservant ou renforçant l’exigence. Passer
+`AcceptUnprotected` ne relâche pas un lecteur qui exige déjà un PDF MAC.
+
 ## Couverture exacte de la source
 
 Le parseur conserve l’étendue lexicale de la véritable chaîne de sécurité,
