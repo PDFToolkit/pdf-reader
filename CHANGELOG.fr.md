@@ -4,6 +4,13 @@
 
 ## Non publié
 
+## 0.5.2 - 2026-10-15
+
+- Corriger les permissions effectives s3 : les bits source réservés 9–12 ne peuvent pas accorder de droits granulaires ultérieurs. Traduire les quatre droits R2 dans le masque commun document/destinataire en conservant le mot CMS original et le sous-filtre explicite.
+- Ajouter 33 cas natifs de permissions et dix sources s3 chiffrées par CMS indépendant ; conserver les validations d’authentification, MAC, alias et budgets existantes.
+- Accepter le core stable `^0.11` sans changer la dépendance publiée de validation core `0.9.0` ni les exigences PHP.
+
+
 ## 0.5.1 - 2026-10-15
 
 - Accepter le core stable `^0.10` en conservant les séries précédemment prises en charge.

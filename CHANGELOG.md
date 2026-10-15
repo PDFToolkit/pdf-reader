@@ -4,6 +4,13 @@ English | [Français](CHANGELOG.fr.md)
 
 ## Unreleased
 
+## 0.5.2 - 2026-10-15
+
+- Correct s3 effective permissions: reserved source bits 9–12 cannot grant later granular rights. Translate the four R2 usage rights into the common document/recipient mask while preserving the original CMS word and explicit subfilter.
+- Add 33 native permission cases and ten independent CMS-encrypted s3 sources; retain all previous authentication, MAC, alias and budget validations.
+- Accept stable core `^0.11` without changing the published core `0.9.0` validation dependency or PHP requirements.
+
+
 ## 0.5.1 - 2026-10-15
 
 - Accept stable core `^0.10` while retaining the previously supported core series.

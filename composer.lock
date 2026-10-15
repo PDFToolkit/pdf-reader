@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "03438afa18abe7a90d081f303830f799",
+    "content-hash": "ebb0d28f6b46a56c3233b3b329c1ffe2",
     "packages": [
         {
             "name": "roukmoute/pdf",
