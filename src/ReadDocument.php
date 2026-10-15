@@ -42,6 +42,7 @@ final class ReadDocument implements ObjectIdentityResolver
         private readonly ?DocumentDecryption $decryption = null,
         private readonly ?SourceRevision $physicalRevision = null,
         private readonly ?SourceStringSpans $sourceStrings = null,
+        private readonly StructuralPolicy $structuralPolicy = StructuralPolicy::Compatible,
     ) {
         $this->decoded = new \SplObjectStorage();
     }
@@ -162,7 +163,7 @@ final class ReadDocument implements ObjectIdentityResolver
             if ($entry->kind === EntryKind::Compressed) {
                 $value = $this->compressed($entry->firstField, $entry->secondField, $number);
             } else {
-                $physical = (new IndirectObjectReader($this->source, $this->limits, $this->budget, $this->sourceStrings))->readPhysical($entry->firstField, $identifier, $this);
+                $physical = (new IndirectObjectReader($this->source, $this->limits, $this->budget, $this->sourceStrings, $this->structuralPolicy))->readPhysical($entry->firstField, $identifier, $this);
                 $value = $physical->object->value;
                 $this->budget->retained(64);
                 $this->objectSpans[$number] = $physical->span;
@@ -194,7 +195,7 @@ final class ReadDocument implements ObjectIdentityResolver
             if (!$stream instanceof EncodedStream) {
                 throw new ParseException('An object-stream container must be a stream.');
             }
-            $this->objectStreams[$container] = (new ObjectStreamReader($this->limits, $this->budget))->read($stream, $this->streamData($stream), $this);
+            $this->objectStreams[$container] = (new ObjectStreamReader($this->limits, $this->budget, $this->structuralPolicy))->read($stream, $this->streamData($stream), $this);
         }
         $member = $this->objectStreams[$container][$ordinal] ?? null;
         if ($member === null || $member['number'] !== $number) {

@@ -16,7 +16,7 @@ use PDF\Syntax\Object\NullType;
 /** ISO 32000-1, 7.5.4 and 7.5.8: bounded table and stream cross-references. */
 final readonly class CrossReferenceReader
 {
-    public function __construct(private FileBytes $source, private ReaderLimits $limits, private ReadBudget $budget, private StreamDecoder $decoder, private ?SourceStringSpans $sourceStrings = null)
+    public function __construct(private FileBytes $source, private ReaderLimits $limits, private ReadBudget $budget, private StreamDecoder $decoder, private ?SourceStringSpans $sourceStrings = null, private StructuralPolicy $structuralPolicy = StructuralPolicy::Compatible)
     {
     }
 
@@ -30,7 +30,7 @@ final readonly class CrossReferenceReader
         if ($offset < 0 || $offset >= strlen($this->source->bytes)) {
             throw new ParseException('A cross-reference offset is outside the file.', $offset);
         }
-        $parser = new SyntaxParser(new ByteCursor($this->source->bytes, $offset), $this->limits, $this->budget, $this->sourceStrings);
+        $parser = new SyntaxParser(new ByteCursor($this->source->bytes, $offset), $this->limits, $this->budget, $this->sourceStrings, $this->structuralPolicy);
         return $parser->atKeyword('xref') ? $this->table($parser, $offset) : $this->stream($offset);
     }
 
@@ -95,7 +95,7 @@ final readonly class CrossReferenceReader
 
     private function stream(int $offset, bool $auxiliary = false): PhysicalCrossReference
     {
-        $physical = (new IndirectObjectReader($this->source, $this->limits, $this->budget, $this->sourceStrings))->readPhysical($offset);
+        $physical = (new IndirectObjectReader($this->source, $this->limits, $this->budget, $this->sourceStrings, $this->structuralPolicy))->readPhysical($offset);
         $object = $physical->object;
         $stream = $object->value;
         if (!$stream instanceof EncodedStream || $object->identifier->generationNumber->value !== 0) {

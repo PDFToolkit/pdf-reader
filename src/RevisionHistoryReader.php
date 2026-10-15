@@ -15,7 +15,7 @@ use PDF\Syntax\Object\IndirectObject\ObjectNumber;
 /** Bounded physical inspection of a chronological Prev chain, separate from authenticated reading. */
 final readonly class RevisionHistoryReader
 {
-    public function __construct(private ReaderLimits $limits = new ReaderLimits())
+    public function __construct(private ReaderLimits $limits = new ReaderLimits(), private StructuralPolicy $structuralPolicy = StructuralPolicy::Compatible)
     {
     }
 
@@ -36,7 +36,7 @@ final readonly class RevisionHistoryReader
         $offset = (new SyntaxParser(new ByteCursor($footer[1]), $this->limits, $budget))->unsignedInteger();
         $decoder = new StreamDecoder($this->limits);
         $strings = new SourceStringSpans($budget);
-        $reader = new CrossReferenceReader($source, $this->limits, $budget, $decoder, $strings);
+        $reader = new CrossReferenceReader($source, $this->limits, $budget, $decoder, $strings, $this->structuralPolicy);
         $boundaryReader = new RevisionBoundaryReader($source, $this->limits, $budget);
         $physical = [];
         $newerSize = null;
@@ -84,7 +84,8 @@ final readonly class RevisionHistoryReader
                 $this->limits,
                 $budget,
                 $decoder,
-                sourceStrings: $strings
+                sourceStrings: $strings,
+                structuralPolicy: $this->structuralPolicy
             );
             $boundary = $boundaryReader->read($reference, $physicalGraph);
             $boundaries[] = $boundary;
@@ -108,7 +109,8 @@ final readonly class RevisionHistoryReader
                 $budget,
                 $decoder,
                 physicalRevision: new SourceRevision($prefix, $reference->section->trailer, $strings, $budget),
-                sourceStrings: $strings
+                sourceStrings: $strings,
+                structuralPolicy: $this->structuralPolicy
             );
             $knownPhysical = array_slice($physical, 0, $ordinal + 1);
             $knownBoundaries = array_slice($boundaries, 0, $ordinal + 1);

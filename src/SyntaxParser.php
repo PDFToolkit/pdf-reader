@@ -30,6 +30,7 @@ final class SyntaxParser
         private readonly ReaderLimits $limits = new ReaderLimits(),
         ?ReadBudget $budget = null,
         private readonly ?SourceStringSpans $sourceStrings = null,
+        private readonly StructuralPolicy $structuralPolicy = StructuralPolicy::Compatible,
     ) {
         $this->budget = $budget ?? new ReadBudget($limits);
     }
@@ -48,6 +49,36 @@ final class SyntaxParser
             throw new ParseException('An unsigned integer was expected.', $start);
         }
         return $this->integerValue($token, $start);
+    }
+
+    public function objectNumber(): int
+    {
+        return $this->identifierNumber(false);
+    }
+
+    public function generationNumber(): int
+    {
+        return $this->identifierNumber(true);
+    }
+
+    private function identifierNumber(bool $allowZero): int
+    {
+        $this->cursor->skipWhitespaceAndComments();
+        $start = $this->cursor->position();
+        $token = $this->token();
+        if ($token === '' || !ctype_digit($token)) {
+            throw new ParseException('An object identifier requires unsigned decimal digits.', $start);
+        }
+        $this->validateIdentifierToken($token, $allowZero, $start);
+        return $this->integerValue($token, $start);
+    }
+
+    private function validateIdentifierToken(string $token, bool $allowZero, int $start): void
+    {
+        if ($this->structuralPolicy === StructuralPolicy::Pdf20
+            && ($token[0] === '0' && (strlen($token) !== 1 || !$allowZero))) {
+            throw new ParseException('PDF 2.0 object identifiers require canonical decimal digits without leading zeros.', $start);
+        }
     }
 
     public function keyword(string $keyword): void
@@ -114,6 +145,8 @@ final class SyntaxParser
             if (ctype_digit($this->cursor->peek())) {
                 $generationToken = $this->token();
                 if (ctype_digit($generationToken) && $this->atKeyword('R')) {
+                    $this->validateIdentifierToken($token, false, $start);
+                    $this->validateIdentifierToken($generationToken, true, $after);
                     $generation = $this->integerValue($generationToken, $after);
                     if ($integer === 0 || $generation > 65535) {
                         throw new ParseException('Invalid indirect-reference identifier.', $start);

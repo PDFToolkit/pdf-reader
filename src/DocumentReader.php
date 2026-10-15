@@ -17,7 +17,7 @@ use PDF\Syntax\Object\NameType;
 /** Read PDF 1.0–2.0 syntax; source access and upload policy belong to the application. */
 final readonly class DocumentReader
 {
-    public function __construct(private ReaderLimits $limits = new ReaderLimits(), private ?DocumentAuthentication $authentication = null, private SourceIntegrityPolicy $sourceIntegrity = SourceIntegrityPolicy::AcceptUnprotected)
+    public function __construct(private ReaderLimits $limits = new ReaderLimits(), private ?DocumentAuthentication $authentication = null, private SourceIntegrityPolicy $sourceIntegrity = SourceIntegrityPolicy::AcceptUnprotected, private StructuralPolicy $structuralPolicy = StructuralPolicy::Compatible)
     {
     }
 
@@ -29,7 +29,7 @@ final readonly class DocumentReader
     /** Physical inspection only: authentication and integrity policy apply separately through read(). */
     public function readRevisionHistory(FileBytes $source): ReadRevisionHistory
     {
-        return (new RevisionHistoryReader($this->limits))->read($source);
+        return (new RevisionHistoryReader($this->limits, $this->structuralPolicy))->read($source);
     }
 
     /** Immutable composition may strengthen integrity; it never relaxes an existing requirement. */
@@ -37,7 +37,7 @@ final readonly class DocumentReader
     {
         return $policy === SourceIntegrityPolicy::AcceptUnprotected || $this->sourceIntegrity === SourceIntegrityPolicy::RequirePdfMac
             ? $this
-            : new self($this->limits, $this->authentication, $policy);
+            : new self($this->limits, $this->authentication, $policy, $this->structuralPolicy);
     }
 
     public function read(FileBytes $source): ReadDocument
@@ -58,7 +58,7 @@ final readonly class DocumentReader
         $offset = (new SyntaxParser(new ByteCursor($footer[1]), $this->limits, $budget))->unsignedInteger();
         $decoder = new StreamDecoder($this->limits);
         $strings = new SourceStringSpans($budget);
-        $reader = new CrossReferenceReader($source, $this->limits, $budget, $decoder, $strings);
+        $reader = new CrossReferenceReader($source, $this->limits, $budget, $decoder, $strings, $this->structuralPolicy);
         $sections = [];
         $seen = [];
         $trailerEntries = [];
@@ -86,7 +86,7 @@ final readonly class DocumentReader
         $trailer = new DictionaryType(...$entries);
         $index = new Index(...$sections);
         $physical = new SourceRevision($source, $sections[0]->trailer, $strings, $budget);
-        $document = new ReadDocument($source, $fileHeader, $trailer, $index, $this->limits, $budget, $decoder, physicalRevision: $physical, sourceStrings: $strings);
+        $document = new ReadDocument($source, $fileHeader, $trailer, $index, $this->limits, $budget, $decoder, physicalRevision: $physical, sourceStrings: $strings, structuralPolicy: $this->structuralPolicy);
         // A null dictionary value is equivalent to absence, including a reference that resolves to null.
         // The completed index is required here; resolution keeps the same document's cumulative budgets.
         $encryption = $document->trailer()->get('Encrypt');
@@ -101,7 +101,7 @@ final readonly class DocumentReader
                     throw new EncryptedPdfException($sections[0]->offset->value);
                 }
                 $decryption = $this->authentication->authenticate($document, $encryption, $resolved->terminalId);
-                $document = new ReadDocument($source, $fileHeader, $trailer, $index, $this->limits, $budget, $decoder, $decryption, $physical, $strings);
+                $document = new ReadDocument($source, $fileHeader, $trailer, $index, $this->limits, $budget, $decoder, $decryption, $physical, $strings, $this->structuralPolicy);
             }
         }
         if ($document->permissions() === null && (new SecurityDictionaryValues($document, $trailer))->value('AuthCode') !== null) {
