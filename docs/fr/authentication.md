@@ -98,6 +98,8 @@ fichiers de métadonnées indépendamment ; cryptography construit les payloads 
 avec les credentials de qpdf. qpdf 12.4.2 ne déchiffre pas EFF lorsque StmF vaut
 Identity, même avec un Type direct ; son déchiffrement n'est donc pas un oracle
 pour ce choix précis. Ses algorithmes ne sont jamais modifiés pour le test.
+La CI fixe qpdf 12.4.2 avec SHA vérifié ; d'anciennes versions peuvent produire
+des métadonnées non documentaires en clair avec le réglage du seul document.
 qpdf 12.4.2 exige aussi Length global pour V4 ; le cas sans cette clé conserve
 tous les offsets et octets chiffrés de la source vérifiée indépendamment et suit
 le contrat fixe de 128 bits de la table 20. Voir
