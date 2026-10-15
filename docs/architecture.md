@@ -139,6 +139,12 @@ The [page guide](pages.md) explains this composition using independent fixtures.
 
 ## Budgets and boundaries
 
+`ReadDocument::resolve()` follows physical indirect-reference chains under the
+same document depth ceiling, rejects cycles by object number and generation,
+and preserves unavailable references as PDF null. ISO 32000-2:2020, 7.3.10
+(physical page 49), permits these chains outside object streams; compressed
+members consisting only of another reference remain rejected.
+
 `ReaderLimits` describes ceilings. A `ReadBudget`, created for each
 `DocumentReader::read()` call, adds up parsed values, xref entries, retained
 bytes and bytes produced by decoding stages. Ceilings are shared by readers

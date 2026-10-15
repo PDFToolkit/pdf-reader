@@ -35,9 +35,6 @@ final readonly class IndirectObjectReader
         }
         $parser->keyword('obj');
         $value = $parser->read();
-        if ($value instanceof ObjectReference) {
-            throw new ParseException('An indirect object cannot consist of another indirect reference.', $offset);
-        }
         if ($value instanceof DictionaryType && $parser->atKeyword('stream')) {
             $parser->keyword('stream');
             $cursor = $parser->cursor;

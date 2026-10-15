@@ -89,7 +89,16 @@ final class ReadDocument implements ObjectResolver
 
     public function resolve(BasicType $value): BasicType
     {
-        return $value instanceof ObjectReference ? $this->object($value->identifier) : $value;
+        $seen = [];
+        while ($value instanceof ObjectReference) {
+            $identity = $value->identifier->objectNumber->value . ':' . $value->identifier->generationNumber->value;
+            if (isset($seen[$identity]) || count($seen) >= $this->limits->maxDepth) {
+                throw new ParseException('An indirect-reference chain contains a cycle or exceeds its depth limit.');
+            }
+            $seen[$identity] = true;
+            $value = $this->object($value->identifier);
+        }
+        return $value;
     }
 
     public function object(ObjectIdentifier $identifier): BasicType

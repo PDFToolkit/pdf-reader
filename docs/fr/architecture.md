@@ -167,6 +167,12 @@ ciphertext ; `encodedBytes()` fournit les octets prêts pour les codecs.
 
 ## Provenance de l’intégrité source
 
+`ReadDocument::resolve()` suit les chaînes de références indirectes physiques
+sous la limite de profondeur du document, détecte les cycles par numéro et
+génération et conserve les références indisponibles comme null PDF.
+ISO 32000-2:2020, 7.3.10 (page physique 49), autorise ces chaînes hors des flux
+d’objets ; un membre compressé constitué uniquement d’une référence reste refusé.
+
 L’authentification reçoit le graphe brut avant la création du graphe déchiffré.
 `SourceRevision` conserve le dernier trailer physique séparément du trailer
 effectif hérité. Les étendues de chaînes établies par le parseur identifient le
