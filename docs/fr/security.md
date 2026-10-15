@@ -140,3 +140,13 @@ sont préservés. Le [guide d'authentification](authentication.md) distingue cla
 sources, limite de déchiffrement EFF de qpdf et fixtures cryptography indépendantes.
 Les tags AES-GCM modifiés échouent sans produire de plaintext. Les erreurs
 d’authentification ne révèlent ni credentials ni contenu du document.
+
+## Inspection des révisions physiques
+
+`readRevisionHistory()` ne déclenche pas l’authentification ni la politique MAC
+d’un `DocumentReader`. Son graphe brut peut contenir du ciphertext et n’atteste
+aucune permission. Les préfixes, index et étendues sont contrôlés et comptés dans
+un budget partagé ; les objets historiques ne peuvent atteindre des octets futurs.
+Une lecture authentifiée séparée applique la politique configurée aux octets
+exacts choisis. Voir le [guide physique](revision-history.md) et
+[ReadingRevisionHistoryTest](../../tests/ReadingRevisionHistoryTest.php).

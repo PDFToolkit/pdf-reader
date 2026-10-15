@@ -32,6 +32,17 @@ Ces opérations chargent le graphe de base. Les services de pages ci-dessous
 ajoutent un parcours demandé explicitement ; le chargement du catalogue seul
 ne visite pas cet arbre.
 
+## Vues physiques
+
+`DocumentReader::readRevisionHistory(FileBytes)` retourne un `ReadRevisionHistory`
+comptable et itérable, d’anciens `ReadRevision` vers les nouveaux. Chaque vue
+conserve `crossReference`, `boundary`, `rawDocument()` et `source(?int $byteLength)`.
+`acceptsByteLength()` contrôle l’intervalle EOF sans choisir les octets signés.
+`ReadDocument::crossReferences()` expose l’index effectif, dont `entries()` garde
+aussi les entrées libres et indisponibles ; `objectSpan(ObjectIdentifier)` donne
+l’étendue ordinaire ou null. Voir le [contrat physique](revision-history.md) pour
+les bornes, suppléments hybrides, Contents, budgets et limites d’authentification.
+
 ## Pages, héritage et contenu
 
 | Composant | Construction et rôle |

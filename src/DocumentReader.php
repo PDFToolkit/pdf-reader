@@ -26,6 +26,12 @@ final readonly class DocumentReader
         return $this->sourceIntegrity;
     }
 
+    /** Physical inspection only: authentication and integrity policy apply separately through read(). */
+    public function readRevisionHistory(FileBytes $source): ReadRevisionHistory
+    {
+        return (new RevisionHistoryReader($this->limits))->read($source);
+    }
+
     /** Immutable composition may strengthen integrity; it never relaxes an existing requirement. */
     public function requiringSourceIntegrity(SourceIntegrityPolicy $policy): self
     {
@@ -95,7 +101,7 @@ final readonly class DocumentReader
                     throw new EncryptedPdfException($sections[0]->offset->value);
                 }
                 $decryption = $this->authentication->authenticate($document, $encryption, $resolved->terminalId);
-                $document = new ReadDocument($source, $fileHeader, $trailer, $index, $this->limits, $budget, $decoder, $decryption, $physical);
+                $document = new ReadDocument($source, $fileHeader, $trailer, $index, $this->limits, $budget, $decoder, $decryption, $physical, $strings);
             }
         }
         if ($document->permissions() === null && (new SecurityDictionaryValues($document, $trailer))->value('AuthCode') !== null) {

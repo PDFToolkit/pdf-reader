@@ -130,3 +130,13 @@ The [authentication guide](authentication.md) records source clauses and qpdf's
 EFF decryption limitation separately from the independent cryptography fixtures.
 Modified AES-GCM tags fail without returning plaintext. Authentication
 errors do not disclose credentials or document contents.
+
+## Physical revision inspection
+
+`readRevisionHistory()` does not invoke a `DocumentReader` authentication capability
+or MAC policy. Its raw graph may contain ciphertext and establishes no permissions.
+Prefixes, indexes and extents are validated and charged to a shared budget;
+historical objects cannot reach future bytes. A separate authenticated read
+applies the configured policy to the exact selected bytes. See the
+[physical guide](revision-history.md) and
+[ReadingRevisionHistoryTest](../tests/ReadingRevisionHistoryTest.php).

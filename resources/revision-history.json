@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "mechanism": "Physical source revision history",
+  "references": [
+    {
+      "document": "PDF32000_2008.pdf",
+      "path": "https://github.com/PDFToolkit/pdf/blob/2e3f2241985e8705c99df535f1ceca266036bc10/resources/reference-documents/PDF32000_2008.pdf",
+      "sha256": "2dc784890e65da6c324d46ece182fb4705b751e49587b1bbe9c3225c25fed4d3",
+      "clauses": [
+        "7.5.4",
+        "7.5.5",
+        "7.5.6",
+        "7.5.7",
+        "7.5.8.1",
+        "7.5.8.3",
+        "7.5.8.4"
+      ],
+      "physicalPdfPages": [
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        57,
+        58,
+        59,
+        60,
+        61
+      ]
+    }
+  ],
+  "implementation": [
+    "src/RevisionHistoryReader.php",
+    "src/RevisionBoundaryReader.php",
+    "src/ReadRevision.php",
+    "src/ReadRevisionHistory.php",
+    "src/ReadDocument.php"
+  ],
+  "tests": [
+    "tests/ReadingRevisionHistoryTest.php",
+    "tools/validate_revision_history.py"
+  ],
+  "boundaries": [
+    "Physical views have no signature, trust or modification authority.",
+    "Exact ByteRange endpoints must be selected and authenticated separately; EOF whitespace is never normalized.",
+    "Linearized or forward Prev chains and unindexed syntax remain unsupported by history inspection; read behavior remains unchanged.",
+    "Objects after primary xref streams are accepted only with verified indexed nonoverlapping extents.",
+    "Encrypted raw object-stream contents are not authenticated or decrypted by physical inspection."
+  ],
+  "oracle": {
+    "sources": 12,
+    "prefixes": 30,
+    "mathematicalSignatureVerifications": 14,
+    "tools": [
+      "pyHanko",
+      "qpdf --suppress-recovery --check"
+    ],
+    "trust": "Offline; no trust roots, no modification authorization claim."
+  }
+}

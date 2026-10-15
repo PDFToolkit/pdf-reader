@@ -25,4 +25,10 @@ final readonly class Index
     {
         return $this->entries[$number] ?? null;
     }
+
+    /** @return array<int, Entry> Effective entries, including free and unavailable numbers. */
+    public function entries(): array
+    {
+        return $this->entries;
+    }
 }

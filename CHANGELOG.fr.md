@@ -4,6 +4,13 @@
 
 ## Non publié
 
+## 0.6.0 - 2026-10-15
+
+- Exposer des historiques physiques immuables bornés avec frontières xref/EOF vérifiées, préfixes exacts, graphes bruts effectifs, identités et étendues sources, y compris les objets placés après un flux xref principal.
+- Préserver la provenance des Contents de signature après authentification séparée ; l’inspection brute ne confère ni autorité de signature, ni confiance, ni droit de modification. Distinguer les historiques chronologiques des organisations xref linéarisées et documenter ces limites.
+- Partager les budgets cumulés entre toutes les vues et copies de préfixes. Refuser chevauchements/objets cachés, références futures, footers falsifiés et syntaxe non attribuée.
+- Ajouter des historiques table/stream/hybrides indépendants, de vraies signatures CMS et des sources AES-256 : 12 sources, 30 préfixes contrôlés par qpdf et 14 vérifications mathématiques par version PHP. Conserver les validations précédentes et les guides complets FR/EN.
+
 ## 0.5.2 - 2026-10-15
 
 - Corriger les permissions effectives s3 : les bits source réservés 9–12 ne peuvent pas accorder de droits granulaires ultérieurs. Traduire les quatre droits R2 dans le masque commun document/destinataire en conservant le mot CMS original et le sous-filtre explicite.

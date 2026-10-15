@@ -19,7 +19,7 @@ The package is available on
 application:
 
 ```console
-composer require "pdftoolkit/pdf-reader:^0.5"
+composer require "pdftoolkit/pdf-reader:^0.6"
 ```
 
 The reader uses `roukmoute/pdf:^0.9 || ^0.10 || ^0.11`, installed
@@ -39,6 +39,11 @@ Reader 0.5 authenticates source PDF MACs with explicit credentials before conten
 interpretation. Both standalone and signature-attached locations are supported;
 applications can require integrity with `SourceIntegrityPolicy::RequirePdfMac`.
 See the [source MAC guide](docs/source-mac.md) for exact coverage and limits.
+
+Reader 0.6 exposes [physical revision histories](docs/revision-history.md): exact
+prefixes, xref sections, effective objects and Contents provenance under shared
+budgets. Raw inspection precedes separate authentication; it grants no signature
+or modification authority.
 
 ## Read pages
 
@@ -161,7 +166,7 @@ Unimplemented codecs are explicitly rejected. A stream using an unknown codec ca
 encoded form; requesting decoding raises `UnsupportedPdfFeature`.
 
 Import into the writer, rewriting, merging, text extraction, rendering, forms,
-signatures and PDF repair remain to be implemented. External references and
+signature validation and PDF repair remain to be implemented. External references and
 streams reject serialisation: reusing their numbers in a new document would
 be incorrect without explicit import and remapping.
 
@@ -190,6 +195,7 @@ Patch 0.3.1 corrects catalog-only metadata exemption and resolves indirect strea
 types before selecting embedded-file encryption. Page and object metadata stay
 protected by their chosen filter; explicit Identity and codec bytes are preserved.
 
+- [Physical revision history](docs/revision-history.md)
 - [Architecture and object boundaries](docs/architecture.md)
 - [Pages, inheritance and content streams](docs/pages.md)
 - [Component reference](docs/components.md)

@@ -31,6 +31,17 @@ from the [shared PDF model](https://github.com/PDFToolkit/pdf/tree/master/src/Sy
 These operations load the base graph. The page services below add explicitly
 requested traversal; loading the catalog alone does not visit that tree.
 
+## Physical views
+
+`DocumentReader::readRevisionHistory(FileBytes)` returns a countable, iterable
+`ReadRevisionHistory` of oldest-to-newest `ReadRevision` views. Each keeps
+`crossReference`, `boundary`, `rawDocument()` and `source(?int $byteLength)`.
+`acceptsByteLength()` checks the EOF interval without choosing signed bytes.
+`ReadDocument::crossReferences()` exposes the effective index, whose `entries()`
+includes free and unavailable records; `objectSpan(ObjectIdentifier)` returns
+the ordinary extent or null. See the [physical contract](revision-history.md) for
+bounds, hybrid supplements, Contents, budgets and authentication boundaries.
+
 ## Pages, inheritance and contents
 
 | Component | Construction and role |

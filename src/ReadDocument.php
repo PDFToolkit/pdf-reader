@@ -26,6 +26,8 @@ final class ReadDocument implements ObjectIdentityResolver
     private array $loading = [];
     /** @var array<int, list<array{number: int, value: BasicType}>> */
     private array $objectStreams = [];
+    /** @var array<int, SourceObjectSpan> */
+    private array $objectSpans = [];
     /** @var \SplObjectStorage<EncodedStream, string> */
     private \SplObjectStorage $decoded;
 
@@ -62,6 +64,23 @@ final class ReadDocument implements ObjectIdentityResolver
     public function sourceRevision(): SourceRevision
     {
         return $this->physicalRevision ?? throw new UnsupportedPdfFeature('This read graph has no physical source-revision provenance.');
+    }
+
+    public function crossReferences(): Index
+    {
+        return $this->index;
+    }
+
+    /** Compressed, missing, free and different-generation objects have no ordinary source span. */
+    public function objectSpan(ObjectIdentifier $identifier): ?SourceObjectSpan
+    {
+        $entry = $this->index->entry($identifier->objectNumber->value);
+        if ($entry === null || $entry->kind !== EntryKind::Uncompressed || $entry->generation() !== $identifier->generationNumber->value) {
+            return null;
+        }
+        $this->object($identifier);
+        $span = $this->objectSpans[$identifier->objectNumber->value] ?? null;
+        return $span !== null && (string) $span->identifier === (string) $identifier ? $span : null;
     }
 
     public function mac(): ?PdfMacLocation
@@ -143,7 +162,10 @@ final class ReadDocument implements ObjectIdentityResolver
             if ($entry->kind === EntryKind::Compressed) {
                 $value = $this->compressed($entry->firstField, $entry->secondField, $number);
             } else {
-                $value = (new IndirectObjectReader($this->source, $this->limits, $this->budget, $this->sourceStrings))->read($entry->firstField, $identifier, $this)->value;
+                $physical = (new IndirectObjectReader($this->source, $this->limits, $this->budget, $this->sourceStrings))->readPhysical($entry->firstField, $identifier, $this);
+                $value = $physical->object->value;
+                $this->budget->retained(64);
+                $this->objectSpans[$number] = $physical->span;
                 if ($value instanceof EncodedStream && (new DictionaryAccess($value->dictionary()))->hasName('Type', 'ObjStm')) {
                     $length = $value->dictionary()->get('Length');
                     if ($identifier->generationNumber->value !== 0 || ($length instanceof ObjectReference && $this->index->entry($length->identifier->objectNumber->value)?->kind === EntryKind::Compressed)) {

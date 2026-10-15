@@ -22,6 +22,11 @@ final readonly class CrossReferenceReader
 
     public function read(int $offset): Section
     {
+        return $this->readPhysical($offset)->section;
+    }
+
+    public function readPhysical(int $offset): PhysicalCrossReference
+    {
         if ($offset < 0 || $offset >= strlen($this->source->bytes)) {
             throw new ParseException('A cross-reference offset is outside the file.', $offset);
         }
@@ -29,7 +34,7 @@ final readonly class CrossReferenceReader
         return $parser->atKeyword('xref') ? $this->table($parser, $offset) : $this->stream($offset);
     }
 
-    private function table(SyntaxParser $parser, int $offset): Section
+    private function table(SyntaxParser $parser, int $offset): PhysicalCrossReference
     {
         $parser->keyword('xref');
         $entries = [];
@@ -68,6 +73,7 @@ final readonly class CrossReferenceReader
                 throw new ParseException('A cross-reference entry exceeds trailer Size.', $offset);
             }
         }
+        $supplement = null;
         $auxiliary = $trailer->get('XRefStm');
         if ($auxiliary !== null && !$auxiliary instanceof NullType) {
             if (!$auxiliary instanceof IntegerType || $auxiliary->integer() < 1 || $auxiliary->integer() >= strlen($this->source->bytes)) {
@@ -76,20 +82,21 @@ final readonly class CrossReferenceReader
             // ISO 32000-1, 7.5.8.4: auxiliary stream entries override this table;
             // the stream's Prev is ignored, and the traditional trailer owns the revision.
             $supplement = $this->stream($auxiliary->integer(), true);
-            $supplementSize = (new DictionaryAccess($supplement->trailer))->integer('Size', 1, $size);
-            foreach ($supplement->entries as $entry) {
+            $supplementSize = (new DictionaryAccess($supplement->section->trailer))->integer('Size', 1, $size);
+            foreach ($supplement->section->entries as $entry) {
                 if ($entry->number >= $supplementSize) {
                     throw new ParseException('An auxiliary cross-reference entry exceeds its declared Size.', $offset);
                 }
                 $entries[$entry->number] = $entry;
             }
         }
-        return $this->section($offset, $trailer, array_values($entries));
+        return new PhysicalCrossReference($this->section($offset, $trailer, array_values($entries)), $parser->cursor->position(), false, $supplement);
     }
 
-    private function stream(int $offset, bool $auxiliary = false): Section
+    private function stream(int $offset, bool $auxiliary = false): PhysicalCrossReference
     {
-        $object = (new IndirectObjectReader($this->source, $this->limits, $this->budget, $this->sourceStrings))->read($offset);
+        $physical = (new IndirectObjectReader($this->source, $this->limits, $this->budget, $this->sourceStrings))->readPhysical($offset);
+        $object = $physical->object;
         $stream = $object->value;
         if (!$stream instanceof EncodedStream || $object->identifier->generationNumber->value !== 0) {
             throw new ParseException('A cross-reference stream must be a generation-zero stream object.', $offset);
@@ -164,8 +171,9 @@ final readonly class CrossReferenceReader
         if ($stream->dictionary()->has('XRefStm')) {
             throw new ParseException('An xref stream cannot contain a recursive XRefStm entry.', $offset);
         }
-        return $auxiliary ? new Section(new ByteOffset($offset), $stream->dictionary(), null, ...$entries)
+        $section = $auxiliary ? new Section(new ByteOffset($offset), $stream->dictionary(), null, ...$entries)
             : $this->section($offset, $stream->dictionary(), $entries);
+        return new PhysicalCrossReference($section, $physical->span->end, true);
     }
 
     private function unsignedField(ByteCursor $cursor, int $width): int

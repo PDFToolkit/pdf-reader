@@ -20,10 +20,17 @@ final readonly class IndirectObjectReader
 
     public function read(int $offset, ?ObjectIdentifier $expected = null, ?ObjectResolver $resolver = null): IndirectObject
     {
+        return $this->readPhysical($offset, $expected, $resolver)->object;
+    }
+
+    public function readPhysical(int $offset, ?ObjectIdentifier $expected = null, ?ObjectResolver $resolver = null): ReadIndirectObject
+    {
         if ($offset < 0 || $offset >= strlen($this->source->bytes)) {
             throw new ParseException('An indirect-object offset is outside the file.', $offset);
         }
         $parser = new SyntaxParser(new ByteCursor($this->source->bytes, $offset), $this->limits, $this->budget, $this->sourceStrings);
+        $parser->cursor->skipWhitespaceAndComments();
+        $start = $parser->cursor->position();
         $number = $parser->unsignedInteger();
         $generation = $parser->unsignedInteger();
         if ($number < 1 || $number >= $this->limits->maxObjects || $generation >= 65535) {
@@ -74,6 +81,6 @@ final readonly class IndirectObjectReader
             $value = new EncodedStream($value, $bytes);
         }
         $parser->keyword('endobj');
-        return new IndirectObject($value, $identifier);
+        return new ReadIndirectObject(new IndirectObject($value, $identifier), new SourceObjectSpan($identifier, $start, $parser->cursor->position()));
     }
 }

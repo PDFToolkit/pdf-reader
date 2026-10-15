@@ -184,3 +184,12 @@ catalogue. Le résultat reste dans le contexte de déchiffrement immuable.
 `SourceIntegrityPolicy::RequirePdfMac` refuse aussi une source sans indice MAC.
 Cette politique ne valide pas la confiance dans une signature numérique :
 consulter le [contrat MAC borné](source-mac.md).
+
+## Historique physique distinct
+
+`RevisionHistoryReader` conserve chaque section et son footer vérifié, puis construit
+un graphe brut borné au préfixe de chaque révision. Toutes les vues partagent un
+budget ; le choix d’un préfixe authentifié reste un appel explicite séparé à `read()`.
+Les objets après un flux xref sont délimités par leurs véritables étendues indexées.
+Le [guide des révisions](revision-history.md) décrit le contrat sans autorité
+cryptographique et les limites explicites des structures linéarisées.

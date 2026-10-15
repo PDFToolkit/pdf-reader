@@ -20,7 +20,7 @@ Le package est disponible sur
 consommateur :
 
 ```console
-composer require "pdftoolkit/pdf-reader:^0.5"
+composer require "pdftoolkit/pdf-reader:^0.6"
 ```
 
 Le lecteur utilise le core `roukmoute/pdf:^0.9 || ^0.10 || ^0.11`,
@@ -41,6 +41,11 @@ Le lecteur 0.5 authentifie les MAC des PDF sources avec des identifiants explici
 avant l’interprétation du contenu, en mode autonome ou attaché à une signature.
 `SourceIntegrityPolicy::RequirePdfMac` permet d’exiger cette intégrité.
 Le [guide MAC source](docs/fr/source-mac.md) précise la couverture et les limites.
+
+Le Reader 0.6 expose les [révisions physiques](docs/fr/revision-history.md) :
+préfixes exacts, sections xref, objets effectifs et provenance Contents, avec des
+budgets partagés. L’inspection brute précède toute authentification séparée ;
+elle ne donne aucune autorité de signature ou de modification.
 
 ## Lire les pages
 
@@ -166,7 +171,7 @@ Un codec inconnu peut être conservé encodé ; son décodage
 lève `UnsupportedPdfFeature`.
 
 L'import vers le writer, la réécriture, la fusion, l'extraction de texte, le
-rendu, les formulaires, les signatures et la réparation des PDF restent des
+rendu, les formulaires, la validation des signatures et la réparation des PDF restent des
 mécanismes à construire. Les références et flux externes refusent leur
 sérialisation : réutiliser leurs numéros dans un nouveau document serait
 incorrect sans import et remappage explicites.
@@ -197,6 +202,7 @@ types de flux indirects avant le choix du chiffrement des fichiers embarqués.
 Les métadonnées de page/objet suivent leur filtre ; Identity explicite et les
 octets des codecs sont préservés.
 
+- [Historique physique des révisions](docs/fr/revision-history.md)
 - [Architecture et frontières des objets](docs/fr/architecture.md)
 - [Pages, héritage et flux de contenu](docs/fr/pages.md)
 - [Référence des composants](docs/fr/components.md)

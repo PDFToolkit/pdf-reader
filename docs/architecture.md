@@ -172,3 +172,12 @@ authenticated file key, before catalog interpretation. Verification status is
 kept in the immutable decryption context. `SourceIntegrityPolicy::RequirePdfMac`
 also rejects a source with no MAC indication. This policy does not validate
 digital-signature trust; see [the bounded MAC contract](source-mac.md).
+
+## Separate physical history
+
+`RevisionHistoryReader` retains every section and verified footer, then constructs
+a raw graph bounded to each revision prefix. All views share one budget; reading
+an authenticated prefix remains a separate explicit call to `read()`. Objects
+after an xref stream are delimited by their actual indexed extents. The
+[revision guide](revision-history.md) describes the contract without cryptographic
+authority and the explicit boundary for linearized structures.

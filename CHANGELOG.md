@@ -4,6 +4,13 @@ English | [Français](CHANGELOG.fr.md)
 
 ## Unreleased
 
+## 0.6.0 - 2026-10-15
+
+- Expose bounded immutable physical revision histories with verified xref/EOF boundaries, exact source prefixes, effective raw graphs, object identities and source spans, including objects placed after a primary xref stream.
+- Preserve signature Contents provenance after separate authentication; raw history inspection grants no signature, trust or modification authority. Keep chronological histories distinct from linearized xref arrangements and document their explicit boundaries.
+- Share cumulative budgets across all history views and prefix copies. Reject overlapping/hidden objects, future references, forged footers and unattributed syntax.
+- Add independent table/stream/hybrid histories, real CMS signatures and AES-256 sources: 12 sources, 30 qpdf-checked prefixes and 14 mathematical signature checks per PHP version. Maintain the existing validations and complete English/French guides.
+
 ## 0.5.2 - 2026-10-15
 
 - Correct s3 effective permissions: reserved source bits 9–12 cannot grant later granular rights. Translate the four R2 usage rights into the common document/recipient mask while preserving the original CMS word and explicit subfilter.
