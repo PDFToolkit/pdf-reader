@@ -140,8 +140,12 @@ within the composed components.
 
 `Security\StandardPasswordAuthentication` implements `DocumentAuthentication`.
 Its constructor receives `PdfDocEncodedPassword` for R2–R4 or
-`PreparedPassword` for R5–R7. `ReadDocument::permissions()` exposes immutable
+`PreparedPassword` for R5–R7. `ReadDocument::permissions()` exposes the common
+`DocumentPermissions::effectiveMask()` contract. Standard returns immutable
 `ReadPermissions`: `mask`, `access`, `revision`, `effectiveMask()`.
+`PublicKeyAuthentication` returns `PublicKeyReadPermissions` with per-filter
+recipient facts, explicit `subFilter` and no password identity or revision.
+See [certificate authentication](public-key-authentication.md).
 `EncodedStream::originalEncodedBytes()` preserves source bytes;
 `encodedBytes()` exposes decrypted bytes ready for decompression.
 `Filters\LzwDecoder` receives the core `EarlyChange` value;

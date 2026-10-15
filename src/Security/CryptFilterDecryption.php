@@ -17,7 +17,7 @@ use PDF\Security\Rc4Cipher;
 use PDF\Syntax\Object\IndirectObject\ObjectIdentifier;
 
 /** One immutable named crypt-filter capability, using the core's native cipher operations. */
-final readonly class CryptFilterDecryption
+final readonly class CryptFilterDecryption implements CryptFilterAccess
 {
     public function __construct(
         public CryptMethod $method,

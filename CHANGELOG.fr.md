@@ -2,6 +2,17 @@
 
 [English](CHANGELOG.md) | Français
 
+## Non publié
+
+- Ajouter l’authentification Adobe.PubSec explicite par certificat (s3/s4 RC4 ;
+  s5 RC4, AESV2, AESV3 et AESV4), clés par filtre, EFOpen différé, budgets
+  cumulatifs destinataires/credentials et PDF MAC source via DefaultCryptFilter.
+- Retourner le contrat commun DocumentPermissions depuis ReadDocument::permissions().
+  Standard conserve ReadPermissions ; les certificats exposent des faits immuables
+  distincts et le subfilter, sans revendiquer un accès propriétaire par mot de passe.
+- Ajouter des sources indépendantes produites par pyHanko, contrôles CMS/clé/chiffrement
+  et tests adverses d’accès, ordre, intégrité et budgets ; maintenir les guides bilingues.
+
 ## 0.4.1 - 2026-10-15
 
 - Conserver les identités terminales du dictionnaire de chiffrement et des

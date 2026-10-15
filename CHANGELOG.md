@@ -2,6 +2,17 @@
 
 English | [Français](CHANGELOG.fr.md)
 
+## Unreleased
+
+- Add explicit Adobe.PubSec certificate authentication (s3/s4 RC4; s5 RC4,
+  AESV2, AESV3 and AESV4), per-filter keys, deferred EFOpen access, cumulative
+  recipient/credential budgets and source PDF MAC with DefaultCryptFilter.
+- Return the common DocumentPermissions contract from ReadDocument::permissions().
+  Existing Standard ReadPermissions remain available; certificate recipients expose
+  separate immutable facts and explicit subfilter, without password-owner claims.
+- Add independent pyHanko-produced sources, CMS/key/cipher checks and adverse
+  access, packet-order, integrity and budget tests; maintain bilingual guides.
+
 ## 0.4.1 - 2026-10-15
 
 - Preserve the terminal encryption-dictionary identity and catalog-owned

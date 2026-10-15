@@ -24,9 +24,9 @@ use PDF\Syntax\Object\StringType;
 /** Authenticated file-local transformation; object-stream members are already decrypted as bytes. */
 final readonly class DocumentDecryption
 {
-    /** @param array<string, CryptFilterDecryption> $filters */
+    /** @param array<string, CryptFilterAccess> $filters */
     public function __construct(
-        public ReadPermissions $permissions,
+        public DocumentPermissions $permissions,
         private bool $encryptMetadata,
         private ?ObjectIdentifier $encryptionObject,
         private array $filters,
@@ -161,7 +161,7 @@ final readonly class DocumentDecryption
         return [new DictionaryType(...$entries), $selected];
     }
 
-    private function filter(string $name): CryptFilterDecryption
+    private function filter(string $name): CryptFilterAccess
     {
         return $this->filters[$name] ?? throw new ParseException('A selected crypt filter is not defined in the encryption dictionary.');
     }

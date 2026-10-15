@@ -33,8 +33,8 @@ La version 0.4 accepte la syntaxe PDF 1.0–1.7 et PDF 2.0, y compris la version
 `/Version /2.0` du catalogue, avec les mêmes lecteurs bornés d’objets et de flux.
 Les dictionnaires PDF 2.0 deviennent accessibles aux interprètes optionnels,
 dont `pdftoolkit/pdf-to-html` ; cela n’interprète pas chaque mécanisme PDF 2.0.
-L’authentification Standard par mot de passe est explicite ; les autres handlers
-de sécurité, codecs non pris en charge, rendu et import restent des limites.
+L’authentification Standard par mot de passe et Adobe.PubSec par certificat est
+explicite ; les handlers et codecs non pris en charge, le rendu et l’import restent des limites.
 Consulter le [guide d’authentification](docs/fr/authentication.md).
 
 Le lecteur 0.4 authentifie les MAC des PDF sources avec des identifiants explicites
@@ -159,8 +159,10 @@ L’authentification native Standard prend en charge R2–R7 et les crypt filter
 nommés. Les PDF MAC source sont vérifiés avant l’interprétation du contenu
 protégé, avec les modes autonome et attaché à une signature. L’application
 peut en exiger un avec `SourceIntegrityPolicy::RequirePdfMac`.
-Consulter le [guide PDF MAC](docs/fr/source-mac.md). L’authentification par clé publique
-reste à implémenter. Un codec inconnu peut être conservé encodé ; son décodage
+L’authentification Adobe.PubSec accepte des capacités de destinataire explicites,
+des clés distinctes par filtre et un accès différé aux pièces jointes. Consulter
+le [guide clé publique](docs/fr/public-key-authentication.md) et le [guide PDF MAC](docs/fr/source-mac.md).
+Un codec inconnu peut être conservé encodé ; son décodage
 lève `UnsupportedPdfFeature`.
 
 L'import vers le writer, la réécriture, la fusion, l'extraction de texte, le

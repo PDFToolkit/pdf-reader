@@ -83,7 +83,7 @@ authentifiés ne peuvent pas être sérialisés directement dans un nouveau docu
 Les PDF MAC source (`KDFSalt`/`AuthCode`) sont vérifiés avant l’interprétation
 du contenu protégé, pour Standard R5–R7. Le [guide PDF MAC](source-mac.md) décrit
 les deux emplacements, la couverture exacte, la politique obligatoire et les limites.
-L’authentification par clé publique reste explicitement refusée. Les codecs image non pris
+Adobe.PubSec dispose d’une [capacité par certificat distincte](public-key-authentication.md). Les codecs image non pris
 en charge restent distincts du déchiffrement. Une authentification réussie ne
 certifie pas que le PDF original peut être exécuté sans risque par un autre logiciel.
 

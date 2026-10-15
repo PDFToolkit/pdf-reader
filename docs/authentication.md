@@ -79,7 +79,7 @@ directly into a new document.
 Source PDF MAC verification (`KDFSalt`/`AuthCode`) is performed before protected
 content is interpreted, for Standard R5–R7. See the [PDF MAC guide](source-mac.md)
 for both locations, exact byte coverage, required-integrity policy and boundaries.
-Public-key authentication remains explicitly unsupported. Unsupported image codecs
+Adobe.PubSec has a separate [certificate authentication capability](public-key-authentication.md). Unsupported image codecs
 remain separate from decryption. Successful authentication does not certify
 that an original PDF is safe to execute in another application.
 

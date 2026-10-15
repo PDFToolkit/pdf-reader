@@ -86,8 +86,10 @@ can produce a new MAC. An empty user password offers no additional protection
 against someone who can derive that key. Successful MAC authentication does
 not make PDF actions or attachments safe to execute.
 
-Public-key source authentication, unknown MAC locations and other CMS wrapping
-or MAC algorithms are explicitly unsupported. Attached payloads currently
+Adobe.PubSec s5 V5/V6 uses the authenticated 256-bit `DefaultCryptFilter` key,
+even when `StmF`, `StrF` or `EFF` selects another filter. Permissions are recovered
+from CMS envelopes, never the legacy `P` entry. See [public-key authentication](public-key-authentication.md).
+Unknown MAC locations and other CMS wrapping or MAC algorithms are explicitly unsupported. Attached payloads currently
 require direct hexadecimal Contents and ByteRange, with an uncompressed source
 signature object. This is a bounded source reader, not a complete PDF conformance
 validator. A custom `DocumentAuthentication` is a trusted application capability;

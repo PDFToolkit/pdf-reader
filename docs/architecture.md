@@ -5,8 +5,8 @@ English | [Français](fr/architecture.md)
 Version 0.3 accepts PDF 1.0–1.7 and PDF 2.0 headers and catalog versions.
 The shared syntax and object-stream pipeline exposes the source dictionaries;
 semantic interpretation of tagging, fonts or metadata belongs to optional layers.
-Unsupported filters remain explicitly rejected. Standard authentication is
-selected through an explicit capability ([guide](authentication.md)).
+Unsupported filters remain explicitly rejected. Standard password and Adobe.PubSec authentication are selected through explicit
+capabilities ([passwords](authentication.md), [certificates](public-key-authentication.md)).
 
 The reader transforms PDF bytes into a browsable object graph. It retains
 references as explicit values and uses primitives from

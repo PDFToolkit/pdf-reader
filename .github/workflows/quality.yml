@@ -41,6 +41,10 @@ jobs:
         run: python tools/validate_filter_cases.py
       - name: Authenticate independently encrypted Standard-handler PDFs
         run: python tools/validate_authentication.py
+      - name: Authenticate independently encrypted Adobe.PubSec PDFs
+        run: python tools/validate_public_key_authentication.py
+      - name: Verify Adobe.PubSec metadata ownership through physical aliases
+        run: python tools/validate_public_key_aliases.py
       - name: Verify metadata ownership and indirect embedded-file crypt filters
         run: python tools/validate_metadata_security.py
       - name: Verify native source PDF MAC against independent CMS and ciphertext

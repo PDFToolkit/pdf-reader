@@ -143,8 +143,12 @@ Pour conserver les mêmes plafonds sur toute une lecture, utiliser le même
 
 `Security\StandardPasswordAuthentication` implémente `DocumentAuthentication`.
 Le constructeur reçoit un `PdfDocEncodedPassword` pour R2–R4 ou un
-`PreparedPassword` pour R5–R7. `ReadDocument::permissions()` expose un
+`PreparedPassword` pour R5–R7. `ReadDocument::permissions()` expose le contrat
+commun `DocumentPermissions::effectiveMask()`. Standard retourne le
 `ReadPermissions` immuable : `mask`, `access`, `revision`, `effectiveMask()`.
+`PublicKeyAuthentication` retourne `PublicKeyReadPermissions` avec faits de
+destinataire par filtre et `subFilter` explicite, sans identité ni révision de mot de passe.
+Voir [l’authentification par certificat](public-key-authentication.md).
 `EncodedStream::originalEncodedBytes()` conserve les octets source ;
 `encodedBytes()` fournit les octets déchiffrés prêts pour la décompression.
 `Filters\LzwDecoder` reçoit la valeur `EarlyChange` du core ;

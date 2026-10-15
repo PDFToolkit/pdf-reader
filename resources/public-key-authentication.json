@@ -1,0 +1,81 @@
+{
+  "schemaVersion": 1,
+  "mechanism": "Adobe.PubSec source authentication",
+  "references": [
+    {
+      "document": "ISO_32000-2_sponsored_EC3.pdf",
+      "path": "https://github.com/PDFToolkit/pdf/blob/2e3f2241985e8705c99df535f1ceca266036bc10/resources/reference-documents/ISO_32000-2_sponsored_EC3.pdf",
+      "sha256": "90f4b666d46405dd62630a98d514158b4de5304b749523c4081680ac4fe2e230",
+      "clauses": [
+        "7.6.5.1",
+        "7.6.5.2",
+        "7.6.5.3",
+        "7.6.6"
+      ],
+      "physicalPdfPages": [
+        101,
+        102,
+        103,
+        104,
+        106,
+        107,
+        108
+      ]
+    },
+    {
+      "document": "PDF32000_2008.pdf",
+      "path": "https://github.com/PDFToolkit/pdf/blob/2e3f2241985e8705c99df535f1ceca266036bc10/resources/reference-documents/PDF32000_2008.pdf",
+      "sha256": "2dc784890e65da6c324d46ece182fb4705b751e49587b1bbe9c3225c25fed4d3",
+      "clauses": [
+        "7.6.4",
+        "7.6.4.3"
+      ],
+      "physicalPdfPages": [
+        72,
+        73,
+        74,
+        75,
+        76,
+        77
+      ]
+    },
+    {
+      "document": "adobe_supplement_iso32000.pdf",
+      "path": "https://github.com/PDFToolkit/pdf/blob/2e3f2241985e8705c99df535f1ceca266036bc10/resources/reference-documents/adobe_supplement_iso32000.pdf",
+      "sha256": "50d0bbc96028dca1a54cf3c671054536d26e9494dc52877061763b4aed08ac48",
+      "clauses": [
+        "AESV3 public-key key derivation"
+      ],
+      "physicalPdfPages": [
+        21
+      ]
+    },
+    {
+      "document": "ISO-TS-32004-2024_sponsored.pdf",
+      "path": "https://github.com/PDFToolkit/pdf/blob/2e3f2241985e8705c99df535f1ceca266036bc10/resources/reference-documents/ISO-TS-32004-2024_sponsored.pdf",
+      "sha256": "af5f0fe35ac2740e048066f8d9459c3c983cad3ffb2383cb482eea441b334979",
+      "clauses": [
+        "6.4"
+      ],
+      "physicalPdfPages": [
+        15
+      ]
+    }
+  ],
+  "implementation": [
+    "src/Security/PublicKeyAuthentication.php",
+    "src/Security/PublicKeyCryptFilterDecryption.php",
+    "src/Security/PublicKeyReadPermissions.php"
+  ],
+  "tests": [
+    "tests/ReadingPublicKeyAuthenticationTest.php",
+    "tools/validate_public_key_authentication.py"
+  ],
+  "boundaries": [
+    "Explicit application identities and permission byte order; no certificate trust, revocation or network discovery.",
+    "Individual-stream rights do not grant document permissions.",
+    "CFM None/custom handlers remain unsupported.",
+    "Historical optional Length defaults do not imply ISO2 conformance.",
+    "S3 permissions preserve the source word and subfilter; only R2 usage bits are meaningful."
+  ]
+}

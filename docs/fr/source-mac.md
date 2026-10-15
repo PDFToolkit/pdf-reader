@@ -91,8 +91,10 @@ Un mot de passe utilisateur vide n’ajoute pas de protection face à quelqu’u
 qui peut dériver cette clé. Une authentification MAC réussie ne rend pas les
 actions et pièces jointes du PDF sûres à exécuter.
 
-L’authentification source par clé publique, les emplacements MAC inconnus et
-les autres mécanismes d’enveloppage CMS ou de MAC restent explicitement refusés.
+Adobe.PubSec s5 V5/V6 utilise la clé authentifiée de 256 bits de `DefaultCryptFilter`,
+même si `StmF`, `StrF` ou `EFF` sélectionne un autre filtre. Les permissions viennent
+des enveloppes CMS, jamais de l’ancien champ `P`. Voir [l’authentification par clé publique](public-key-authentication.md).
+Les emplacements MAC inconnus et les autres mécanismes d’enveloppage CMS ou de MAC restent explicitement refusés.
 Les conteneurs attachés exigent actuellement Contents hexadécimal direct,
 ByteRange direct et objet signature source non compressé. Ce lecteur borné
 n’est pas un validateur complet de conformité PDF. Un `DocumentAuthentication`

@@ -7,7 +7,7 @@ namespace PDF\Reading;
 use PDF\Reading\CrossReference\EntryKind;
 use PDF\Reading\CrossReference\Index;
 use PDF\Reading\Security\DocumentDecryption;
-use PDF\Reading\Security\ReadPermissions;
+use PDF\Reading\Security\DocumentPermissions;
 use PDF\Reading\Security\PdfMacLocation;
 use PDF\Syntax\FileStructure\BasicType;
 use PDF\Syntax\FileStructure\FileHeader;
@@ -54,7 +54,7 @@ final class ReadDocument implements ObjectIdentityResolver
         return $this->fileTrailer;
     }
 
-    public function permissions(): ?ReadPermissions
+    public function permissions(): ?DocumentPermissions
     {
         return $this->decryption?->permissions;
     }

@@ -13,8 +13,7 @@ mean absence; other types are parse errors. An injected
 `StandardPasswordAuthentication` authenticates before catalog interpretation,
 checks encrypted R5–R7 permissions and decrypts objects once under shared budgets.
 See the [authentication guide](authentication.md) for R2–R7, explicit password
-preparation, [source PDF MAC verification](source-mac.md), and the unsupported
-public-key boundary.
+preparation, [source PDF MAC verification](source-mac.md), and [public-key authentication](public-key-authentication.md).
 
 ## Checked surfaces
 
@@ -25,7 +24,7 @@ public-key boundary.
 | Cursors | Each view has bounds; out-of-view reads and movement are rejected. Compressed objects are parsed in separate slices. |
 | Xref | Offsets, generations, types and ranges checked; big-endian fields without integer overflow; non-overlapping subsections and `/Index` ranges. |
 | Revisions | Bounded `/Prev` chain and cycle detection; newer entries, including free ones, override older entries. An outdated generation resolves to null. |
-| Source MAC | Standard R5–R7 key-bound verification before content, actual payload source spans, exact whole-file coverage, strict standalone framing, bounded signature padding, CMS/HMAC and digest checks. Required-integrity policy rejects clear or stripped sources too. |
+| Source MAC | Standard R5–R7 and Adobe.PubSec key-bound verification before content, actual payload source spans, exact whole-file coverage, strict standalone framing, bounded signature padding, CMS/HMAC and digest checks. Required-integrity policy rejects clear or stripped sources too. |
 | Objects | Actual identifier compared with the xref entry; bounded recursive loading and loading-cycle detection; document-scoped caches. |
 | Page tree | Explicit traversal stack; dedicated depth, node and leaf limits; rejection of cycles, repeated descendants, inconsistent counts and incorrect Parent links. |
 | Inheritance | Resource, rectangle and rotation types checked; only four inheritable entries; local resources replace inherited values without merging; rotation must be a multiple of 90. |
@@ -100,7 +99,7 @@ Resolution is on demand. Opening checks the catalog and xref structures but
 does not visit every object or resource. A defect in an object not loaded yet
 may be reported during a later access. The reader does not repair damaged
 files and rejects unsupported mechanisms, including unverified PDF MACs,
-public-key authentication and image-specific decompression codecs.
+unknown security handlers and image-specific decompression codecs.
 
 Diagnostics and extracted values must not be sent to an HTML page without
 escaping or published without access controls. Data in dictionaries, names

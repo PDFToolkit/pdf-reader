@@ -1,7 +1,7 @@
 {
     "name": "pdftoolkit/pdf-reader",
     "type": "library",
-    "description": "A bounded PDF object reader with native password and source PDF MAC authentication for PHP 8.3+",
+    "description": "A bounded PDF object reader with password, certificate and source PDF MAC authentication for PHP 8.3+",
     "keywords": [
         "pdf",
         "pdf-1.7",
@@ -29,7 +29,7 @@
         "phpunit/phpunit": "^12.0"
     },
     "suggest": {
-        "ext-openssl": "Required only when explicitly selecting native AES password authentication."
+        "ext-openssl": "Required when explicitly selecting native AES or OpenSSL certificate authentication."
     },
     "license": "MIT",
     "authors": [

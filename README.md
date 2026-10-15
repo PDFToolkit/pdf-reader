@@ -31,7 +31,7 @@ Version 0.4 accepts PDF 1.0–1.7 and PDF 2.0 syntax, including the catalog
 `/Version /2.0` override, using the same bounded object and stream readers.
 This makes PDF 2.0 dictionaries available to optional interpreters such as
 `pdftoolkit/pdf-to-html`; it does not interpret every PDF 2.0 feature.
-Standard-handler password authentication is opt-in; unsupported security handlers,
+Standard password and Adobe.PubSec certificate authentication are explicit; unsupported security handlers,
 codecs, rendering and importing remain explicit limits. See the
 [authentication guide](docs/authentication.md) for construction and boundaries.
 
@@ -154,8 +154,9 @@ Without explicit credentials, encrypted files raise `EncryptedPdfException`.
 Native Standard-handler authentication supports R2–R7 and named crypt filters;
 source PDF MACs are verified before protected content is interpreted. Both
 standalone and signature-attached MACs are supported; applications can require
-one with `SourceIntegrityPolicy::RequirePdfMac`. Public-key authentication
-remains unsupported. See the [PDF MAC guide](docs/source-mac.md).
+one with `SourceIntegrityPolicy::RequirePdfMac`. Adobe.PubSec authentication supports
+explicit recipient capabilities, independent filter keys and deferred attachment access.
+See the [public-key guide](docs/public-key-authentication.md) and [PDF MAC guide](docs/source-mac.md).
 Unimplemented codecs are explicitly rejected. A stream using an unknown codec can be preserved in
 encoded form; requesting decoding raises `UnsupportedPdfFeature`.
 

@@ -5,8 +5,9 @@
 La version 0.3 accepte les headers et versions de catalogue PDF 1.0–1.7 et 2.0.
 Le même pipeline syntaxique et de flux d’objets expose les dictionnaires source ;
 l’interprétation du balisage, des polices ou des métadonnées appartient aux couches
-optionnelles. Les filtres non pris en charge restent refusés ; l’authentification Standard est
-activée par une capacité explicite ([guide](authentication.md)).
+optionnelles. Les filtres non pris en charge restent refusés ; Standard et Adobe.PubSec
+sont activés par des capacités explicites ([mots de passe](authentication.md),
+[certificats](public-key-authentication.md)).
 
 Le lecteur transforme des octets PDF en un graphe consultable d'objets. Il
 conserve les références comme des valeurs explicites et utilise les primitives

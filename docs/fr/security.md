@@ -15,8 +15,8 @@ Une capacité `StandardPasswordAuthentication` injectée authentifie avant
 l’interprétation du catalogue, vérifie les permissions chiffrées R5–R7 et
 déchiffre les objets une seule fois sous les budgets du document.
 Voir le [guide d’authentification](authentication.md) pour R2–R7, la préparation
-des mots de passe, la [vérification des PDF MAC source](source-mac.md) et le refus
-de l’authentification par clé publique source.
+des mots de passe, la [vérification des PDF MAC source](source-mac.md) et
+[l’authentification par clé publique](public-key-authentication.md).
 
 ## Surfaces contrôlées
 
@@ -27,7 +27,7 @@ de l’authentification par clé publique source.
 | Curseurs | Chaque vue possède des bornes ; les lectures et déplacements hors vue sont refusés. Les objets comprimés sont analysés dans des tranches séparées. |
 | Xref | Offsets, générations, types et plages vérifiés ; champs big endian sans dépassement d'entier ; sous-sections et `/Index` sans chevauchement. |
 | Révisions | Chaîne `/Prev` bornée et cycles détectés ; les entrées récentes, y compris libres, masquent les anciennes. Une génération périmée se résout à null. |
-| MAC source | Vérification liée à la clé Standard R5–R7 avant le contenu, étendue du véritable jeton source, couverture exacte du fichier entier, syntaxe autonome stricte, bourrage de signature borné, CMS/HMAC et condensats. La politique obligatoire refuse aussi les sources claires ou privées de protection. |
+| MAC source | Vérification liée à la clé Standard R5–R7 ou Adobe.PubSec avant le contenu, étendue du véritable jeton source, couverture exacte du fichier entier, syntaxe autonome stricte, bourrage de signature borné, CMS/HMAC et condensats. La politique obligatoire refuse aussi les sources claires ou privées de protection. |
 | Objets | Identifiant réel comparé à l'entrée xref ; chargements récursifs bornés et cycles de chargement détectés ; caches propres au document. |
 | Arbre de pages | Parcours avec pile explicite ; limites propres de profondeur, de nœuds et de feuilles ; refus des cycles, descendants répétés, comptes incohérents et liens Parent incorrects. |
 | Héritage | Types des ressources, rectangles et rotations vérifiés ; quatre entrées héritables seulement ; ressources locales remplaçant les valeurs héritées sans fusion ; rotation multiple de 90. |
@@ -107,7 +107,7 @@ La résolution est à la demande. L'ouverture contrôle le catalogue et les xref
 mais ne visite pas tous les objets ni toutes les ressources. Un défaut dans un
 objet non encore chargé peut être signalé lors d'un accès ultérieur. Le lecteur
 ne répare pas les fichiers endommagés et refuse les mécanismes non pris en
-charge, notamment les PDF MAC non vérifiés, l’authentification par clé publique
+charge, notamment les PDF MAC non vérifiés, les handlers inconnus
 et les codecs de décompression propres aux images.
 
 Les diagnostics et valeurs extraites ne doivent pas être envoyés dans une
