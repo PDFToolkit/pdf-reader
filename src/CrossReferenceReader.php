@@ -105,6 +105,9 @@ final readonly class CrossReferenceReader
         if (!$fields->hasName('Type', 'XRef')) {
             throw new ParseException('The cross-reference stream Type must be XRef.', $offset);
         }
+        if ($this->structuralPolicy === StructuralPolicy::Pdf20) {
+            (new CrossReferenceDictionaryValidation($this->limits))->validate($stream->dictionary());
+        }
         $size = $fields->integer('Size', 1, $this->limits->maxObjects);
         $widthArray = $fields->value('W');
         if (!$widthArray instanceof ArrayType || count($widthArray) !== 3) {

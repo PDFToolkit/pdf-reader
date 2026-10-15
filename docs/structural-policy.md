@@ -27,3 +27,9 @@ dictionary value. `Pdf20` rejects any such value that references a compressed
 object. Direct values and references to ordinary objects remain permitted.
 This rule concerns each entry's value; it does not introduce xref-stream-style
 recursive directness for elements inside an otherwise direct array or dictionary.
+
+EC3 issue246 (physical page 81) requires every Table 5 common stream entry in an
+xref stream to be direct, recursively through arrays and dictionaries, including
+unused filter parameters and the `DL` hint. `Pdf20` checks these values before
+decoding and rejects an external `F` entry. Trailer references such as `Root`
+remain indirect; this is not a prohibition on all references in an xref dictionary.

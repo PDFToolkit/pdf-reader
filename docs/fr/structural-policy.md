@@ -30,3 +30,10 @@ L’issue EC3 #114 (page physique 77) étend la règle ObjStm au-delà de `Lengt
 compressé. Les valeurs directes et références vers des objets ordinaires restent
 permises. Cette règle concerne la valeur de chaque entrée ; elle n’ajoute pas
 la contrainte récursive des flux xref aux éléments d’un tableau/dictionnaire direct.
+
+L’issue EC3 #246 (page physique 81) exige que chaque entrée de flux commune de la
+Table 5 soit directe dans un flux xref, récursivement dans ses tableaux et
+dictionnaires, y compris les paramètres de filtre inutilisés et l’indication `DL`.
+`Pdf20` les vérifie avant décodage et refuse une entrée externe `F`. Les références
+de trailer telles que `Root` restent indirectes ; toutes les références du
+dictionnaire xref ne sont donc pas interdites.

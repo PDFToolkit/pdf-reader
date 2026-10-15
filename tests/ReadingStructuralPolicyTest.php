@@ -101,7 +101,39 @@ final class ReadingStructuralPolicyTest extends TestCase
         $document->object($member);
     }
 
-    private function compressedSource(string $dictionary = '', string $xrefDictionary = '', string $member = '5'): FileBytes
+    public function testTheDecodedLengthHintInAnXrefStreamMustBeDirectUnderPdf20(): void
+    {
+        $source = $this->compressedSource(xrefDictionary: '/DL 5 0 R');
+        self::assertInstanceOf(DictionaryType::class, (new DocumentReader())->read($source)->catalog());
+        $this->expectException(ParseException::class);
+        $this->expectExceptionMessage('recursively direct');
+        (new DocumentReader(structuralPolicy: StructuralPolicy::Pdf20))->read($source);
+    }
+
+    public function testUnusedNestedFilterParametersCannotHideIndirectXrefValues(): void
+    {
+        $source = $this->compressedSource(xrefDictionary: '/Filter /FlateDecode /DecodeParms << /Ignored [<< /Other 5 0 R >>] >>', flate: true);
+        self::assertInstanceOf(DictionaryType::class, (new DocumentReader())->read($source)->catalog());
+        $this->expectException(ParseException::class);
+        $this->expectExceptionMessage('recursively direct');
+        (new DocumentReader(structuralPolicy: StructuralPolicy::Pdf20))->read($source);
+    }
+
+    public function testDirectNestedFilterParametersAndIndirectTrailerRootRemainPermitted(): void
+    {
+        $source = $this->compressedSource(xrefDictionary: '/Filter /FlateDecode /DecodeParms << /Ignored [<< /Other 17 >>] >> /DL 49 /F null', flate: true);
+        self::assertInstanceOf(DictionaryType::class, (new DocumentReader(structuralPolicy: StructuralPolicy::Pdf20))->read($source)->catalog());
+    }
+
+    public function testExternalDataIsForbiddenInPdf20CrossReferences(): void
+    {
+        $source = $this->compressedSource(xrefDictionary: '/F (external.bin)');
+        $this->expectException(ParseException::class);
+        $this->expectExceptionMessage('cannot contain F');
+        (new DocumentReader(structuralPolicy: StructuralPolicy::Pdf20))->read($source);
+    }
+
+    private function compressedSource(string $dictionary = '', string $xrefDictionary = '', string $member = '5', bool $flate = false): FileBytes
     {
         $header = $member . ' 0 ';
         $body = $header . '<< /Value (member) >>';
@@ -119,6 +151,11 @@ final class ReadingStructuralPolicyTest extends TestCase
         for ($number = 0; $number < 7; ++$number) {
             $record = $number === 5 ? [2, 4, 0] : (isset($offsets[$number]) ? [1, $offsets[$number], 0] : [0, 0, $number === 0 ? 65535 : 0]);
             $data .= pack('CNn', ...$record);
+        }
+        if ($flate) {
+            $compressed = gzcompress($data);
+            self::assertIsString($compressed);
+            $data = $compressed;
         }
         return new FileBytes($bytes . '6 0 obj << /Type /XRef /Size 7 /Root 1 0 R /W [1 4 2] /Length ' . strlen($data) . ' ' . $xrefDictionary
             . ">>\nstream\n" . $data . "\nendstream\nendobj\nstartxref\n" . $xref . "\n%%EOF\n");
