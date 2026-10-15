@@ -4,6 +4,14 @@ English | [Français](CHANGELOG.fr.md)
 
 ## Unreleased
 
+## 0.5.1 - 2026-10-15
+
+- Accept stable core `^0.10` while retaining the previously supported core series.
+- Preserve the published core `0.9.0` validation lock and all dependency versions and source commits; refresh its content hash with Composer.
+- Verify the unchanged module against the core 0.10 candidate on PHP 8.3, 8.4 and 8.5, using an isolated validation copy outside production manifests.
+- Keep the public API, limits and PHP requirements unchanged; update the documented compatibility in English and French.
+
+
 ## 0.5.0 - 2026-10-15
 
 - Add explicit Adobe.PubSec certificate authentication (s3/s4 RC4; s5 RC4,

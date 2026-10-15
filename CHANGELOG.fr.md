@@ -4,6 +4,14 @@
 
 ## Non publié
 
+## 0.5.1 - 2026-10-15
+
+- Accepter le core stable `^0.10` en conservant les séries précédemment prises en charge.
+- Conserver le verrou de validation du core publié `0.9.0`, ainsi que toutes les versions et références des dépendances ; actualiser son empreinte avec Composer.
+- Vérifier le module inchangé avec le candidat core 0.10 sous PHP 8.3, 8.4 et 8.5, avec une copie de validation isolée hors des manifestes de production.
+- Conserver l’API publique, les limites et les exigences PHP ; actualiser la compatibilité documentée en français et en anglais.
+
+
 ## 0.5.0 - 2026-10-15
 
 - Ajouter l’authentification Adobe.PubSec explicite par certificat (s3/s4 RC4 ;
