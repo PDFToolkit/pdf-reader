@@ -1,0 +1,16 @@
+name: Set up the independent PDF validator
+description: Install the checksum-verified official qpdf 12.4.2 Linux binary.
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      run: |
+        archive="$RUNNER_TEMP/qpdf-12.4.2.zip"
+        directory="$RUNNER_TEMP/qpdf-12.4.2"
+        curl --fail --location --retry 3 --output "$archive" \
+          https://github.com/qpdf/qpdf/releases/download/v12.4.2/qpdf-12.4.2-bin-linux-x86_64.zip
+        printf '%s  %s\n' 'db367d897829f22c4198ce1094143c9d467bd6ee7dfabc44ba6f02056b24f8b1' "$archive" | sha256sum --check --strict
+        mkdir -p "$directory"
+        unzip -q "$archive" -d "$directory"
+        printf '%s\n' "$directory/bin" >> "$GITHUB_PATH"
+        "$directory/bin/qpdf" --version
