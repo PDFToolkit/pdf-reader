@@ -33,3 +33,7 @@ xref stream to be direct, recursively through arrays and dictionaries, including
 unused filter parameters and the `DL` hint. `Pdf20` checks these values before
 decoding and rejects an external `F` entry. Trailer references such as `Root`
 remain indirect; this is not a prohibition on all references in an xref dictionary.
+
+EC3 issue403 (physical page 81) also forbids `Metadata` and `AF` entries on xref
+streams. `Pdf20` rejects these associations without resolving their targets.
+A direct `null` retains the standard meaning of an absent dictionary entry.

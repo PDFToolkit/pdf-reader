@@ -133,6 +133,29 @@ final class ReadingStructuralPolicyTest extends TestCase
         (new DocumentReader(structuralPolicy: StructuralPolicy::Pdf20))->read($source);
     }
 
+    /** @return iterable<string, array{string}> */
+    public static function prohibitedAssociations(): iterable
+    {
+        yield 'metadata' => ['/Metadata 5 0 R'];
+        yield 'associated files' => ['/AF [5 0 R]'];
+    }
+
+    #[DataProvider('prohibitedAssociations')]
+    public function testPdf20XrefStreamsCannotCarryMetadataOrAssociatedFiles(string $entry): void
+    {
+        $source = $this->compressedSource(xrefDictionary: $entry);
+        self::assertInstanceOf(DictionaryType::class, (new DocumentReader())->read($source)->catalog());
+        $this->expectException(ParseException::class);
+        $this->expectExceptionMessage('cannot contain');
+        (new DocumentReader(structuralPolicy: StructuralPolicy::Pdf20))->read($source);
+    }
+
+    public function testNullAssociationsAreAbsentUnderPdfDictionarySemantics(): void
+    {
+        $source = $this->compressedSource(xrefDictionary: '/Metadata null /AF null');
+        self::assertInstanceOf(DictionaryType::class, (new DocumentReader(structuralPolicy: StructuralPolicy::Pdf20))->read($source)->catalog());
+    }
+
     private function compressedSource(string $dictionary = '', string $xrefDictionary = '', string $member = '5', bool $flate = false): FileBytes
     {
         $header = $member . ' 0 ';

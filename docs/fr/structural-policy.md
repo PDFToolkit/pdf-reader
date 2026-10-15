@@ -37,3 +37,7 @@ dictionnaires, y compris les paramètres de filtre inutilisés et l’indication
 `Pdf20` les vérifie avant décodage et refuse une entrée externe `F`. Les références
 de trailer telles que `Root` restent indirectes ; toutes les références du
 dictionnaire xref ne sont donc pas interdites.
+
+EC3 issue403 (page physique 81) interdit aussi les entrées `Metadata` et `AF` sur
+les flux xref. `Pdf20` rejette ces associations sans résoudre leurs cibles.
+Un `null` direct conserve le sens standard d'une entrée de dictionnaire absente.

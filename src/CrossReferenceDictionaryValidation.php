@@ -9,7 +9,7 @@ use PDF\Syntax\Object\ArrayType;
 use PDF\Syntax\Object\DictionaryType;
 use PDF\Syntax\Object\NullType;
 
-/** EC3 issue246: common xref-stream entries and nested values are direct; F is forbidden. */
+/** EC3 issues246/403: direct common entries and prohibited xref-stream associations. */
 final readonly class CrossReferenceDictionaryValidation
 {
     public function __construct(private ReaderLimits $limits)
@@ -18,9 +18,11 @@ final readonly class CrossReferenceDictionaryValidation
 
     public function validate(DictionaryType $dictionary): void
     {
-        $external = $dictionary->get('F');
-        if ($external !== null && !$external instanceof NullType) {
-            throw new ParseException('A PDF 2.0 cross-reference stream cannot contain F.');
+        foreach (['F', 'Metadata', 'AF'] as $key) {
+            $value = $dictionary->get($key);
+            if ($value !== null && !$value instanceof NullType) {
+                throw new ParseException('A PDF 2.0 cross-reference stream cannot contain ' . $key . '.');
+            }
         }
         foreach (['Length', 'Filter', 'DecodeParms', 'F', 'FFilter', 'FDecodeParms', 'DL'] as $key) {
             $value = $dictionary->get($key);
