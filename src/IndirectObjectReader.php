@@ -14,7 +14,7 @@ use PDF\Syntax\Object\IntegerType;
 /** ISO 32000-1, 7.3.8–7.3.10: object boundaries and length-delimited streams. */
 final readonly class IndirectObjectReader
 {
-    public function __construct(private FileBytes $source, private ReaderLimits $limits, private ReadBudget $budget)
+    public function __construct(private FileBytes $source, private ReaderLimits $limits, private ReadBudget $budget, private ?SourceStringSpans $sourceStrings = null)
     {
     }
 
@@ -23,7 +23,7 @@ final readonly class IndirectObjectReader
         if ($offset < 0 || $offset >= strlen($this->source->bytes)) {
             throw new ParseException('An indirect-object offset is outside the file.', $offset);
         }
-        $parser = new SyntaxParser(new ByteCursor($this->source->bytes, $offset), $this->limits, $this->budget);
+        $parser = new SyntaxParser(new ByteCursor($this->source->bytes, $offset), $this->limits, $this->budget, $this->sourceStrings);
         $number = $parser->unsignedInteger();
         $generation = $parser->unsignedInteger();
         if ($number < 1 || $number >= $this->limits->maxObjects || $generation >= 65535) {

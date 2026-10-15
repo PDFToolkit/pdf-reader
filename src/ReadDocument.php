@@ -8,6 +8,7 @@ use PDF\Reading\CrossReference\EntryKind;
 use PDF\Reading\CrossReference\Index;
 use PDF\Reading\Security\DocumentDecryption;
 use PDF\Reading\Security\ReadPermissions;
+use PDF\Reading\Security\PdfMacLocation;
 use PDF\Syntax\FileStructure\BasicType;
 use PDF\Syntax\FileStructure\FileHeader;
 use PDF\Syntax\Object\DictionaryType;
@@ -37,6 +38,8 @@ final class ReadDocument implements ObjectResolver
         private readonly ReadBudget $budget,
         private readonly StreamDecoder $decoder,
         private readonly ?DocumentDecryption $decryption = null,
+        private readonly ?SourceRevision $physicalRevision = null,
+        private readonly ?SourceStringSpans $sourceStrings = null,
     ) {
         $this->decoded = new \SplObjectStorage();
     }
@@ -54,6 +57,16 @@ final class ReadDocument implements ObjectResolver
     public function permissions(): ?ReadPermissions
     {
         return $this->decryption?->permissions;
+    }
+
+    public function sourceRevision(): SourceRevision
+    {
+        return $this->physicalRevision ?? throw new UnsupportedPdfFeature('This read graph has no physical source-revision provenance.');
+    }
+
+    public function mac(): ?PdfMacLocation
+    {
+        return $this->decryption?->mac;
     }
 
     public function catalog(): DictionaryType
@@ -97,7 +110,7 @@ final class ReadDocument implements ObjectResolver
             if ($entry->kind === EntryKind::Compressed) {
                 $value = $this->compressed($entry->firstField, $entry->secondField, $number);
             } else {
-                $value = (new IndirectObjectReader($this->source, $this->limits, $this->budget))->read($entry->firstField, $identifier, $this)->value;
+                $value = (new IndirectObjectReader($this->source, $this->limits, $this->budget, $this->sourceStrings))->read($entry->firstField, $identifier, $this)->value;
                 if ($value instanceof EncodedStream && (new DictionaryAccess($value->dictionary()))->hasName('Type', 'ObjStm')) {
                     $length = $value->dictionary()->get('Length');
                     if ($identifier->generationNumber->value !== 0 || ($length instanceof ObjectReference && $this->index->entry($length->identifier->objectNumber->value)?->kind === EntryKind::Compressed)) {

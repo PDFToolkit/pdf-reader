@@ -18,6 +18,7 @@ use PDF\Syntax\Object\NullType;
 use PDF\Syntax\Object\NumericType;
 use PDF\Syntax\Object\StringObject\HexadecimalString;
 use PDF\Syntax\Object\StringObject\LiteralString;
+use PDF\Syntax\Object\StringType;
 
 /** ISO 32000-1, 7.2 and 7.3: bounded syntax without object or stream resolution. */
 final class SyntaxParser
@@ -28,6 +29,7 @@ final class SyntaxParser
         public readonly ByteCursor $cursor,
         private readonly ReaderLimits $limits = new ReaderLimits(),
         ?ReadBudget $budget = null,
+        private readonly ?SourceStringSpans $sourceStrings = null,
     ) {
         $this->budget = $budget ?? new ReadBudget($limits);
     }
@@ -289,7 +291,15 @@ final class SyntaxParser
                 throw new ParseException('Duplicate dictionary keys are not accepted.', $this->cursor->position());
             }
             $keys[$key->value] = true;
-            $entries[] = new Entry($key, $this->readValue($depth + 1));
+            $this->cursor->skipWhitespaceAndComments();
+            $start = $this->cursor->position();
+            $value = $this->readValue($depth + 1);
+            // These security strings need their actual token, not a textual search that
+            // could accidentally select a duplicate in a stream or an older revision.
+            if ($value instanceof StringType && in_array($key->value, ['MAC', 'Contents', 'KDFSalt'], true)) {
+                $this->sourceStrings?->record($value, $start, $this->cursor->position());
+            }
+            $entries[] = new Entry($key, $value);
         }
     }
 

@@ -33,6 +33,7 @@ final readonly class DocumentDecryption
         private string $streams,
         private string $embeddedFiles,
         private ?ObjectReference $documentRoot = null,
+        public ?PdfMacLocation $mac = null,
     ) {
         foreach ([$strings, $streams, $embeddedFiles] as $name) {
             $this->filter($name);

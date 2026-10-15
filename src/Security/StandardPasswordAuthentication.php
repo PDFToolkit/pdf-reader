@@ -48,6 +48,7 @@ final readonly class StandardPasswordAuthentication implements DocumentAuthentic
         private PreparedPassword|PdfDocEncodedPassword $password,
         private Aes128Backend $aes128 = new OpenSslAes128Backend(),
         private Aes256Backend $aes256 = new OpenSslAes256Backend(),
+        private SourcePdfMacVerification $mac = new SourcePdfMacVerification(),
     ) {
     }
 
@@ -56,11 +57,6 @@ final readonly class StandardPasswordAuthentication implements DocumentAuthentic
         $values = new SecurityDictionaryValues($raw, $encryption);
         if ($values->name('Filter') !== 'Standard') {
             throw new UnsupportedPdfFeature('This password operation requires the Standard security handler.');
-        }
-        $authCode = $raw->trailer()->get('AuthCode');
-        $authCode = $authCode === null ? null : $raw->resolve($authCode);
-        if ($values->value('KDFSalt') !== null || ($authCode !== null && !$authCode instanceof NullType)) {
-            throw new UnsupportedPdfFeature('A source PDF MAC must be verified before password-protected content is interpreted.');
         }
         $revision = $values->integer('R');
         $version = $values->integer('V', 0);
@@ -106,11 +102,13 @@ final readonly class StandardPasswordAuthentication implements DocumentAuthentic
                 }
                 $arguments = [$values->bytes('O'), $values->bytes('U'), $values->bytes('OE'), $values->bytes('UE'), $values->bytes('Perms')];
                 if ($revision === 5) {
-                    $dictionary = new Revision5EncryptionDictionary(...[...$arguments, new Revision5Permissions($permissions), $metadata]);
+                    $dictionary = new Revision5EncryptionDictionary(...[...$arguments, new Revision5Permissions($permissions, ($permissions & 4096) === 0), $metadata]);
                     $authenticated = (new HistoricalRevision5SecurityHandler($this->aes256, new SystemRandomSource()))->authenticate($this->password, $dictionary);
                 } else {
-                    $dictionary = new ModernEncryptionDictionary(...[...$arguments, new Pdf20Permissions($permissions), $metadata,
-                        $revision === 7 ? ModernSecurityRevision::Aes256Gcm : ModernSecurityRevision::Aes256Cbc]);
+                    $salt = $encryption->get('KDFSalt');
+                    $dictionary = new ModernEncryptionDictionary(...[...$arguments, new Pdf20Permissions($permissions, ($permissions & 4096) === 0), $metadata,
+                        $revision === 7 ? ModernSecurityRevision::Aes256Gcm : ModernSecurityRevision::Aes256Cbc,
+                        $salt instanceof StringType ? $salt->value : null]);
                     $authenticated = (new ModernStandardSecurityHandler($this->aes256, new SystemRandomSource()))->authenticate($this->password, $dictionary);
                 }
             }
@@ -121,6 +119,14 @@ final readonly class StandardPasswordAuthentication implements DocumentAuthentic
             throw new AuthenticationFailed();
         }
         $key = $authenticated->key;
+        if ($key instanceof FileEncryptionKey) {
+            $macLocation = $this->mac->verify($raw, $encryption, $key, $permissions);
+        } else {
+            if ($encryption->has('KDFSalt') || $raw->trailer()->has('AuthCode')) {
+                throw new UnsupportedPdfFeature('PDF MAC requires encryption version 5 or later.');
+            }
+            $macLocation = null;
+        }
         $filters = ['Identity' => new CryptFilterDecryption(CryptMethod::Identity, $key, $this->aes128, $this->aes256)];
         if ($revision <= 3) {
             $filters['StdCF'] = new CryptFilterDecryption(CryptMethod::Rc4, $key, $this->aes128, $this->aes256);
@@ -162,7 +168,8 @@ final readonly class StandardPasswordAuthentication implements DocumentAuthentic
             $strings,
             $streams,
             $embedded,
-            $root instanceof ObjectReference ? $root : null
+            $root instanceof ObjectReference ? $root : null,
+            $macLocation
         );
     }
 }

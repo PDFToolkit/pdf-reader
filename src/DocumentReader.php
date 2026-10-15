@@ -6,15 +6,17 @@ namespace PDF\Reading;
 
 use PDF\Reading\CrossReference\Index;
 use PDF\Reading\Security\DocumentAuthentication;
+use PDF\Reading\Security\SourceIntegrityPolicy;
 use PDF\Syntax\FileStructure\FileHeader;
 use PDF\Syntax\Object\DictionaryObject\Entry;
 use PDF\Syntax\Object\DictionaryType;
 use PDF\Syntax\Object\NullType;
+use PDF\Syntax\Object\NameType;
 
 /** Read PDF 1.0–2.0 syntax; source access and upload policy belong to the application. */
 final readonly class DocumentReader
 {
-    public function __construct(private ReaderLimits $limits = new ReaderLimits(), private ?DocumentAuthentication $authentication = null)
+    public function __construct(private ReaderLimits $limits = new ReaderLimits(), private ?DocumentAuthentication $authentication = null, private SourceIntegrityPolicy $sourceIntegrity = SourceIntegrityPolicy::AcceptUnprotected)
     {
     }
 
@@ -35,7 +37,8 @@ final readonly class DocumentReader
         $budget = new ReadBudget($this->limits);
         $offset = (new SyntaxParser(new ByteCursor($footer[1]), $this->limits, $budget))->unsignedInteger();
         $decoder = new StreamDecoder($this->limits);
-        $reader = new CrossReferenceReader($source, $this->limits, $budget, $decoder);
+        $strings = new SourceStringSpans($budget);
+        $reader = new CrossReferenceReader($source, $this->limits, $budget, $decoder, $strings);
         $sections = [];
         $seen = [];
         $trailerEntries = [];
@@ -62,7 +65,8 @@ final readonly class DocumentReader
         $fileHeader = new FileHeader($header[1]);
         $trailer = new DictionaryType(...$entries);
         $index = new Index(...$sections);
-        $document = new ReadDocument($source, $fileHeader, $trailer, $index, $this->limits, $budget, $decoder);
+        $physical = new SourceRevision($source, $sections[0]->trailer, $strings, $budget);
+        $document = new ReadDocument($source, $fileHeader, $trailer, $index, $this->limits, $budget, $decoder, physicalRevision: $physical, sourceStrings: $strings);
         // A null dictionary value is equivalent to absence, including a reference that resolves to null.
         // The completed index is required here; resolution keeps the same document's cumulative budgets.
         $encryption = $document->trailer()->get('Encrypt');
@@ -77,10 +81,23 @@ final readonly class DocumentReader
                     throw new EncryptedPdfException($sections[0]->offset->value);
                 }
                 $decryption = $this->authentication->authenticate($document, $encryption, $encryptionObject);
-                $document = new ReadDocument($source, $fileHeader, $trailer, $index, $this->limits, $budget, $decoder, $decryption);
+                $document = new ReadDocument($source, $fileHeader, $trailer, $index, $this->limits, $budget, $decoder, $decryption, $physical);
             }
         }
-        $document->catalog();
+        if ($document->permissions() === null && $trailer->has('AuthCode')) {
+            throw new UnsupportedPdfFeature('A source AuthCode requires authenticated encryption before content interpretation.');
+        }
+        if ($this->sourceIntegrity === SourceIntegrityPolicy::RequirePdfMac && $document->mac() === null) {
+            throw new ParseException('The selected source-integrity policy requires a verified PDF MAC.');
+        }
+        $catalog = $document->catalog();
+        if ($document->mac() !== null && $fileHeader->version->value !== '2.0') {
+            $version = $catalog->get('Version');
+            $version = $version === null ? null : $document->resolve($version);
+            if (!$version instanceof NameType || $version->value !== '2.0') {
+                throw new ParseException('A PDF MAC source requires PDF version 2.0.');
+            }
+        }
         return $document;
     }
 }

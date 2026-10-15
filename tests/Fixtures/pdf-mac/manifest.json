@@ -1,0 +1,81 @@
+{
+  "generator": "pyHanko 0.37.0 / cryptography 50.0.2",
+  "notice": "Synthetic public user/owner passwords; ephemeral signing key discarded; certificates are not trusted.",
+  "files": [
+    {
+      "file": "pyhanko-standalone-sha256.pdf",
+      "sha256": "2c4005be8016fc3911486ca2c33274be45f725434c7e4aba494e717a9bc0a84c",
+      "location": "Standalone"
+    },
+    {
+      "file": "pyhanko-standalone-sha384.pdf",
+      "sha256": "cc08c58f9069149ee7c2f3a92746ff587473966e37afd27f1bfcfcf90ad82b40",
+      "location": "Standalone"
+    },
+    {
+      "file": "pyhanko-standalone-sha512.pdf",
+      "sha256": "8267a9f0b7bbc0bd4ada2357b5f4090e8f449532b4ccbc839990a38e5dbd8050",
+      "location": "Standalone"
+    },
+    {
+      "file": "pyhanko-standalone-sha3_256.pdf",
+      "sha256": "98ea349d10e71846c1a5f78d2e87e6bfe670757ec8d6886e3fa3e997bd059f19",
+      "location": "Standalone"
+    },
+    {
+      "file": "pyhanko-standalone-sha3_384.pdf",
+      "sha256": "fd81e5ca8128429bd26c522aa5ad98d55f11c0da40f20624fb6edff0a98a4c13",
+      "location": "Standalone"
+    },
+    {
+      "file": "pyhanko-standalone-sha3_512.pdf",
+      "sha256": "c8a87a3e48f89da46140700eab5e477f41fb838d8b2ee9fe5ae35d0abeb1293d",
+      "location": "Standalone"
+    },
+    {
+      "file": "pyhanko-stream-0.pdf",
+      "sha256": "79d3c9c441d421de65c433179e6f3bfc8cac9f07566f5291456dcc15a198c37e",
+      "location": "Standalone"
+    },
+    {
+      "file": "pyhanko-stream-1.pdf",
+      "sha256": "e1a273878f1356e6e7beffb5320ee8831d6261d24878e40ea0a6b3a62976cd81",
+      "location": "Standalone"
+    },
+    {
+      "file": "pyhanko-r7-0.pdf",
+      "sha256": "6da19a407354c50f84a39c13aa3b6e18f978f7faed1be9a2b5d1f2638a4965eb",
+      "location": "Standalone"
+    },
+    {
+      "file": "pyhanko-r7-1.pdf",
+      "sha256": "b71bd61eec2f367b652b85f4ad91190b3d93912ffa9d07e759efc9afd427a266",
+      "location": "Standalone"
+    },
+    {
+      "file": "pyhanko-incremental.pdf",
+      "sha256": "35206a5d0a3f0d3a4d56f5f54cd0a346acc3aea28a425e50f0bdea2e5a4efb56",
+      "location": "Standalone"
+    },
+    {
+      "file": "pyhanko-attached-0.pdf",
+      "sha256": "57b65c5d68c083dcd8514e80c857983d5510c4fa6c500c24a70c90a730901977",
+      "location": "AttachedToSig"
+    },
+    {
+      "file": "pyhanko-attached-1.pdf",
+      "sha256": "52901da5c71fb82a935b4e9262f46b82fc80d7aa279d137ac9c07dd5d8b88a3c",
+      "location": "AttachedToSig"
+    },
+    {
+      "file": "pyhanko-timestamp.pdf",
+      "sha256": "7c5c61ff1df65f0978bb0d925bbe7c7e5e0998af99e5c77844c925f2014baa92",
+      "location": "AttachedToSig"
+    },
+    {
+      "file": "qpdf-cryptography-r5.pdf",
+      "sha256": "cd58195810471bf80aff34fe1a2d29a8d84332cb0f6b08dc94054e482d56a24b",
+      "location": "Standalone"
+    }
+  ]
+}
