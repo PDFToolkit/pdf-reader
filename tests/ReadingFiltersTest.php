@@ -249,8 +249,6 @@ final class ReadingFiltersTest extends TestCase
         yield 'zero colors' => [12, 0, 8, 1];
         yield 'negative columns' => [12, 1, 8, -1];
         yield 'invalid bit depth' => [12, 1, 7, 1];
-        yield 'unsupported packed bit depth' => [12, 1, 1, 1];
-        yield 'unsupported wide bit depth' => [2, 1, 16, 1];
     }
 
     #[DataProvider('invalidPredictorParameters')]

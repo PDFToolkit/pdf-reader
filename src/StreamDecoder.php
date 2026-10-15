@@ -8,10 +8,12 @@ use PDF\Reading\Filters\Ascii85Decoder;
 use PDF\Reading\Filters\AsciiHexDecoder;
 use PDF\Reading\Filters\DecodedBytes;
 use PDF\Reading\Filters\FlateDecoder;
+use PDF\Reading\Filters\LzwDecoder;
 use PDF\Reading\Filters\PredictorDecoder;
 use PDF\Reading\Filters\PredictorParameters;
 use PDF\Reading\Filters\RunLengthDecoder;
 use PDF\Syntax\FileStructure\BasicType;
+use PDF\Syntax\Filters\EarlyChange;
 use PDF\Syntax\Object\ArrayType;
 use PDF\Syntax\Object\DictionaryType;
 use PDF\Syntax\Object\IntegerType;
@@ -82,13 +84,14 @@ final readonly class StreamDecoder
             }
             $decoder = match ($name->value) {
                 'FlateDecode' => new FlateDecoder($this->limits),
+                'LZWDecode' => new LzwDecoder($this->limits, $this->earlyChange($parameter, $resolver)),
                 'ASCIIHexDecode' => new AsciiHexDecoder($this->limits),
                 'ASCII85Decode' => new Ascii85Decoder($this->limits),
                 'RunLengthDecode' => new RunLengthDecoder($this->limits),
                 default => throw new UnsupportedPdfFeature('The stream filter is not supported.'),
             };
             $bytes = $decoder->decode($bytes, $budget);
-            if ($name->value === 'FlateDecode' && $parameter instanceof DictionaryType) {
+            if (in_array($name->value, ['FlateDecode', 'LZWDecode'], true) && $parameter instanceof DictionaryType) {
                 $predictor = $this->integerParameter($parameter, 'Predictor', 1, $resolver);
                 // Other predictor parameters have no meaning when prediction is disabled.
                 $settings = $predictor === 1 ? new PredictorParameters() : new PredictorParameters(
@@ -131,5 +134,14 @@ final readonly class StreamDecoder
             throw new ParseException('Stream predictor ' . $key . ' must be an integer.');
         }
         return $value->integer();
+    }
+
+    private function earlyChange(?BasicType $parameters, ?ObjectResolver $resolver): EarlyChange
+    {
+        $value = $parameters instanceof DictionaryType ? $this->integerParameter($parameters, 'EarlyChange', 1, $resolver) : 1;
+        if ($value !== 0 && $value !== 1) {
+            throw new ParseException('LZW EarlyChange must be zero or one.');
+        }
+        return new EarlyChange(new IntegerType($value));
     }
 }

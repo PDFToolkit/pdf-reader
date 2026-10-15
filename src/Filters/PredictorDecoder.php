@@ -37,6 +37,7 @@ final readonly class PredictorDecoder implements Decoder
         }
         $output = new DecodedBytes($this->limits->maxDecodedStreamBytes, $budget);
         $previous = str_repeat("\0", $rowBytes);
+        $pixelBytes = $this->parameters->bytesPerPixel();
         for ($offset = 0; $offset < $length;) {
             // PNG tags, rather than the dictionary's Predictor value, select each row's algorithm.
             $filter = $png ? ord($bytes[$offset++]) : 1;
@@ -45,11 +46,14 @@ final readonly class PredictorDecoder implements Decoder
             }
             $row = substr($bytes, $offset, $rowBytes);
             $offset += $rowBytes;
+            if (!$png) {
+                $output->append($this->tiffRow($row));
+                continue;
+            }
             for ($index = 0; $index < $rowBytes; ++$index) {
-                $left = $index < $this->parameters->colors ? 0 : ord($row[$index - $this->parameters->colors]);
+                $left = $index < $pixelBytes ? 0 : ord($row[$index - $pixelBytes]);
                 $above = ord($previous[$index]);
-                $upperLeft = $index < $this->parameters->colors ? 0
-                    : ord($previous[$index - $this->parameters->colors]);
+                $upperLeft = $index < $pixelBytes ? 0 : ord($previous[$index - $pixelBytes]);
                 $prediction = match ($filter) {
                     0 => 0,
                     1 => $left,
@@ -63,6 +67,35 @@ final readonly class PredictorDecoder implements Decoder
             $previous = $row;
         }
         return $output->bytes();
+    }
+
+    private function tiffRow(string $row): string
+    {
+        $bits = $this->parameters->bitsPerComponent;
+        $mask = (1 << $bits) - 1;
+        $samples = $this->parameters->colors * $this->parameters->columns;
+        for ($sample = $this->parameters->colors; $sample < $samples; ++$sample) {
+            $value = ($this->sample($row, $sample) + $this->sample($row, $sample - $this->parameters->colors)) & $mask;
+            $byte = intdiv($sample * $bits, 8);
+            if ($bits === 16) {
+                $row[$byte] = chr($value >> 8);
+                $row[$byte + 1] = chr($value & 255);
+            } else {
+                $shift = 8 - $bits - ($sample * $bits % 8);
+                $row[$byte] = chr((ord($row[$byte]) & ~(($mask) << $shift)) | ($value << $shift));
+            }
+        }
+        return $row;
+    }
+
+    private function sample(string $row, int $sample): int
+    {
+        $bits = $this->parameters->bitsPerComponent;
+        $byte = intdiv($sample * $bits, 8);
+        if ($bits === 16) {
+            return (ord($row[$byte]) << 8) | ord($row[$byte + 1]);
+        }
+        return (ord($row[$byte]) >> (8 - $bits - ($sample * $bits % 8))) & ((1 << $bits) - 1);
     }
 
     private function paeth(int $left, int $above, int $upperLeft): int

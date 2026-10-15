@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace PDF\Reading\Filters;
 
 use PDF\Reading\ParseException;
-use PDF\Reading\UnsupportedPdfFeature;
 
-/** The byte-aligned subset of ISO 32000-1, Table 8. */
+/** ISO 32000-1, Table 8: byte-padded rows with 1, 2, 4, 8 or 16-bit components. */
 final readonly class PredictorParameters
 {
     public function __construct(
@@ -25,16 +24,23 @@ final readonly class PredictorParameters
         if (!in_array($bitsPerComponent, [1, 2, 4, 8, 16], true)) {
             throw new ParseException('Predictor BitsPerComponent is invalid.');
         }
-        if ($predictor !== 1 && $bitsPerComponent !== 8) {
-            throw new UnsupportedPdfFeature('Stream predictors currently support only 8-bit components.');
-        }
     }
 
     public function rowBytes(): int
     {
-        if ($this->columns > intdiv(PHP_INT_MAX - 1, $this->colors)) {
+        if ($this->columns > intdiv(PHP_INT_MAX, $this->colors)
+            || $this->columns * $this->colors > intdiv(PHP_INT_MAX, $this->bitsPerComponent)) {
             throw new ParseException('Predictor row length exceeds the integer range.');
         }
-        return $this->columns * $this->colors;
+        $bits = $this->columns * $this->colors * $this->bitsPerComponent;
+        return intdiv($bits, 8) + ($bits % 8 === 0 ? 0 : 1);
+    }
+
+    public function bytesPerPixel(): int
+    {
+        // rowBytes checks the larger row product before computing this product.
+        $this->rowBytes();
+        $bits = $this->colors * $this->bitsPerComponent;
+        return intdiv($bits, 8) + ($bits % 8 === 0 ? 0 : 1);
     }
 }
