@@ -41,6 +41,8 @@ jobs:
         run: python tools/validate_filter_cases.py
       - name: Authenticate independently encrypted Standard-handler PDFs
         run: python tools/validate_authentication.py
+      - name: Verify metadata ownership and indirect embedded-file crypt filters
+        run: python tools/validate_metadata_security.py
       - name: Compare hybrid initial, incremental and linearized documents
         run: python tools/validate_hybrid.py
       - run: php examples/inspect.php tests/Fixtures/pdf/object-streams.pdf

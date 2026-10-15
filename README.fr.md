@@ -182,9 +182,15 @@ budgets d'un service recevant des uploads.
 
 ## Documentation
 
+Le correctif 0.3.1 limite l'exemption de métadonnées au catalogue et résout les
+types de flux indirects avant le choix du chiffrement des fichiers embarqués.
+Les métadonnées de page/objet suivent leur filtre ; Identity explicite et les
+octets des codecs sont préservés.
+
 - [Architecture et frontières des objets](docs/fr/architecture.md)
 - [Pages, héritage et flux de contenu](docs/fr/pages.md)
 - [Référence des composants](docs/fr/components.md)
+- [Authentification par mot de passe](docs/fr/authentication.md)
 - [Contrôles de sécurité](docs/fr/security.md)
 - [Politique de signalement](SECURITY.fr.md)
 - [Changelog](CHANGELOG.fr.md)

@@ -4,6 +4,17 @@
 
 ## Unreleased
 
+## 0.3.1 - 2026-10-15
+
+- Lier `EncryptMetadata=false` à l'identité réelle du Metadata du catalogue. Les
+  métadonnées de page et d'autres objets suivent leur crypt filter ; un filtre
+  Identity explicite conserve les octets destinés aux codecs restants.
+- Résoudre les Type de flux indirects avant de choisir EFF plutôt que StmF, dont
+  les pièces jointes chiffrées et catalogues dans des flux d'objets.
+- Ajouter six cas indépendants qpdf/cryptography et des régressions natives ;
+  documenter clauses sources et limites des oracles en anglais/français. Préserver
+  credentials explicites, budgets partagés, ciphertext et dépendances stables.
+
 ## 0.3.0 - 2026-10-15
 
 - Lire les références hybrides avec priorité du flux auxiliaire, y compris les documents linéarisés, et plafonds cumulés.

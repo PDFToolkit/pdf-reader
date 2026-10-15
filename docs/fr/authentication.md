@@ -54,6 +54,21 @@ flux d’objets sont analysés après déchiffrement du conteneur, sans second
 déchiffrement. Les métadonnées en clair et le filtre des fichiers incorporés
 suivent les réglages de leur dictionnaire.
 
+### Propriétaire des métadonnées et types de flux indirects
+
+La version 0.3.1 lie `EncryptMetadata=false` à la référence `Metadata` réelle du
+catalogue effectif. Le flux `/Type /Metadata` d'une page ou d'un Form reste chiffré
+sauf sélection explicite d'Identity. Les noms `Type` indirects sont résolus avant
+le choix d'`EFF` plutôt que `StmF`. Les catalogues en flux d'objets chiffrés gardent
+ces règles sans chargement récursif de leurs métadonnées pendant leur déchiffrement.
+
+L'authentification native fournit la référence immuable de racine. Un
+`DocumentAuthentication` personnalisé qui construit `DocumentDecryption` peut
+aussi fournir ce dernier argument optionnel `documentRoot` ; sans lui, aucune
+exemption implicite des métadonnées du catalogue n'est devinée. `Crypt /Identity`
+explicite reste disponible indépendamment. Source : ISO 32000-2:2020, §7.3.10
+(page physique 49), `EncryptMetadata` (page 94) et métadonnées de page (page 121).
+
 `EncodedStream::encodedBytes()` expose les octets déchiffrés prêts pour les codecs ;
 `originalEncodedBytes()` conserve le ciphertext source. Le plaintext conservé
 consomme le budget commun du document. L’import et l’écriture nécessitent encore
@@ -70,5 +85,11 @@ La validation indépendante utilise 24 PDF R2–R7 réels : qpdf produit R2–R6
 Python cryptography produit indépendamment les payloads AESV4 à partir des entrées
 de mot de passe R6 de qpdf. Les deux mots de passe, chaînes binaires, flux d’objets,
 réglages des métadonnées et exceptions des signatures sont vérifiés. Ces
-credentials synthétiques sont publics. Voir les [contrôles de sécurité](security.md)
-et les [composants](components.md).
+credentials synthétiques sont publics. Six cas supplémentaires vérifient les
+métadonnées catalogue/page/Form, Identity explicite et les types indirects des
+fichiers embarqués, avec catalogues classiques ou compressés. qpdf déchiffre les
+fichiers de métadonnées indépendamment ; cryptography construit les payloads EFF
+avec les credentials de qpdf. qpdf 12.4.2 ne déchiffre pas EFF lorsque StmF vaut
+Identity, même avec un Type direct ; son déchiffrement n'est donc pas un oracle
+pour ce choix précis. Ses algorithmes ne sont jamais modifiés pour le test. Voir
+les [contrôles de sécurité](security.md) et les [composants](components.md).

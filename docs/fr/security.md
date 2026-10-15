@@ -128,5 +128,13 @@ cette bibliothèque.
 
 Les tests indépendants comparent 26 cas LZW/prédicteurs à qpdf, six documents
 hybrides à pypdf/qpdf et 24 PDF R2–R7 chiffrés par qpdf ou cryptography.
+
+Le patch 0.3.1 vérifie aussi six sources pour le propriétaire des métadonnées et
+les types indirects des fichiers incorporés. `EncryptMetadata=false` exempte
+uniquement l'identité Metadata réelle du catalogue, pas les flux arbitraires
+déclarant `/Type /Metadata`. Le contexte immuable reçoit la racine explicitement
+et utilise le résolveur borné ; Identity explicite et octets des codecs restants
+sont préservés. Le [guide d'authentification](authentication.md) distingue clauses
+sources, limite de déchiffrement EFF de qpdf et fixtures cryptography indépendantes.
 Les tags AES-GCM modifiés échouent sans produire de plaintext. Les erreurs
 d’authentification ne révèlent ni credentials ni contenu du document.

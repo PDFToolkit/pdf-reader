@@ -50,6 +50,21 @@ the remaining codec chain. Xref streams, the encryption dictionary and signature
 decrypted and are not decrypted twice. Clear metadata and embedded-file filter
 selection follow their dictionary settings.
 
+### Metadata ownership and indirect stream types
+
+Version 0.3.1 binds `EncryptMetadata=false` to the actual `Metadata` reference of
+the effective catalog. A page or Form's `/Type /Metadata` stream remains encrypted
+unless it explicitly selects Identity. Indirect `Type` names are resolved before
+choosing `EFF` versus `StmF`. Catalogs in encrypted object streams retain these
+rules without recursively loading their metadata while being decrypted.
+
+Native authentication supplies the immutable document-root reference. A custom
+`DocumentAuthentication` constructing `DocumentDecryption` can supply that last
+optional `documentRoot` argument too; without it, no implicit catalog-metadata
+exemption is guessed. Explicit `Crypt /Identity` remains available independently.
+Source: ISO 32000-2:2020, §7.3.10 (physical page 49), `EncryptMetadata` (page 94)
+and distinct page metadata (page 121).
+
 `EncodedStream::encodedBytes()` returns decrypted bytes ready for the remaining
 codecs; `originalEncodedBytes()` retains the original source ciphertext. Retained
 plaintext consumes the shared document budget. Import and writing still require
@@ -66,4 +81,10 @@ Independent validation uses 24 actual R2–R7 PDFs: qpdf creates R2–R6 and Pyt
 cryptography independently creates AESV4 payloads using qpdf's R6 password
 entries. Both passwords, binary strings, object streams, metadata settings and
 signature exemptions are checked. These synthetic credentials are public test
-data. See [security controls](security.md) and [components](components.md).
+data. Six additional cases verify catalog/page/Form metadata, explicit Identity
+and indirect embedded-file types, with ordinary and compressed catalogs. qpdf
+independently decrypts the metadata files; cryptography constructs EFF payloads
+with qpdf credentials. qpdf 12.4.2 does not decrypt EFF when StmF is Identity,
+even with a direct Type, so its decryption is not used as an oracle for that
+particular selection. Its algorithms are never patched for the test. See
+[security controls](security.md) and [components](components.md).

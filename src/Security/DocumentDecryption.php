@@ -6,6 +6,7 @@ namespace PDF\Reading\Security;
 
 use PDF\Reading\EncodedStream;
 use PDF\Reading\ObjectResolver;
+use PDF\Reading\ObjectReference;
 use PDF\Reading\ParseException;
 use PDF\Reading\ReadBudget;
 use PDF\Syntax\FileStructure\BasicType;
@@ -31,6 +32,7 @@ final readonly class DocumentDecryption
         private string $strings,
         private string $streams,
         private string $embeddedFiles,
+        private ?ObjectReference $documentRoot = null,
     ) {
         foreach ([$strings, $streams, $embeddedFiles] as $name) {
             $this->filter($name);
@@ -47,6 +49,7 @@ final readonly class DocumentDecryption
         if ($value instanceof EncodedStream) {
             $dictionary = $this->dictionary($value->dictionary(), $identifier, $budget);
             $type = $dictionary->get('Type');
+            $type = $type === null ? null : $resolver->resolve($type);
             $selected = $type instanceof NameType && $type->value === 'EmbeddedFile' ? $this->embeddedFiles : $this->streams;
             [$dictionary, $explicit] = $this->streamFilters($dictionary, $resolver);
             if ($explicit !== null) {
@@ -57,7 +60,8 @@ final readonly class DocumentDecryption
             if ($external !== null && !$external instanceof NullType && !$external instanceof StringType && !$external instanceof DictionaryType) {
                 throw new ParseException('An external stream F entry must resolve to a file specification.');
             }
-            $exempt = (!$this->encryptMetadata && $type instanceof NameType && $type->value === 'Metadata')
+            $exempt = (!$this->encryptMetadata && $type instanceof NameType && $type->value === 'Metadata'
+                    && $this->isDocumentMetadata($identifier, $resolver))
                 || ($external !== null && !$external instanceof NullType);
             if ($exempt && $explicit !== null && $selected !== 'Identity') {
                 throw new ParseException('An exempt stream cannot select an encrypting Crypt filter.');
@@ -158,5 +162,20 @@ final readonly class DocumentDecryption
     private function filter(string $name): CryptFilterDecryption
     {
         return $this->filters[$name] ?? throw new ParseException('A selected crypt filter is not defined in the encryption dictionary.');
+    }
+
+    private function isDocumentMetadata(ObjectIdentifier $identifier, ObjectResolver $resolver): bool
+    {
+        if ($this->documentRoot === null) {
+            return false;
+        }
+        $catalog = $resolver->resolve($this->documentRoot);
+        if (!$catalog instanceof DictionaryType) {
+            throw new ParseException('The document metadata exemption requires a catalog dictionary.');
+        }
+        // Compare the actual PDF identity without loading the metadata stream recursively.
+        // A /Type /Metadata elsewhere does not make its payload document-level metadata.
+        $metadata = $catalog->get('Metadata');
+        return $metadata instanceof ObjectReference && (string) $metadata->identifier === (string) $identifier;
     }
 }

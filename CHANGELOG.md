@@ -4,6 +4,17 @@ English | [Français](CHANGELOG.fr.md)
 
 ## Unreleased
 
+## 0.3.1 - 2026-10-15
+
+- Bind `EncryptMetadata=false` to the actual catalog Metadata identity. Page and
+  other object metadata continue through their selected crypt filter; an explicit
+  Identity filter still leaves the remaining codec input unchanged.
+- Resolve indirect stream Type values before selecting EFF versus StmF, including
+  encrypted attachments and catalogs stored in object streams.
+- Add six independent qpdf/cryptography cases and native regressions; document
+  source clauses and oracle boundaries in English and French. Explicit credentials,
+  shared budgets, original ciphertext and stable runtime dependencies are preserved.
+
 ## 0.3.0 - 2026-10-15
 
 - Read hybrid cross-references with auxiliary stream precedence and cumulative bounds.

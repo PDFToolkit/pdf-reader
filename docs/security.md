@@ -119,5 +119,13 @@ own security surfaces, outside this library's test scope.
 
 Independent tests compare 26 LZW/predictor cases with qpdf, six hybrid files
 with pypdf/qpdf and 24 R2–R7 PDFs encrypted by qpdf or cryptography.
+
+Patch 0.3.1 additionally checks six source files for metadata ownership and
+indirect embedded-file types. `EncryptMetadata=false` exempts only the catalog's
+actual Metadata identity, not arbitrary streams declaring `/Type /Metadata`.
+The immutable decryption context receives the document root explicitly and uses
+the bounded resolver; explicit Identity and remaining codec bytes are preserved.
+The [authentication guide](authentication.md) records source clauses and qpdf's
+EFF decryption limitation separately from the independent cryptography fixtures.
 Modified AES-GCM tags fail without returning plaintext. Authentication
 errors do not disclose credentials or document contents.

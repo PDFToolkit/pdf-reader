@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PDF\Reading\Security;
 
 use PDF\Reading\ParseException;
+use PDF\Reading\ObjectReference;
 use PDF\Reading\ReadDocument;
 use PDF\Reading\UnsupportedPdfFeature;
 use PDF\Security\Aes128Backend;
@@ -147,6 +148,7 @@ final readonly class StandardPasswordAuthentication implements DocumentAuthentic
             $streams = $values->name('StmF', 'Identity');
             $embedded = $values->name('EFF', $streams);
         }
+        $root = $raw->trailer()->get('Root');
         return new DocumentDecryption(
             new ReadPermissions($permissions, $authenticated->access, $revision),
             $metadata->value,
@@ -154,7 +156,8 @@ final readonly class StandardPasswordAuthentication implements DocumentAuthentic
             $filters,
             $strings,
             $streams,
-            $embedded
+            $embedded,
+            $root instanceof ObjectReference ? $root : null
         );
     }
 }
