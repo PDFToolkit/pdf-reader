@@ -4,6 +4,13 @@
 
 ## Unreleased
 
+## 0.3.2 - 2026-10-15
+
+- Accepter le core stable `^0.9` en conservant les séries précédemment prises en charge.
+- Conserver le verrou de validation du core publié `0.7.1` ainsi que toutes les versions et références des dépendances ; actualiser son empreinte avec Composer.
+- Vérifier le module inchangé avec les véritables classes du candidat core 0.9 sur PHP 8.3, 8.4 et 8.5, par un bootstrap de validation explicite hors des manifestes de production.
+- Conserver API publique, limites d’analyse et exigences PHP ; actualiser l’installation en français et en anglais.
+
 ## 0.3.1 - 2026-10-15
 
 - Lier `EncryptMetadata=false` à l'identité réelle du Metadata du catalogue. Les

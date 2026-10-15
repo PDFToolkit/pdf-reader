@@ -22,7 +22,7 @@ application:
 composer require "pdftoolkit/pdf-reader:^0.3"
 ```
 
-The reader uses `roukmoute/pdf:^0.7.1 || ^0.8`, installed
+The reader uses `roukmoute/pdf:^0.7.1 || ^0.8 || ^0.9`, installed
 automatically by Composer. PHP 8.3 or newer on a 64-bit platform and the `ctype`,
 `iconv` and `zlib` extensions are required for this combination. The application's
 `composer.lock` records the selected versions and revisions.

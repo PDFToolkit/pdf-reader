@@ -4,6 +4,13 @@ English | [Français](CHANGELOG.fr.md)
 
 ## Unreleased
 
+## 0.3.2 - 2026-10-15
+
+- Accept stable core `^0.9` while retaining the previously supported core series.
+- Preserve the published core `0.7.1` validation lock and all dependency versions and source commits; refresh its content hash with Composer.
+- Verify the unchanged module against the actual core 0.9 candidate on PHP 8.3, 8.4 and 8.5, using an explicit validation bootstrap outside production manifests.
+- Keep the public API, parsing limits and PHP requirements unchanged; update English and French installation documentation.
+
 ## 0.3.1 - 2026-10-15
 
 - Bind `EncryptMetadata=false` to the actual catalog Metadata identity. Page and
