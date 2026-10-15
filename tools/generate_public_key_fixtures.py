@@ -71,11 +71,13 @@ def base_writer(compressed=False):
     return writer
 
 
-def ordinary_writer(mode, certs, owner=False, clear_metadata=False, compressed=False, mac=False):
+def ordinary_writer(mode, certs, owner=False, clear_metadata=False, compressed=False, mac=False, permissions=None):
     versions = {'s3-rc4': 1, 's4-rc4': 2, 's5-rc4': 4, 's5-aes128': 4, 's5-aes256': 5, 's5-gcm': 6}
     version = SecurityHandlerVersion(versions[mode])
     perms = (PubKeyPermissions.ALLOW_PRINTING | PubKeyPermissions.ALLOW_ASSISTIVE_TECHNOLOGY
         | PubKeyPermissions.TOLERATE_MISSING_PDF_MAC)
+    if permissions is not None:
+        perms = permissions | PubKeyPermissions.TOLERATE_MISSING_PDF_MAC
     if owner:
         perms |= PubKeyPermissions.ALLOW_ENCRYPTION_CHANGE
     if mac:
@@ -195,6 +197,7 @@ def generate(directory):
         filename = name + '.pdf'
         (directory / filename).write_bytes(data)
         records.append({'file': filename, 'sha256': hashlib.sha256(data).hexdigest(),
+            'subFilter': str(writer.security_handler.subfilter.value).lstrip('/'),
             'permissions': permissions, 'compressed': compressed, 'named': named,
             'mac': mac, 'incremental': incremental, 'macDistinct': mac_key is not None})
         return data
@@ -218,6 +221,13 @@ def generate(directory):
         if mode.startswith('s5'):
             writer, perms = ordinary_writer(mode, certs, clear_metadata=True)
             save(mode + '-clear-metadata', writer, perms)
+    # Independent CMS payloads distinguish the four broad R2 rights from source
+    # bits 9–12, which have no authority under the S3 subfilter.
+    for broad in (0, 4, 8, 16, 32):
+        for reserved in (0, 0xf00):
+            writer, perms = ordinary_writer('s3-rc4', certs,
+                permissions=PubKeyPermissions.from_uint(broad | reserved))
+            save(f's3-r2-right-{broad}-reserved-{reserved}', writer, perms)
     for mode in ('s5-aes256', 's5-gcm'):
         for location in ('Standalone', 'AttachedToSig'):
             writer, perms = ordinary_writer(mode, certs, compressed=True, mac=True)

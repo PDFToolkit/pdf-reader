@@ -28,9 +28,11 @@
       "sha256": "2dc784890e65da6c324d46ece182fb4705b751e49587b1bbe9c3225c25fed4d3",
       "clauses": [
         "7.6.4",
-        "7.6.4.3"
+        "7.6.4.3",
+        "7.6.3.2 Table 22 (revision 2 usage rights)"
       ],
       "physicalPdfPages": [
+        69,
         72,
         73,
         74,
@@ -77,5 +79,12 @@
     "CFM None/custom handlers remain unsupported.",
     "Historical optional Length defaults do not imply ISO2 conformance.",
     "S3 permissions preserve the source word and subfilter; only R2 usage bits are meaningful."
-  ]
+  ],
+  "permissionNormalization": {
+    "since": "0.5.2",
+    "source": "ISO 32000-2:2020 7.6.5.3, physical page 104; ISO 32000-1:2008 Table 22, physical page 69",
+    "s3": "Normalize common mask bits 9/10/11/12 from R2 bits 6/5/4/3 respectively; ignore reserved source 9–12. Preserve raw CMS word and subfilter. Public-key bit 2 still grants all usage permissions.",
+    "s4s5": "Preserve granular permission semantics.",
+    "oracleBoundary": "Unmodified pyHanko produces CMS/ciphertext and verifies decryption; its common permission enum does not normalize s3. The independent oracle applies Table 22 semantics to the separately recovered CMS word."
+  }
 }

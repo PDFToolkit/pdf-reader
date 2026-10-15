@@ -21,7 +21,7 @@ final readonly class PublicKeyReadPermissions implements DocumentPermissions
             if ($authenticated->permissions === null) {
                 throw new \InvalidArgumentException('Document permissions require a document-scoped recipient envelope.');
             }
-            $filters[$name] = new PublicKeyRecipientAccess($authenticated->permissions, $authenticated->recipientIndex);
+            $filters[$name] = new PublicKeyRecipientAccess($authenticated->permissions, $authenticated->recipientIndex, $subFilter);
         }
         $this->filters = $filters;
     }

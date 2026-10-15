@@ -84,7 +84,15 @@ de droits supplémentaires sur le document. Pour les champs propres aux mots de
 passe, l’application doit vérifier `instanceof ReadPermissions`.
 Le `subFilter` typé conserve l’identité s3/s4/s5. Pour s3, seuls les bits d’usage
 R2 historiques 3–6 sont pertinents ; les bits réservés ne représentent pas les
-permissions granulaires ultérieures. Le mot authentifié original reste disponible.
+permissions granulaires ultérieures. Depuis 0.5.2, les `effectiveMask()` du
+document et du destinataire traduisent ces quatre droits R2 dans le masque commun :
+le remplissage dépend du bit 6, l’extraction d’accessibilité du bit 5, l’assemblage
+du bit 4 et l’impression sans restriction de qualité du bit 3. Les bits source
+9–12 n’accordent jamais ces droits pour s3. Le mot authentifié original reste
+disponible dans `PublicKeyRecipientAccess::permissions`, avec son `subFilter`
+explicite. Le bit 2 accorde toujours tous les droits PubSec. Pour s4/s5, les bits
+granulaires conservent leur sens habituel. L’application doit appliquer le masque
+effectif, sans interpréter un mot s3 brut comme un mot s4/s5.
 
 ## Filtres distincts et accès différé
 
@@ -124,7 +132,11 @@ et budgets épuisés produisent `ParseException`.
 
 L’oracle indépendant `tools/validate_public_key_authentication.py` génère des sources
 réelles avec pyHanko non modifié et compare les résultats PHP à des opérations
-CMS/clé/chiffrement indépendantes. Les tests adverses natifs couvrent séparément
+CMS/clé/chiffrement indépendantes. Ses 47 sources comprennent 14 cas s3 ; dix
+combinent chaque droit R2 avec les bits source 9–12 nuls ou actifs. pyHanko fournit
+les vrais CMS et octets chiffrés ; l’oracle applique séparément l’interprétation
+normative s3, sans reprendre l’énumération commune des droits de pyHanko.
+Les tests adverses natifs couvrent séparément
 l’ordre, la portée, les premiers droits correspondants, les filtres inconnus,
 les échecs différés et les limites. Les oracles Standard, metadata, hybrides et MAC
 existants restent requis.

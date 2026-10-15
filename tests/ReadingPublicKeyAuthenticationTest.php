@@ -20,6 +20,7 @@ use PDF\Security\HistoricalEncryptionKey;
 use PDF\Security\HistoricalObjectKeyDerivation;
 use PDF\Security\PublicKeyPermissionByteOrder;
 use PDF\Security\PublicKeyRecipient;
+use PDF\Security\PublicKeySubFilter;
 use PDF\Security\Rc4Cipher;
 use PDF\Security\RecipientDecrypter;
 use PDF\Syntax\Object\IndirectObject\ObjectIdentifier;
@@ -80,6 +81,48 @@ final class ReadingPublicKeyAuthenticationTest extends TestCase
         $document = $this->read($this->legacy(['match']), $this->decrypter(['match' => self::SEED . pack('N', 2)]));
         self::assertSame(-4, $document->permissions()->effectiveMask());
         self::assertTrue(array_values($document->permissions()->filters)[0]->permissions->ownerAccess());
+    }
+
+    /** @return iterable<string, array{int, int}> */
+    public static function legacyPermissionWords(): iterable
+    {
+        // Expected common usage bits follow the four independent R2 rights.
+        foreach (range(0, 15) as $rights) {
+            $source = $rights << 2;
+            $expected = $source;
+            foreach ([4 => 2048, 8 => 1024, 16 => 512, 32 => 256] as $broad => $specific) {
+                if (($source & $broad) !== 0) {
+                    $expected |= $specific;
+                }
+            }
+            yield 'R2 rights ' . $rights . ', reserved clear' => [$source, $expected];
+            yield 'R2 rights ' . $rights . ', reserved set' => [$source | 0xf00, $expected];
+        }
+    }
+
+    #[DataProvider('legacyPermissionWords')]
+    public function testS3NormalizesOnlyR2UsageRightsAndPreservesAuthenticatedFacts(int $word, int $expected): void
+    {
+        $encryption = '/Filter /Adobe.PubSec /SubFilter /adbe.pkcs7.s3 /V 1 /Length 40 /Recipients [(match)]';
+        $document = $this->read($encryption, $this->decrypter(['match' => self::SEED . pack('N', $word)]));
+        $permissions = $document->permissions();
+        self::assertInstanceOf(PublicKeyReadPermissions::class, $permissions);
+        self::assertSame(PublicKeySubFilter::Pkcs7S3, $permissions->subFilter);
+        self::assertSame($expected, $permissions->effectiveMask());
+        $recipient = array_values($permissions->filters)[0];
+        self::assertSame(PublicKeySubFilter::Pkcs7S3, $recipient->subFilter);
+        self::assertSame($word, $recipient->permissions?->unsigned);
+        self::assertSame($expected, $recipient->effectiveMask());
+
+        $s4 = $this->read($this->legacy(['match']), $this->decrypter(['match' => self::SEED . pack('N', $word)]));
+        self::assertSame($word, $s4->permissions()?->effectiveMask());
+    }
+
+    public function testS3AllPermissionsBitStillOverridesR2Restrictions(): void
+    {
+        $encryption = '/Filter /Adobe.PubSec /SubFilter /adbe.pkcs7.s3 /V 1 /Recipients [(match)]';
+        $document = $this->read($encryption, $this->decrypter(['match' => self::SEED . pack('N', 2)]));
+        self::assertSame(-4, $document->permissions()?->effectiveMask());
     }
 
     public function testDeferredAttachmentDoesNotAuthenticateUntilItIsAccessed(): void

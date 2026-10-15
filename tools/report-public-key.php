@@ -67,9 +67,11 @@ foreach (array_slice($argv, 3) as $filename) {
         $filters = [];
         foreach ($permissions->filters as $name => $access) {
             $filters[$name] = ['permissions' => $access->permissions?->unsigned,
-                'owner' => $access->permissions?->ownerAccess(), 'recipientIndex' => $access->recipientIndex];
+                'owner' => $access->permissions?->ownerAccess(), 'recipientIndex' => $access->recipientIndex,
+                'subFilter' => $access->subFilter->value, 'effectiveMask' => $access->effectiveMask()];
         }
         $report[] = ['file' => $filename, 'ok' => true, 'mac' => $document->mac()?->value,
+            'subFilter' => $permissions->subFilter->value,
             'pages' => count($pages), 'permissions' => $permissions->effectiveMask(), 'filters' => $filters,
             'binary' => $binary instanceof StringType ? bin2hex($binary->value) : null,
             'literal' => $literal instanceof StringType ? $literal->value : null, 'contents' => $content,

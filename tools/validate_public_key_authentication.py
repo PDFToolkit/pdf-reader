@@ -94,6 +94,7 @@ def independent(directory, record, credentials, private_keys):
     reader = PdfFileReader(io.BytesIO(data), strict=not record.get('hybrid', False))
     handler = reader.security_handler
     assert handler.get_name() == '/Adobe.PubSec'
+    assert str(handler.subfilter.value).lstrip('/') == record['subFilter']
     if record.get('macDistinct'):
         assert handler.get_stream_filter().authenticate(credentials['recipient']).status == AuthStatus.USER
         default = handler.get_stream_filter('/DefaultCryptFilter')
@@ -228,11 +229,21 @@ def main():
             assert result['ok'], result
             assert result['pages'] == 1 and result['binary'] == BINARY.hex() and result['contents'] == CONTENT.decode(), result
             assert result['literal'] == 'Public-key literal (test)' and result['mac'] == record['mac'], result
-            # effectiveMask intentionally expands owner permission bit 2.
-            expected_permissions = -4 if record['permissions'] & 2 else (record['permissions'] & 0xfffffffc) - 0x100000000
+            # Interpret the independently recovered CMS word using the source
+            # subfilter, rather than pyHanko's undifferentiated public flag enum.
+            word = record['permissions']
+            if record['subFilter'] == 'adbe.pkcs7.s3':
+                broad = word & 0x3c
+                word &= ~0xf00
+                for original, modern in ((4, 2048), (8, 1024), (16, 512), (32, 256)):
+                    if broad & original:
+                        word |= modern
+            expected_permissions = -4 if word & 2 else (word & 0xfffffffc) - 0x100000000
             assert result['permissions'] == expected_permissions, result
+            assert result['subFilter'] == record['subFilter'], result
             document_facts = [fact for fact in result['filters'].values() if fact['permissions'] is not None]
             assert document_facts and all(fact['permissions'] == record['permissions'] and fact['recipientIndex'] == 1 for fact in document_facts), result
+            assert all(fact['subFilter'] == record['subFilter'] and fact['effectiveMask'] & ~3 == expected_permissions for fact in document_facts), result
             assert result['metadataSha256'] == expected_metadata[record['file']], result
             if record['compressed']:
                 assert result['compressed'] == COMPRESSED, result
@@ -247,6 +258,7 @@ def main():
         wrong_key_report = invoke(args.php, args.bootstrap, directory, wrong_mac_key)
         assert len(wrong_key_report) == len(wrong_mac_key) and all(not result['ok'] for result in wrong_key_report), wrong_key_report
         print(json.dumps({'independent_sources': len(records), 'wrong_identity_refusals': len(rejected),
+            's3_R2_permission_cases': sum(record['subFilter'] == 'adbe.pkcs7.s3' for record in records),
             'wrong_default_MAC_key_refusals': len(wrong_key_report),
             'tampered_MAC_refusals': len(modified_report),
             'CMS_permissions_keys_MAC': 'passed', 'native_reader': 'passed'}, indent=2))

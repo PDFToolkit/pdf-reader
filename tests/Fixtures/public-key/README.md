@@ -3,7 +3,7 @@
 [English](README.md) · [Français](README.fr.md)
 
 `tools/validate_public_key_authentication.py` generates synthetic Adobe.PubSec
-PDFs with pinned pyHanko 0.37.0 and cryptography 50.0.2, then reads them with the
+PDFs with pinned pyHanko 0.47.0 and cryptography 50.0.2, then reads them with the
 native PHP reader. Install `tools/source-mac-validation-requirements.txt` with
 `pip --require-hashes`; these libraries are development-only oracle inputs.
 
@@ -18,16 +18,21 @@ Certificates are self-signed test identities; no certificate trust, signature
 validation or network operation is claimed. Random keys, seeds, IVs and timestamps
 make bytes differ between runs; the cases and assertions are reproducible.
 
-The 37 positive cases cover s3/s4 RC4, s5 RC4/AESV2/AESV3/AESV4, both states of
+The 47 positive cases cover s3/s4 RC4, s5 RC4/AESV2/AESV3/AESV4, both states of
 permission bit 2, an unmatched first CMS packet followed by a matching second
 packet, object streams, a hybrid xref, an incremental revision, clear catalogue
 metadata, distinct document/EFOpen keys with explicit Crypt filters, Identity,
 and standalone/signature-attached MACs. The oracle independently decrypts CMS
 RSA/AES envelopes with cryptography, checks the big-endian permission words and
 recipient-array key derivation, compares clear strings/streams/metadata, and
-checks MAC digests, HKDF, key wrapping and HMAC. It also requires 37 wrong-identity
+checks MAC digests, HKDF, key wrapping and HMAC. It also requires 47 wrong-identity
 refusals, five modified-MAC refusals and refusal of a MAC authenticated with the
 wrong filter key.
+
+Ten additional real S3 sources pair each broad R2 permission with source bits
+9–12 clear or set. The PHP effective mask must derive granular rights only from
+R2 bits 3–6, preserving the original CMS word separately. pyHanko checks CMS and
+ciphertext; its shared permission enum is not an oracle for S3 interpretation.
 
 One MAC case deliberately uses a DefaultCryptFilter key different from StmF/StrF.
 pyHanko's global MAC accessor chooses StmF, so that case uses its unchanged

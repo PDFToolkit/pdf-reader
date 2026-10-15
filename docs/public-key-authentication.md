@@ -83,7 +83,15 @@ their rights. Individual-stream access does not grant extra document rights.
 Applications needing password-specific fields must check `instanceof ReadPermissions`.
 The typed `subFilter` preserves s3/s4/s5 identity. For s3, only the historical
 R2 usage bits 3–6 are meaningful; reserved bits must not be interpreted as the
-later granular permissions. The original authenticated word remains available.
+later granular permissions. Starting with 0.5.2, both document and recipient
+`effectiveMask()` translate these four broad R2 rights into the common mask:
+form filling follows bit 6, accessibility extraction follows bit 5, assembly
+follows bit 4 and unrestricted printing follows bit 3. Source bits 9–12 never
+grant those rights for s3. The original authenticated word remains available in
+`PublicKeyRecipientAccess::permissions`; its `subFilter` also remains explicit.
+Bit 2 still grants all PubSec permissions. For s4/s5, the granular source bits
+retain their normal meanings. Applications should enforce the effective mask,
+not reinterpret a raw s3 permission word as an s4/s5 word.
 
 ## Independent filters and deferred access
 
@@ -122,7 +130,10 @@ Malformed dictionaries/payloads and exhausted budgets raise `ParseException`.
 
 The independent oracle `tools/validate_public_key_authentication.py` generates
 real sources with unmodified pyHanko and checks PHP results against independent
-CMS/key/cipher operations. Native adverse tests separately cover packet order,
+CMS/key/cipher operations. Its 47 sources include 14 s3 cases; ten pair each
+broad R2 right with source bits 9–12 clear or set. pyHanko supplies the real CMS
+and encrypted bytes, while the oracle applies the normative s3 permission
+interpretation independently of pyHanko's common flag enum. Native adverse tests separately cover packet order,
 scope, first matching rights, unknown filters, delayed failures and limits.
 The existing Standard, metadata, hybrid and MAC oracles remain required.
 

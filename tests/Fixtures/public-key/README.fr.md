@@ -3,7 +3,7 @@
 [English](README.md) · [Français](README.fr.md)
 
 `tools/validate_public_key_authentication.py` produit des PDF Adobe.PubSec
-synthétiques avec pyHanko 0.37.0 et cryptography 50.0.2 verrouillés, puis les lit
+synthétiques avec pyHanko 0.47.0 et cryptography 50.0.2 verrouillés, puis les lit
 avec le lecteur PHP natif. Installer `tools/source-mac-validation-requirements.txt`
 avec `pip --require-hashes` ; ces bibliothèques servent uniquement aux oracles
 de développement.
@@ -20,7 +20,7 @@ autosignées ; aucune confiance PKI, validation de signature ou opération rése
 n’est revendiquée. Clés, seeds, IV et horodatages aléatoires changent les octets
 entre exécutions ; les cas et assertions restent reproductibles.
 
-Les 37 cas positifs couvrent s3/s4 RC4, s5 RC4/AESV2/AESV3/AESV4, les deux états
+Les 47 cas positifs couvrent s3/s4 RC4, s5 RC4/AESV2/AESV3/AESV4, les deux états
 du bit de permission 2, un premier paquet CMS non correspondant suivi d’un
 second correspondant, flux d’objets, xref hybride, révision incrémentale,
 métadonnées claires du catalogue, clés document/EFOpen distinctes avec filtres
@@ -28,9 +28,14 @@ Crypt explicites, Identity et MAC standalone/attachés à une signature. L’ora
 déchiffre indépendamment les enveloppes CMS RSA/AES avec cryptography, vérifie
 les permissions big-endian et la dérivation de clé sur le tableau de
 destinataires, compare chaînes/flux/métadonnées clairs et vérifie empreintes MAC,
-HKDF, encapsulation de clé et HMAC. Il exige aussi 37 refus de mauvaise identité,
+HKDF, encapsulation de clé et HMAC. Il exige aussi 47 refus de mauvaise identité,
 cinq refus de MAC altérés et le refus d’un MAC authentifié avec la mauvaise clé
 de filtre.
+
+Dix sources S3 supplémentaires combinent chaque permission R2 avec les bits
+source 9–12 nuls ou actifs. Le masque PHP doit dériver les droits granulaires des
+seuls bits R2 3–6 et conserver séparément le mot CMS original. pyHanko vérifie CMS
+et chiffrement ; son énumération commune ne valide pas l’interprétation S3.
 
 Un cas MAC utilise volontairement une clé DefaultCryptFilter différente de
 StmF/StrF. L’accesseur MAC global de pyHanko choisit StmF : ce cas utilise donc ses
