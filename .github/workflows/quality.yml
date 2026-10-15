@@ -20,7 +20,7 @@ jobs:
       - uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: ctype, iconv, zlib
+          extensions: ctype, iconv, openssl, zlib
           tools: composer:v2
           coverage: none
       - uses: actions/setup-python@v6
@@ -41,6 +41,8 @@ jobs:
         run: python tools/validate_filter_cases.py
       - name: Authenticate independently encrypted Standard-handler PDFs
         run: python tools/validate_authentication.py
+      - name: Compare hybrid initial, incremental and linearized documents
+        run: python tools/validate_hybrid.py
       - run: php examples/inspect.php tests/Fixtures/pdf/object-streams.pdf
       - run: php examples/parse-value.php
       - run: php examples/pages.php tests/Fixtures/page-tree/classic.pdf

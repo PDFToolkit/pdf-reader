@@ -70,8 +70,8 @@ final readonly class CrossReferenceReader
         }
         $auxiliary = $trailer->get('XRefStm');
         if ($auxiliary !== null && !$auxiliary instanceof NullType) {
-            if (!$auxiliary instanceof IntegerType || $auxiliary->integer() < 1 || $auxiliary->integer() >= $offset) {
-                throw new ParseException('XRefStm must be a direct offset before its traditional cross-reference table.', $offset);
+            if (!$auxiliary instanceof IntegerType || $auxiliary->integer() < 1 || $auxiliary->integer() >= strlen($this->source->bytes)) {
+                throw new ParseException('XRefStm must be a direct offset inside the source file.', $offset);
             }
             // ISO 32000-1, 7.5.8.4: auxiliary stream entries override this table;
             // the stream's Prev is ignored, and the traditional trailer owns the revision.
