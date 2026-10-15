@@ -175,3 +175,5 @@ conserve le dernier trailer physique et les octets originaux ; `SourceStringSpan
 associe les chaînes créées par le parseur à leur identité, sous le budget du
 document. Une chaîne issue d’un flux d’objets décodé ne peut pas se faire passer
 pour une étendue du fichier source. Voir les [PDF MAC source](source-mac.md).
+
+`StructuralPolicy::Pdf20` active les [contrôles EC3 ciblés](structural-policy.md). `Compatible` reste la valeur par défaut ; la politique est conservée par l’authentification, les vues physiques et la composition de la politique d’intégrité.

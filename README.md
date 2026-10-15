@@ -195,6 +195,7 @@ Patch 0.3.1 corrects catalog-only metadata exemption and resolves indirect strea
 types before selecting embedded-file encryption. Page and object metadata stay
 protected by their chosen filter; explicit Identity and codec bytes are preserved.
 
+- [Explicit EC3 structural policy](docs/structural-policy.md)
 - [Physical revision history](docs/revision-history.md)
 - [Architecture and object boundaries](docs/architecture.md)
 - [Pages, inheritance and content streams](docs/pages.md)

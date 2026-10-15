@@ -6,6 +6,7 @@ English | [Français](CHANGELOG.fr.md)
 
 ## 0.6.0 - 2026-10-15
 
+- Add an explicit `StructuralPolicy::Pdf20` for EC3 canonical identifiers, all ObjStm dictionary entry references, recursively direct common xref-stream values and prohibited xref associations; keep historical compatibility as the default. Correct general brace tokenisation and validate both policies against all independent physical-history sources.
 - Expose bounded immutable physical revision histories with verified xref/EOF boundaries, exact source prefixes, effective raw graphs, object identities and source spans, including objects placed after a primary xref stream.
 - Preserve signature Contents provenance after separate authentication; raw history inspection grants no signature, trust or modification authority. Keep chronological histories distinct from linearized xref arrangements and document their explicit boundaries.
 - Share cumulative budgets across all history views and prefix copies. Reject overlapping/hidden objects, future references, forged footers and unattributed syntax.

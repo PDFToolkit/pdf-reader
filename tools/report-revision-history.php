@@ -5,6 +5,7 @@ declare(strict_types=1);
 use PDF\Reading\CrossReference\EntryKind;
 use PDF\Reading\DocumentReader;
 use PDF\Reading\FileBytes;
+use PDF\Reading\StructuralPolicy;
 use PDF\Reading\Security\StandardPasswordAuthentication;
 use PDF\Security\PreparedPassword;
 use PDF\Syntax\Object\ArrayType;
@@ -21,9 +22,10 @@ $bytes = file_get_contents($path);
 if ($bytes === false) {
     throw new RuntimeException('Cannot read the supplied fixture.');
 }
-$history = (new DocumentReader())->readRevisionHistory(new FileBytes($bytes));
+$policy = ($argv[3] ?? '') === 'pdf20' ? StructuralPolicy::Pdf20 : StructuralPolicy::Compatible;
+$history = (new DocumentReader(structuralPolicy: $policy))->readRevisionHistory(new FileBytes($bytes));
 $reader = new DocumentReader(authentication: ($argv[2] ?? '') === 'password'
-    ? new StandardPasswordAuthentication(new PreparedPassword('user')) : null);
+    ? new StandardPasswordAuthentication(new PreparedPassword('user')) : null, structuralPolicy: $policy);
 $report = [];
 foreach ($history as $revision) {
     $raw = $revision->rawDocument();

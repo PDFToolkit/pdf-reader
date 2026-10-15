@@ -172,3 +172,5 @@ the latest physical trailer and original bytes; `SourceStringSpans` tracks the
 parser-created strings by object identity under the document budget. Decoded
 object-stream strings cannot masquerade as source-file spans.
 See [source PDF MAC](source-mac.md).
+
+`StructuralPolicy::Pdf20` enables the [targeted EC3 checks](structural-policy.md). `Compatible` remains the default; the policy is preserved by authentication, physical views and integrity-policy composition.

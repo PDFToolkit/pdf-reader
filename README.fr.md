@@ -202,6 +202,7 @@ types de flux indirects avant le choix du chiffrement des fichiers embarqués.
 Les métadonnées de page/objet suivent leur filtre ; Identity explicite et les
 octets des codecs sont préservés.
 
+- [Politique structurelle EC3 explicite](docs/fr/structural-policy.md)
 - [Historique physique des révisions](docs/fr/revision-history.md)
 - [Architecture et frontières des objets](docs/fr/architecture.md)
 - [Pages, héritage et flux de contenu](docs/fr/pages.md)

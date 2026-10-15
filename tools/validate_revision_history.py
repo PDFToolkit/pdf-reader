@@ -135,6 +135,9 @@ def validate(record, args):
         php += ['-d', 'auto_prepend_file=' + str(args.bootstrap.resolve())]
     actual = json.loads(run([*php, ROOT / 'tools/report-revision-history.php', path,
         'password' if record.get('encrypted') else 'plain']))
+    strict = json.loads(run([*php, ROOT / 'tools/report-revision-history.php', path,
+        'password' if record.get('encrypted') else 'plain', 'pdf20']))
+    assert strict == actual, 'Structural policy must preserve valid physical and authenticated facts'
     assert actual['sourceSha256'] == hashlib.sha256(source).hexdigest()
     expected = PdfFileReader(io.BytesIO(source), strict=not record.get('hybrid', False))
     if record.get('encrypted'):
@@ -213,7 +216,8 @@ def main():
         print(json.dumps({'sources': reports, 'prefixes': sum(item['revisions'] for item in reports),
             'signatureVerifications': sum(item['mathematicalSignatures'] for item in reports),
             'certificateTrust': 'not asserted; offline validation with no trust roots',
-            'modificationAuthorization': 'not asserted'}, indent=2))
+            'modificationAuthorization': 'not asserted',
+            'structuralPolicies': ['Compatible', 'Pdf20'], 'policySourceReads': 2 * len(reports)}, indent=2))
 
 
 if __name__ == '__main__':

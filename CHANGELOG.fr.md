@@ -6,6 +6,7 @@
 
 ## 0.6.0 - 2026-10-15
 
+- Ajouter une `StructuralPolicy::Pdf20` explicite pour les identifiants canoniques EC3, les références de toutes les entrées ObjStm, les valeurs communes récursivement directes des flux xref et leurs associations interdites ; conserver la compatibilité historique par défaut. Corriger la tokenisation générale des accolades et vérifier les deux politiques sur toutes les sources indépendantes d’historique physique.
 - Exposer des historiques physiques immuables bornés avec frontières xref/EOF vérifiées, préfixes exacts, graphes bruts effectifs, identités et étendues sources, y compris les objets placés après un flux xref principal.
 - Préserver la provenance des Contents de signature après authentification séparée ; l’inspection brute ne confère ni autorité de signature, ni confiance, ni droit de modification. Distinguer les historiques chronologiques des organisations xref linéarisées et documenter ces limites.
 - Partager les budgets cumulés entre toutes les vues et copies de préfixes. Refuser chevauchements/objets cachés, références futures, footers falsifiés et syntaxe non attribuée.

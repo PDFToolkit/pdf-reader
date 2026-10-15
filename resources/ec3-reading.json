@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "filename": "ISO_32000-2_sponsored_EC3.pdf",
+    "sha256": "90f4b666d46405dd62630a98d514158b4de5304b749523c4081680ac4fe2e230"
+  },
+  "scope": "Targeted reading corrections, not complete PDF conformance.",
+  "issues": [
+    {
+      "issue": 365,
+      "anchors": [
+        {
+          "page": 38,
+          "id": [
+            1444,
+            0
+          ]
+        },
+        {
+          "page": 38,
+          "id": [
+            1448,
+            0
+          ]
+        },
+        {
+          "page": 38,
+          "id": [
+            1452,
+            0
+          ]
+        }
+      ],
+      "implementation": [
+        "src/SyntaxParser.php"
+      ],
+      "tests": [
+        "tests/ReadingSyntaxTest.php"
+      ],
+      "policy": "general lexical syntax"
+    },
+    {
+      "issue": 379,
+      "anchors": [
+        {
+          "page": 48,
+          "id": [
+            1539,
+            0
+          ]
+        },
+        {
+          "page": 48,
+          "id": [
+            1543,
+            0
+          ]
+        },
+        {
+          "page": 1020,
+          "id": [
+            8940,
+            0
+          ]
+        },
+        {
+          "page": 1020,
+          "id": [
+            8943,
+            0
+          ]
+        }
+      ],
+      "implementation": [
+        "src/SyntaxParser.php",
+        "src/StructuralPolicy.php"
+      ],
+      "tests": [
+        "tests/ReadingStructuralPolicyTest.php"
+      ],
+      "policy": "explicit StructuralPolicy::Pdf20"
+    },
+    {
+      "issue": 114,
+      "anchors": [
+        {
+          "page": 77,
+          "id": [
+            1892,
+            0
+          ]
+        }
+      ],
+      "implementation": [
+        "src/ObjectStreamDictionaryValidation.php",
+        "src/ReadDocument.php"
+      ],
+      "tests": [
+        "tests/ReadingStructuralPolicyTest.php"
+      ],
+      "policy": "explicit StructuralPolicy::Pdf20"
+    },
+    {
+      "issue": 246,
+      "anchors": [
+        {
+          "page": 81,
+          "id": [
+            1927,
+            0
+          ]
+        }
+      ],
+      "implementation": [
+        "src/CrossReferenceDictionaryValidation.php",
+        "src/CrossReferenceReader.php"
+      ],
+      "tests": [
+        "tests/ReadingStructuralPolicyTest.php"
+      ],
+      "policy": "explicit StructuralPolicy::Pdf20"
+    },
+    {
+      "issue": 403,
+      "anchors": [
+        {
+          "page": 81,
+          "id": [
+            1936,
+            0
+          ]
+        }
+      ],
+      "implementation": [
+        "src/CrossReferenceDictionaryValidation.php"
+      ],
+      "tests": [
+        "tests/ReadingStructuralPolicyTest.php"
+      ],
+      "policy": "explicit StructuralPolicy::Pdf20"
+    }
+  ],
+  "oracle": "tools/validate_revision_history.py: Compatible/Pdf20 identical results on 12 independent sources"
+}
