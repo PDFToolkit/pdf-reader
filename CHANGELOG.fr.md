@@ -2,6 +2,18 @@
 
 [English](CHANGELOG.md) | Français
 
+## 0.4.1 - 2026-10-15
+
+- Conserver les identités terminales du dictionnaire de chiffrement et des
+  métadonnées du catalogue dans les chaînes physiques bornées. Les entrées O/U
+  relues restent intactes ; seul le véritable flux du catalogue est implicitement
+  clair sous EncryptMetadata=false. Root utilise le résolveur authentifié.
+- Refuser cycles et mauvaises générations sans étendre l’exemption aux flux de
+  page, d’objet ou de mauvais type. La vérification MAC précède toujours le catalogue.
+- Garder tous les contrôles indépendants et ajouter quatre cas d’alias chiffrés
+  via parseur strict/authentification pyHanko inchangés et cryptography ; documenter
+  les limites des API de haut niveau qpdf/pypdf/pyHanko dans les deux langues.
+
 ## 0.4.0 - 2026-10-15
 
 - Exiger le core stable 0.9 et suivre les chaînes physiques de références sous

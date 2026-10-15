@@ -94,6 +94,23 @@ independently decrypts the metadata files; cryptography constructs EFF payloads
 with qpdf credentials. qpdf 12.4.2 does not decrypt EFF when StmF is Identity,
 even with a direct Type, so its decryption is not used as an oracle for that
 particular selection. Its algorithms are never patched for the test.
+
+Reader 0.4.1 preserves the terminal object number and generation through Encrypt,
+Root and catalog Metadata aliases. Reaccessing the encryption dictionary does
+not decrypt its O/U credential entries. Only the actual, correctly typed catalog
+metadata stream is implicitly clear; page and object metadata keep their cipher.
+Identity traversal uses the same bounded authenticated resolver and avoids
+recursively loading the stream currently being processed. MAC verification still
+precedes catalog interpretation.
+
+Four additional alias files preserve the original encrypted payload bytes.
+qpdf 12.4.2, pypdf 6.20.1 and pyHanko 0.37 high-level decryptors do not follow
+Encrypt reference chains. Their previous source checks remain unchanged. The
+additional oracle uses pyHanko's unchanged strict low-level parser and actual
+Standard handler on the terminal dictionary, then cryptography AES-CBC/PKCS7
+with each stream's real object number/generation. It compares catalog, page,
+object and Identity payloads and unchanged O/U bytes, without rewriting input or
+patching any authentication algorithm.
 CI pins checksum-verified qpdf 12.4.2; older qpdf versions can emit non-catalog
 metadata in cleartext under the document-only metadata setting.
 qpdf 12.4.2 also requires global Length for V4; the omitted-key case preserves

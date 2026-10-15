@@ -19,7 +19,7 @@ The package is available on
 application:
 
 ```console
-composer require "pdftoolkit/pdf-reader:^0.4"
+composer require "pdftoolkit/pdf-reader:^0.4.1"
 ```
 
 The reader uses `roukmoute/pdf:^0.9`, installed

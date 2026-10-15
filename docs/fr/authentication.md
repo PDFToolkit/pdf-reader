@@ -99,6 +99,22 @@ fichiers de métadonnées indépendamment ; cryptography construit les payloads 
 avec les credentials de qpdf. qpdf 12.4.2 ne déchiffre pas EFF lorsque StmF vaut
 Identity, même avec un Type direct ; son déchiffrement n'est donc pas un oracle
 pour ce choix précis. Ses algorithmes ne sont jamais modifiés pour le test.
+
+Le lecteur 0.4.1 conserve numéro et génération terminaux dans les alias Encrypt,
+Root et Metadata du catalogue. Relire le dictionnaire de chiffrement ne
+déchiffre pas ses entrées O/U. Seul le flux de métadonnées du véritable catalogue,
+avec le bon type, est implicitement clair ; ceux des pages et objets restent
+chiffrés. Le parcours utilise le même résolveur authentifié borné sans recharger
+récursivement le flux en cours. Le MAC précède toujours l’interprétation du catalogue.
+
+Quatre fichiers d’alias supplémentaires conservent les octets chiffrés originaux.
+Les déchiffreurs de haut niveau qpdf 12.4.2, pypdf 6.20.1 et pyHanko 0.37 ne
+suivent pas les chaînes Encrypt ; leurs anciens contrôles restent inchangés.
+L’oracle supplémentaire utilise le parseur strict bas niveau et le véritable
+handler Standard de pyHanko sur le dictionnaire terminal, puis AES-CBC/PKCS7
+de cryptography avec les vrais numéros et générations des flux. Il compare les
+contenus catalogue/page/objet/Identity et les octets O/U intacts sans réécrire
+l’entrée ni modifier un algorithme d’authentification.
 La CI fixe qpdf 12.4.2 avec SHA vérifié ; d'anciennes versions peuvent produire
 des métadonnées non documentaires en clair avec le réglage du seul document.
 qpdf 12.4.2 exige aussi Length global pour V4 ; le cas sans cette clé conserve

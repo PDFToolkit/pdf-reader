@@ -20,7 +20,7 @@ Le package est disponible sur
 consommateur :
 
 ```console
-composer require "pdftoolkit/pdf-reader:^0.4"
+composer require "pdftoolkit/pdf-reader:^0.4.1"
 ```
 
 Le lecteur utilise le core `roukmoute/pdf:^0.9`,

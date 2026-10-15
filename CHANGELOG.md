@@ -2,6 +2,18 @@
 
 English | [Français](CHANGELOG.fr.md)
 
+## 0.4.1 - 2026-10-15
+
+- Preserve the terminal encryption-dictionary identity and catalog-owned
+  metadata identity through bounded physical reference chains. Reaccessed O/U
+  entries stay unchanged; only the actual catalog metadata stream is implicitly
+  clear under EncryptMetadata=false. Root aliases use the authenticated resolver.
+- Reject alias cycles and wrong generations without extending exemptions to page,
+  object or wrongly typed streams. MAC verification still precedes the catalog.
+- Keep all previous independent checks and add four encrypted alias cases using
+  unchanged strict pyHanko parsing/authentication and cryptography, with explicit
+  high-level qpdf/pypdf/pyHanko alias limitations documented in both languages.
+
 ## 0.4.0 - 2026-10-15
 
 - Require stable core 0.9 and follow bounded physical reference chains, including
