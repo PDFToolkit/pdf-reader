@@ -92,7 +92,7 @@ and indirect embedded-file types, with ordinary and compressed catalogs. qpdf
 independently decrypts the metadata files; cryptography constructs EFF payloads
 with qpdf credentials. qpdf 12.4.2 does not decrypt EFF when StmF is Identity,
 even with a direct Type, so its decryption is not used as an oracle for that
-particular selection. Its algorithms are never patched for the test. See
+particular selection. Its algorithms are never patched for the test.
 qpdf 12.4.2 also requires global Length for V4; the omitted-key case preserves
 all offsets and cipher bytes from the independently verified source, following
 table 20's fixed 128-bit contract. See
