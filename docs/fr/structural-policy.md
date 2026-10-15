@@ -24,3 +24,9 @@ Un signe plus initial n’est pas un identifiant d’objet.
 La politique n’ajoute ni I/O, réparation, confiance PKI ni autorité de modification.
 Les limites de ressources s’appliquent toujours. Voir les
 [historiques physiques](revision-history.md).
+
+L’issue EC3 #114 (page physique 77) étend la règle ObjStm au-delà de `Length`,
+à chaque valeur du dictionnaire. `Pdf20` refuse une valeur qui référence un objet
+compressé. Les valeurs directes et références vers des objets ordinaires restent
+permises. Cette règle concerne la valeur de chaque entrée ; elle n’ajoute pas
+la contrainte récursive des flux xref aux éléments d’un tableau/dictionnaire direct.

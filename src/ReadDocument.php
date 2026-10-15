@@ -168,6 +168,9 @@ final class ReadDocument implements ObjectIdentityResolver
                 $this->budget->retained(64);
                 $this->objectSpans[$number] = $physical->span;
                 if ($value instanceof EncodedStream && (new DictionaryAccess($value->dictionary()))->hasName('Type', 'ObjStm')) {
+                    if ($this->structuralPolicy === StructuralPolicy::Pdf20) {
+                        (new ObjectStreamDictionaryValidation($this->index))->validate($value->dictionary());
+                    }
                     $length = $value->dictionary()->get('Length');
                     if ($identifier->generationNumber->value !== 0 || ($length instanceof ObjectReference && $this->index->entry($length->identifier->objectNumber->value)?->kind === EntryKind::Compressed)) {
                         throw new ParseException('An object stream must have generation zero and an uncompressed Length object.');
@@ -194,6 +197,9 @@ final class ReadDocument implements ObjectIdentityResolver
             $stream = $this->object(new ObjectIdentifier(new ObjectNumber($container), new GenerationNumber()));
             if (!$stream instanceof EncodedStream) {
                 throw new ParseException('An object-stream container must be a stream.');
+            }
+            if ($this->structuralPolicy === StructuralPolicy::Pdf20) {
+                (new ObjectStreamDictionaryValidation($this->index))->validate($stream->dictionary());
             }
             $this->objectStreams[$container] = (new ObjectStreamReader($this->limits, $this->budget, $this->structuralPolicy))->read($stream, $this->streamData($stream), $this);
         }

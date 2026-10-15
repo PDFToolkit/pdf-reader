@@ -14,6 +14,8 @@ use PDF\Reading\StructuralPolicy;
 use PDF\Reading\SyntaxParser;
 use PDF\Syntax\Object\DictionaryType;
 use PDF\Syntax\Object\IntegerType;
+use PDF\Syntax\Object\IndirectObject\ObjectIdentifier;
+use PDF\Syntax\Object\IndirectObject\ObjectNumber;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
@@ -68,6 +70,58 @@ final class ReadingStructuralPolicyTest extends TestCase
         $this->expectException(ParseException::class);
         $this->expectExceptionMessage('canonical decimal digits');
         $reader->read($this->source(reference: '01'));
+    }
+
+    public function testAnyObjStmDictionaryValueCannotReferenceACompressedObjectInPdf20(): void
+    {
+        $source = $this->compressedSource('/Private 5 0 R');
+        $member = new ObjectIdentifier(new ObjectNumber(5));
+        self::assertInstanceOf(DictionaryType::class, (new DocumentReader())->read($source)->object($member));
+        $document = (new DocumentReader(structuralPolicy: StructuralPolicy::Pdf20))->read($source);
+        $this->expectException(ParseException::class);
+        $this->expectExceptionMessage('ObjStm dictionary value');
+        $document->object($member);
+    }
+
+    public function testObjStmDirectContainersAndUncompressedReferencesRemainAllowed(): void
+    {
+        $source = $this->compressedSource('/Private 2 0 R /DirectArray [5 0 R]');
+        $document = (new DocumentReader(structuralPolicy: StructuralPolicy::Pdf20))->read($source);
+        self::assertInstanceOf(DictionaryType::class, $document->object(new ObjectIdentifier(new ObjectNumber(5))));
+    }
+
+    public function testCompressedMemberIdentifiersUseTheExplicitCanonicalPolicy(): void
+    {
+        $source = $this->compressedSource(member: '05');
+        $member = new ObjectIdentifier(new ObjectNumber(5));
+        self::assertInstanceOf(DictionaryType::class, (new DocumentReader())->read($source)->object($member));
+        $document = (new DocumentReader(structuralPolicy: StructuralPolicy::Pdf20))->read($source);
+        $this->expectException(ParseException::class);
+        $this->expectExceptionMessage('canonical decimal digits');
+        $document->object($member);
+    }
+
+    private function compressedSource(string $dictionary = '', string $xrefDictionary = '', string $member = '5'): FileBytes
+    {
+        $header = $member . ' 0 ';
+        $body = $header . '<< /Value (member) >>';
+        $objects = [1 => '<< /Type /Catalog /Pages 2 0 R >>', 2 => '<< /Type /Pages /Kids [] /Count 0 >>',
+            4 => '<< /Type /ObjStm /N 1 /First ' . strlen($header) . ' /Length ' . strlen($body) . ' ' . $dictionary . ">>\nstream\n" . $body . "\nendstream"];
+        $bytes = "%PDF-2.0\n";
+        $offsets = [];
+        foreach ($objects as $number => $value) {
+            $offsets[$number] = strlen($bytes);
+            $bytes .= $number . " 0 obj\n" . $value . "\nendobj\n";
+        }
+        $xref = strlen($bytes);
+        $offsets[6] = $xref;
+        $data = '';
+        for ($number = 0; $number < 7; ++$number) {
+            $record = $number === 5 ? [2, 4, 0] : (isset($offsets[$number]) ? [1, $offsets[$number], 0] : [0, 0, $number === 0 ? 65535 : 0]);
+            $data .= pack('CNn', ...$record);
+        }
+        return new FileBytes($bytes . '6 0 obj << /Type /XRef /Size 7 /Root 1 0 R /W [1 4 2] /Length ' . strlen($data) . ' ' . $xrefDictionary
+            . ">>\nstream\n" . $data . "\nendstream\nendobj\nstartxref\n" . $xref . "\n%%EOF\n");
     }
 
     private function source(string $number = '1', string $reference = '1'): FileBytes

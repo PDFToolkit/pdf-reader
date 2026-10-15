@@ -21,3 +21,9 @@ keep their existing syntax. A leading plus sign is not an object identifier.
 
 The policy adds no I/O, repair, PKI trust or modification authority. All existing
 resource limits still apply. See [physical history](revision-history.md).
+
+EC3 issue114 (physical page 77) extends the ObjStm rule beyond `Length` to every
+dictionary value. `Pdf20` rejects any such value that references a compressed
+object. Direct values and references to ordinary objects remain permitted.
+This rule concerns each entry's value; it does not introduce xref-stream-style
+recursive directness for elements inside an otherwise direct array or dictionary.
