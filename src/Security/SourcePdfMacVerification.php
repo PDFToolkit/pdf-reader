@@ -14,7 +14,6 @@ use PDF\Security\PdfMacSignatureAttachment;
 use PDF\Security\PdfMacTokenVerifier;
 use PDF\Syntax\Object\DictionaryType;
 use PDF\Syntax\Object\NameType;
-use PDF\Syntax\Object\NullType;
 use PDF\Syntax\Object\StringObject\HexadecimalString;
 use PDF\Syntax\Object\StringType;
 
@@ -30,9 +29,9 @@ final readonly class SourcePdfMacVerification
 
     public function verify(ReadDocument $raw, DictionaryType $encryption, FileEncryptionKey $key, int $permissions): ?PdfMacLocation
     {
-        $salt = $encryption->get('KDFSalt');
-        $inherited = $raw->trailer()->get('AuthCode');
-        if (($salt === null || $salt instanceof NullType) && ($inherited === null || $inherited instanceof NullType) && ($permissions & 4096) !== 0) {
+        $salt = (new SecurityDictionaryValues($raw, $encryption))->directValue('KDFSalt');
+        $inherited = (new SecurityDictionaryValues($raw, $raw->trailer()))->directValue('AuthCode');
+        if ($salt === null && $inherited === null && ($permissions & 4096) !== 0) {
             return null;
         }
         $revision = $raw->sourceRevision();
@@ -50,7 +49,7 @@ final readonly class SourcePdfMacVerification
         $coverage = new PdfMacCoverage($revision);
         try {
             if ($selected === PdfMacLocation::Standalone) {
-                if ($authCode->has('SigObjRef')) {
+                if ((new SecurityDictionaryValues($raw, $authCode))->directValue('SigObjRef') !== null) {
                     throw new ParseException('A standalone PDF MAC cannot contain SigObjRef.');
                 }
                 $token = $authCode->get('MAC');
@@ -60,7 +59,8 @@ final readonly class SourcePdfMacVerification
                 $covered = $coverage->coveredBytes($authCode, 'MAC', true);
                 $verifier->verify($token->value, $covered);
             } else {
-                if ($authCode->has('ByteRange') || $authCode->has('MAC')) {
+                $fields = new SecurityDictionaryValues($raw, $authCode);
+                if ($fields->directValue('ByteRange') !== null || $fields->directValue('MAC') !== null) {
                     throw new ParseException('A signature-attached PDF MAC cannot contain its own ByteRange or MAC.');
                 }
                 $reference = $authCode->get('SigObjRef');
@@ -68,7 +68,7 @@ final readonly class SourcePdfMacVerification
                 if (!$signature instanceof DictionaryType) {
                     throw new ParseException('A signature-attached PDF MAC requires an indirect signature dictionary.');
                 }
-                $type = $signature->get('Type');
+                $type = (new SecurityDictionaryValues($raw, $signature))->directValue('Type');
                 if ($type !== null && (!$type instanceof NameType || !in_array($type->value, ['Sig', 'DocTimeStamp'], true))) {
                     throw new ParseException('SigObjRef must identify a signature or document timestamp.');
                 }

@@ -28,6 +28,12 @@ final readonly class SecurityDictionaryValues
         return $value instanceof NullType ? null : $value;
     }
 
+    /** Null is absent, but any real value retains its original direct/indirect form. */
+    public function directValue(string $name): ?BasicType
+    {
+        return $this->value($name) === null ? null : $this->dictionary->get($name);
+    }
+
     public function integer(string $name, ?int $default = null): int
     {
         $value = $this->value($name);

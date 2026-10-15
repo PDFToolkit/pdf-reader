@@ -122,7 +122,7 @@ final readonly class StandardPasswordAuthentication implements DocumentAuthentic
         if ($key instanceof FileEncryptionKey) {
             $macLocation = $this->mac->verify($raw, $encryption, $key, $permissions);
         } else {
-            if ($encryption->has('KDFSalt') || $raw->trailer()->has('AuthCode')) {
+            if ($values->value('KDFSalt') !== null || (new SecurityDictionaryValues($raw, $raw->trailer()))->value('AuthCode') !== null) {
                 throw new UnsupportedPdfFeature('PDF MAC requires encryption version 5 or later.');
             }
             $macLocation = null;

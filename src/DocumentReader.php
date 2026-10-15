@@ -7,6 +7,7 @@ namespace PDF\Reading;
 use PDF\Reading\CrossReference\Index;
 use PDF\Reading\Security\DocumentAuthentication;
 use PDF\Reading\Security\SourceIntegrityPolicy;
+use PDF\Reading\Security\SecurityDictionaryValues;
 use PDF\Syntax\FileStructure\FileHeader;
 use PDF\Syntax\Object\DictionaryObject\Entry;
 use PDF\Syntax\Object\DictionaryType;
@@ -97,7 +98,7 @@ final readonly class DocumentReader
                 $document = new ReadDocument($source, $fileHeader, $trailer, $index, $this->limits, $budget, $decoder, $decryption, $physical);
             }
         }
-        if ($document->permissions() === null && $trailer->has('AuthCode')) {
+        if ($document->permissions() === null && (new SecurityDictionaryValues($document, $trailer))->value('AuthCode') !== null) {
             throw new UnsupportedPdfFeature('A source AuthCode requires authenticated encryption before content interpretation.');
         }
         if ($this->sourceIntegrity === SourceIntegrityPolicy::RequirePdfMac && $document->mac() === null) {

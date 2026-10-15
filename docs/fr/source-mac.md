@@ -39,6 +39,12 @@ MAC ont été supprimés. Un PDF clair ordinaire ne permet pas de déduire qu’
 ont existé. Choisir la politique obligatoire lorsque l’application attend une
 entrée protégée.
 
+Les entrées optionnelles AuthCode et KDFSalt résolues en null PDF sont absentes,
+y compris via une chaîne bornée de références ou une génération indisponible.
+Un AuthCode null dans la dernière révision ne réactive jamais un ancien MAC.
+Les vrais dictionnaires AuthCode et chaînes de sel restent directs aux endroits
+imposés par TS 32004 ; le bit 13 obligatoire et `RequirePdfMac` restent appliqués.
+
 `DocumentReader::sourceIntegrityPolicy()` expose la politique configurée.
 `requiringSourceIntegrity($policy)` compose un lecteur immuable avec les mêmes
 limites et identifiants, en conservant ou renforçant l’exigence. Passer

@@ -38,6 +38,12 @@ including one from which all encryption and MAC indications have been removed.
 An ordinary clear PDF cannot reveal that such indications once existed.
 Choose the required policy whenever the application expects protected input.
 
+Optional AuthCode and KDFSalt values resolving to PDF null are absent, including
+bounded indirect-reference chains and unavailable generations. A latest null
+AuthCode never revives an older MAC. Real AuthCode dictionaries and salt strings
+must still occur directly where TS 32004 requires them; required permission bit
+13 and `RequirePdfMac` remain enforced.
+
 `DocumentReader::sourceIntegrityPolicy()` exposes its configured policy.
 `requiringSourceIntegrity($policy)` composes an immutable reader with the same
 limits and credentials, preserving or strengthening the requirement. Passing
