@@ -42,4 +42,17 @@ if ($catalog->get('FixturePage') !== null) {
     }
     $report['PageMetadata'] = base64_encode($document->streamData($stream));
 }
+if (($argv[3] ?? null) === '--credentials') {
+    $encryption = $document->resolve($document->trailer()->get('Encrypt'));
+    if (!$encryption instanceof DictionaryType) {
+        throw new RuntimeException('The terminal encryption dictionary is missing.');
+    }
+    foreach (['O', 'U'] as $name) {
+        $value = $encryption->get($name);
+        if (!$value instanceof \PDF\Syntax\Object\StringType) {
+            throw new RuntimeException('A retained encryption credential is missing.');
+        }
+        $report['Encryption' . $name] = base64_encode($value->value);
+    }
+}
 echo json_encode($report, JSON_THROW_ON_ERROR), "\n";

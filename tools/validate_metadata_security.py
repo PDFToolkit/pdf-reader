@@ -15,7 +15,11 @@ import zlib
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.primitives.padding import PKCS7
 from pypdf import PdfReader, PdfWriter
-from pypdf.generic import ArrayObject, DecodedStreamObject, DictionaryObject, NameObject, NumberObject
+from pypdf.generic import ArrayObject, DecodedStreamObject, DictionaryObject, IndirectObject, NameObject, NumberObject
+from pyhanko.pdf_utils import generic
+from pyhanko.pdf_utils.crypt import SecurityHandler
+from pyhanko.pdf_utils.crypt.api import AuthStatus
+from pyhanko.pdf_utils.reader import PdfFileReader
 
 CATALOG = b'<catalog>public</catalog>'
 PAGE = b'<page>private</page>'
@@ -96,14 +100,105 @@ def encrypted_attachment(qpdf, seed, destination, compressed):
     destination.write_bytes(data)
 
 
+def identity_aliases(source, destination):
+    """Append only physical reference aliases; preserve all encrypted payload bytes."""
+    original = PdfReader(source, strict=True)
+    assert original.decrypt('user')
+    root_ref = original.trailer.raw_get('/Root')
+    encryption_ref = original.trailer.raw_get('/Encrypt')
+    catalog = original.trailer['/Root']
+    catalog[NameObject('/Version')] = NameObject('/2.0')
+    first = int(original.trailer['/Size'])
+    targets = [encryption_ref, catalog.raw_get('/Metadata'), root_ref,
+        catalog.raw_get('/FixturePageMetadata'), catalog.raw_get('/FixtureObjectMetadata')]
+    objects = {}
+    for index, reference in enumerate(targets):
+        alias = first + index * 2
+        objects[alias] = f'{alias + 1} 0 R'.encode()
+        objects[alias + 1] = f'{reference.idnum} {reference.generation} R'.encode()
+    for key, offset in [('Metadata', 2), ('FixturePageMetadata', 6), ('FixtureObjectMetadata', 8)]:
+        catalog[NameObject('/' + key)] = IndirectObject(first + offset, 0, original)
+    serialized = io.BytesIO()
+    catalog.write_to_stream(serialized)
+    objects[root_ref.idnum] = serialized.getvalue()
+    data = bytearray(source.read_bytes())
+    previous = re.search(rb'startxref\s+(\d+)\s+%%EOF\s*\Z', data)
+    assert previous
+    offsets = {}
+    for number, body in sorted(objects.items()):
+        offsets[number] = len(data)
+        generation = root_ref.generation if number == root_ref.idnum else 0
+        data.extend(f'{number} {generation} obj\n'.encode() + body + b'\nendobj\n')
+    start = len(data)
+    data.extend(b'xref\n')
+    for number, offset in offsets.items():
+        generation = root_ref.generation if number == root_ref.idnum else 0
+        data.extend(f'{number} 1\n{offset:010d} {generation:05d} n \n'.encode())
+    identifiers = io.BytesIO()
+    original.trailer['/ID'].write_to_stream(identifiers)
+    data.extend(f'trailer << /Size {first + 10} /Root {first + 4} 0 R /Encrypt {first} 0 R /Prev {int(previous[1])} /ID '.encode()
+        + identifiers.getvalue() + f' >>\nstartxref\n{start}\n%%EOF\n'.encode())
+    destination.write_bytes(data)
+
+
+def validate_identity_aliases(path, expected):
+    """Use unchanged strict parsing/authentication APIs, then independent CBC.
+
+    qpdf, pypdf and pyHanko's high-level decryptors expect /Encrypt to resolve
+    immediately to a dictionary. Their original-source checks below remain
+    unchanged. The strict pyHanko parser does expose the legal physical chains;
+    its actual Standard handler authenticates the terminal dictionary without
+    rewriting source bytes or replacing parser/authentication internals.
+    """
+    with path.open('rb') as source:
+        reader = PdfFileReader(source, strict=True)
+
+        def resolve(value):
+            seen = set()
+            terminal = None
+            while isinstance(value, generic.IndirectObject):
+                identity = (value.idnum, value.generation)
+                assert identity not in seen and len(seen) < 64
+                seen.add(identity)
+                terminal = identity
+                value = reader.get_object(value.reference, never_decrypt=True)
+            return value, terminal
+
+        encryption, encryption_id = resolve(reader.trailer.raw_get('/Encrypt'))
+        handler = SecurityHandler.build(encryption)
+        assert handler.authenticate('user', reader.trailer['/ID'][0].original_bytes).status == AuthStatus.USER
+        catalog, _ = resolve(reader.trailer.raw_get('/Root'))
+        _, metadata_id = resolve(catalog.raw_get('/Metadata'))
+        assert encryption_id is not None and metadata_id is not None
+        for name in ['Metadata', 'FixturePageMetadata', 'FixtureObjectMetadata', 'FixtureClearMetadata']:
+            stream_value, identity = resolve(catalog.raw_get('/' + name))
+            assert isinstance(stream_value, generic.StreamObject) and identity is not None
+            data = stream_value.encoded_data
+            if identity != metadata_id:
+                assert len(data) >= 32 and len(data) % 16 == 0
+                key = handler.get_stream_filter().derive_object_key(*identity)
+                decryptor = Cipher(algorithms.AES(key), modes.CBC(data[:16])).decryptor()
+                padded = decryptor.update(data[16:]) + decryptor.finalize()
+                unpadder = PKCS7(128).unpadder()
+                data = unpadder.update(padded) + unpadder.finalize()
+            filters = stream_value.get('/Filter')
+            if filters is not None:
+                assert filters == '/FlateDecode', filters
+                data = zlib.decompress(data)
+            assert base64.b64encode(data).decode() == expected[name], (path.name, name)
+        return {name: base64.b64encode(encryption['/' + name].original_bytes).decode() for name in ['O', 'U']}
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--php', default='php')
     parser.add_argument('--qpdf', default='qpdf')
+    parser.add_argument('--work-dir', type=Path)
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
     with tempfile.TemporaryDirectory(prefix='pdf-reader-metadata-') as temporary:
-        directory = Path(temporary)
+        directory = args.work_dir.resolve() if args.work_dir else Path(temporary)
+        directory.mkdir(parents=True, exist_ok=True)
         writer = PdfWriter()
         page = writer.add_blank_page(width=100, height=100)
         metadata = {'Type': NameObject('/Metadata'), 'Subtype': NameObject('/XML')}
@@ -141,6 +236,12 @@ def main():
                 actual = json.loads(run(args.php, root / 'tools/authenticate_metadata_case.php', path, revision))
                 assert actual == expected, (path.name, actual)
                 count += 1
+                aliases = directory / f'identity-aliases-r{revision}-{compressed}.pdf'
+                identity_aliases(path, aliases)
+                credentials = validate_identity_aliases(aliases, expected)
+                actual_aliases = json.loads(run(args.php, root / 'tools/authenticate_metadata_case.php', aliases, revision, '--credentials'))
+                assert actual_aliases == {**expected, 'EncryptionO': credentials['O'], 'EncryptionU': credentials['U']}
+                count += 1
                 if revision == 4 and not compressed:
                     # V4 fixes the key at 128 bits; global Length is not its default.
                     # Rename only that key, preserving every source offset and cipher byte.
@@ -169,7 +270,7 @@ def main():
             # direct Type. It supplies/checks credentials and structure here;
             # cryptography independently supplies the exact encrypted payload.
             count += 1
-        print(f'{count} qpdf/cryptography cases: metadata ownership, Identity, fixed V4 key, indirect EFF and compressed catalogs passed.')
+        print(f'{count} cases passed: original qpdf/pypdf checks plus 4 strict-parser/Standard-handler/cryptography alias cases; terminal encryption credentials, catalog metadata, encrypted page/object metadata and compressed catalogs.')
 
 
 if __name__ == '__main__':
