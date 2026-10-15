@@ -187,6 +187,10 @@ consulter le [contrat MAC borné](source-mac.md).
 
 ## Historique physique distinct
 
+L’issue EC3 #365 (page physique source 38) précise que `{` et `}` sont des octets
+ordinaires dans les jetons et noms PDF généraux. Les fonctions calculatrices ont
+leurs délimiteurs de procédure ; `SyntaxParser` n’analyse ni n’exécute ces procédures.
+
 `RevisionHistoryReader` conserve chaque section et son footer vérifié, puis construit
 un graphe brut borné au préfixe de chaque révision. Toutes les vues partagent un
 budget ; le choix d’un préfixe authentifié reste un appel explicite séparé à `read()`.

@@ -60,6 +60,18 @@ final class ReadingSyntaxTest extends TestCase
         self::assertInstanceOf(ArrayType::class, $parsed->items[10]->get('Key'));
     }
 
+    public function testBracesAreOrdinaryNameBytesOutsideCalculatorFunctions(): void
+    {
+        $cursor = new ByteCursor('/A{B}C');
+        $value = (new SyntaxParser($cursor))->read();
+        self::assertInstanceOf(NameType::class, $value);
+        self::assertSame('A{B}C', $value->value);
+        self::assertTrue($cursor->eof());
+        self::assertFalse((new SyntaxParser(new ByteCursor('true{')))->atKeyword('true'));
+        $this->expectException(ParseException::class);
+        $this->parse('<< /A{B}C 1 /A#7BB#7DC 2 >>');
+    }
+
     /** @return iterable<string, array{string, string}> */
     public static function literalExamples(): iterable
     {

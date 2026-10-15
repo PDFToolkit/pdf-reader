@@ -329,6 +329,7 @@ final class SyntaxParser
 
     private function delimiter(string $byte): bool
     {
-        return $byte !== '' && str_contains("\0\t\n\f\r ()<>[]{}/%", $byte);
+        // EC3 issue365: braces delimit Type 4 calculator procedures, not general PDF objects.
+        return $byte !== '' && str_contains("\0\t\n\f\r ()<>[]/%", $byte);
     }
 }

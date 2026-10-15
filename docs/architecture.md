@@ -175,6 +175,10 @@ digital-signature trust; see [the bounded MAC contract](source-mac.md).
 
 ## Separate physical history
 
+EC3 issue365 (physical source page 38) clarifies that `{` and `}` are ordinary
+bytes in general PDF tokens and names. Calculator functions have their own
+procedure delimiters; `SyntaxParser` does not execute or parse those procedures.
+
 `RevisionHistoryReader` retains every section and verified footer, then constructs
 a raw graph bounded to each revision prefix. All views share one budget; reading
 an authenticated prefix remains a separate explicit call to `read()`. Objects
