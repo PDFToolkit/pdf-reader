@@ -69,6 +69,11 @@ exemption implicite des métadonnées du catalogue n'est devinée. `Crypt /Ident
 explicite reste disponible indépendamment. Source : ISO 32000-2:2020, §7.3.10
 (page physique 49), `EncryptMetadata` (page 94) et métadonnées de page (page 121).
 
+La table 20 (page physique 88) fixe la clé V4 à 128 bits ; Length global et son
+défaut 40 concernent V2/V3. Une entrée CF portant un nom standard comme Identity
+est ignorée avant l'interprétation de sa valeur et ne redéfinit pas ce filtre.
+Son comportement d'identité reste disponible.
+
 `EncodedStream::encodedBytes()` expose les octets déchiffrés prêts pour les codecs ;
 `originalEncodedBytes()` conserve le ciphertext source. Le plaintext conservé
 consomme le budget commun du document. L’import et l’écriture nécessitent encore
@@ -85,11 +90,15 @@ La validation indépendante utilise 24 PDF R2–R7 réels : qpdf produit R2–R6
 Python cryptography produit indépendamment les payloads AESV4 à partir des entrées
 de mot de passe R6 de qpdf. Les deux mots de passe, chaînes binaires, flux d’objets,
 réglages des métadonnées et exceptions des signatures sont vérifiés. Ces
-credentials synthétiques sont publics. Six cas supplémentaires vérifient les
+credentials synthétiques sont publics. Sept cas supplémentaires vérifient les
 métadonnées catalogue/page/Form, Identity explicite et les types indirects des
-fichiers embarqués, avec catalogues classiques ou compressés. qpdf déchiffre les
+fichiers embarqués, la clé V4 sans Length global et les entrées CF standard ignorées,
+avec catalogues classiques ou compressés. qpdf déchiffre les
 fichiers de métadonnées indépendamment ; cryptography construit les payloads EFF
 avec les credentials de qpdf. qpdf 12.4.2 ne déchiffre pas EFF lorsque StmF vaut
 Identity, même avec un Type direct ; son déchiffrement n'est donc pas un oracle
-pour ce choix précis. Ses algorithmes ne sont jamais modifiés pour le test. Voir
+pour ce choix précis. Ses algorithmes ne sont jamais modifiés pour le test.
+qpdf 12.4.2 exige aussi Length global pour V4 ; le cas sans cette clé conserve
+tous les offsets et octets chiffrés de la source vérifiée indépendamment et suit
+le contrat fixe de 128 bits de la table 20. Voir
 les [contrôles de sécurité](security.md) et les [composants](components.md).

@@ -11,7 +11,9 @@ English | [Français](CHANGELOG.fr.md)
   Identity filter still leaves the remaining codec input unchanged.
 - Resolve indirect stream Type values before selecting EFF versus StmF, including
   encrypted attachments and catalogs stored in object streams.
-- Add six independent qpdf/cryptography cases and native regressions; document
+- Follow table 20's fixed 128-bit V4 key even without global Length; ignore a CF
+  entry named Identity before interpreting its supplied value.
+- Add seven independent qpdf/cryptography cases and native regressions; document
   source clauses and oracle boundaries in English and French. Explicit credentials,
   shared budgets, original ciphertext and stable runtime dependencies are preserved.
 

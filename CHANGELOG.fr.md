@@ -11,7 +11,9 @@
   Identity explicite conserve les octets destinés aux codecs restants.
 - Résoudre les Type de flux indirects avant de choisir EFF plutôt que StmF, dont
   les pièces jointes chiffrées et catalogues dans des flux d'objets.
-- Ajouter six cas indépendants qpdf/cryptography et des régressions natives ;
+- Respecter la clé V4 fixe de 128 bits de la table 20 sans Length global ; ignorer
+  une entrée CF nommée Identity avant d'interpréter la valeur fournie.
+- Ajouter sept cas indépendants qpdf/cryptography et des régressions natives ;
   documenter clauses sources et limites des oracles en anglais/français. Préserver
   credentials explicites, budgets partagés, ciphertext et dépendances stables.
 

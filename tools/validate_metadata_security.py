@@ -44,6 +44,9 @@ def encrypted_attachment(qpdf, seed, destination, compressed):
     encryption[NameObject('/StmF')] = NameObject('/Identity')
     encryption[NameObject('/StrF')] = NameObject('/Identity')
     encryption[NameObject('/EFF')] = NameObject('/StdCF')
+    # Table 20 requires this standard-name entry to be ignored even when its
+    # supplied value is not a usable crypt-filter dictionary.
+    encryption['/CF'][NameObject('/Identity')] = NumberObject(17)
     report = run(qpdf, '--password=user', '--show-encryption', '--show-encryption-key', seed)
     match = re.search(rb'Encryption key = ([0-9a-fA-F]{64})', report)
     assert match, report
@@ -138,6 +141,22 @@ def main():
                 actual = json.loads(run(args.php, root / 'tools/authenticate_metadata_case.php', path, revision))
                 assert actual == expected, (path.name, actual)
                 count += 1
+                if revision == 4 and not compressed:
+                    # V4 fixes the key at 128 bits; global Length is not its default.
+                    # Rename only that key, preserving every source offset and cipher byte.
+                    reader = PdfReader(path)
+                    offset = reader.xref[0][reader.trailer['/Encrypt'].indirect_reference.idnum]
+                    data = path.read_bytes()
+                    end = data.index(b'endobj', offset)
+                    body, replacements = re.subn(rb'/Length(?=\s+128\b)', b'/Unused', data[offset:end])
+                    assert replacements == 1 and len(body) == end - offset
+                    absent = directory / 'r4-without-global-length.pdf'
+                    absent.write_bytes(data[:offset] + body + data[end:])
+                    # qpdf 12.4.2 requires global Length even for V4, contrary
+                    # to table 20. The original encrypted source above was
+                    # independently checked; only that same-length key changes.
+                    assert json.loads(run(args.php, root / 'tools/authenticate_metadata_case.php', absent, 4)) == expected
+                    count += 1
         seed = directory / 'seed.pdf'
         run(args.qpdf, '--encrypt', 'user', 'owner', '256', '--', source, seed)
         for compressed in [False, True]:
@@ -150,7 +169,7 @@ def main():
             # direct Type. It supplies/checks credentials and structure here;
             # cryptography independently supplies the exact encrypted payload.
             count += 1
-        print(f'{count} qpdf/cryptography cases: metadata ownership, explicit Identity, indirect EFF and compressed catalogs passed.')
+        print(f'{count} qpdf/cryptography cases: metadata ownership, Identity, fixed V4 key, indirect EFF and compressed catalogs passed.')
 
 
 if __name__ == '__main__':

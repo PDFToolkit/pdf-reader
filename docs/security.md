@@ -120,7 +120,7 @@ own security surfaces, outside this library's test scope.
 Independent tests compare 26 LZW/predictor cases with qpdf, six hybrid files
 with pypdf/qpdf and 24 R2–R7 PDFs encrypted by qpdf or cryptography.
 
-Patch 0.3.1 additionally checks six source files for metadata ownership and
+Patch 0.3.1 additionally checks seven source files for metadata ownership and
 indirect embedded-file types. `EncryptMetadata=false` exempts only the catalog's
 actual Metadata identity, not arbitrary streams declaring `/Type /Metadata`.
 The immutable decryption context receives the document root explicitly and uses

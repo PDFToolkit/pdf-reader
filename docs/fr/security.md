@@ -129,7 +129,7 @@ cette bibliothèque.
 Les tests indépendants comparent 26 cas LZW/prédicteurs à qpdf, six documents
 hybrides à pypdf/qpdf et 24 PDF R2–R7 chiffrés par qpdf ou cryptography.
 
-Le patch 0.3.1 vérifie aussi six sources pour le propriétaire des métadonnées et
+Le patch 0.3.1 vérifie aussi sept sources pour le propriétaire des métadonnées et
 les types indirects des fichiers incorporés. `EncryptMetadata=false` exempte
 uniquement l'identité Metadata réelle du catalogue, pas les flux arbitraires
 déclarant `/Type /Metadata`. Le contexte immuable reçoit la racine explicitement

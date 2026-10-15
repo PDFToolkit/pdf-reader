@@ -86,7 +86,11 @@ final readonly class StandardPasswordAuthentication implements DocumentAuthentic
                 $dictionary = new HistoricalStandardEncryptionDictionary(
                     $historicalRevision,
                     HistoricalDataCipher::Rc4,
-                    new HistoricalKeyLength(new IntegerType($revision === 2 ? 40 : $values->integer('Length', 40))),
+                    new HistoricalKeyLength(new IntegerType(match ($revision) {
+                        2 => 40,
+                        4 => 128,
+                        default => $values->integer('Length', 40),
+                    })),
                     new HistoricalOwnerPasswordEntry(new HexadecimalString($values->bytes('O'))),
                     new HexadecimalString($values->bytes('U')),
                     new HistoricalPermissions(new IntegerType($permissions), $historicalRevision),
@@ -128,7 +132,8 @@ final readonly class StandardPasswordAuthentication implements DocumentAuthentic
             }
             foreach ($cf?->entries() ?? [] as $entry) {
                 if ($entry->key->value === 'Identity') {
-                    throw new ParseException('Identity cannot be redefined as a crypt-filter name.');
+                    // Table 20: a standard filter name in CF cannot redefine its properties.
+                    continue;
                 }
                 $filter = $raw->resolve($entry->value);
                 if (!$filter instanceof DictionaryType) {

@@ -65,6 +65,11 @@ exemption is guessed. Explicit `Crypt /Identity` remains available independently
 Source: ISO 32000-2:2020, §7.3.10 (physical page 49), `EncryptMetadata` (page 94)
 and distinct page metadata (page 121).
 
+Table 20 (physical page 88) fixes the V4 file key at 128 bits; the optional
+global Length/default 40 belongs to V2/V3. A standard-name entry such as Identity
+inside CF is ignored before interpreting its value and cannot redefine that
+standard filter. Its actual identity behaviour remains available.
+
 `EncodedStream::encodedBytes()` returns decrypted bytes ready for the remaining
 codecs; `originalEncodedBytes()` retains the original source ciphertext. Retained
 plaintext consumes the shared document budget. Import and writing still require
@@ -81,10 +86,14 @@ Independent validation uses 24 actual R2–R7 PDFs: qpdf creates R2–R6 and Pyt
 cryptography independently creates AESV4 payloads using qpdf's R6 password
 entries. Both passwords, binary strings, object streams, metadata settings and
 signature exemptions are checked. These synthetic credentials are public test
-data. Six additional cases verify catalog/page/Form metadata, explicit Identity
+data. Seven additional cases verify catalog/page/Form metadata, explicit Identity,
+the fixed V4 key without global Length, ignored standard CF entries
 and indirect embedded-file types, with ordinary and compressed catalogs. qpdf
 independently decrypts the metadata files; cryptography constructs EFF payloads
 with qpdf credentials. qpdf 12.4.2 does not decrypt EFF when StmF is Identity,
 even with a direct Type, so its decryption is not used as an oracle for that
 particular selection. Its algorithms are never patched for the test. See
+qpdf 12.4.2 also requires global Length for V4; the omitted-key case preserves
+all offsets and cipher bytes from the independently verified source, following
+table 20's fixed 128-bit contract. See
 [security controls](security.md) and [components](components.md).

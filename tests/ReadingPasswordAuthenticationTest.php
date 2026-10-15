@@ -10,12 +10,19 @@ use PDF\Reading\FileBytes;
 use PDF\Reading\PageContentsReader;
 use PDF\Reading\PageTreeReader;
 use PDF\Reading\ParseException;
+use PDF\Reading\ReadDocument;
+use PDF\Reading\Security\DocumentAuthentication;
+use PDF\Reading\Security\DocumentDecryption;
 use PDF\Reading\Security\AuthenticationFailed;
 use PDF\Reading\Security\StandardPasswordAuthentication;
 use PDF\Security\PasswordAccess;
 use PDF\Security\PdfDocEncodedPassword;
 use PDF\Security\PreparedPassword;
 use PDF\Syntax\Object\DictionaryType;
+use PDF\Syntax\Object\DictionaryObject\Entry;
+use PDF\Syntax\Object\IndirectObject\ObjectIdentifier;
+use PDF\Syntax\Object\IntegerType;
+use PDF\Syntax\Object\NameType;
 use PDF\Syntax\Object\StringObject\HexadecimalString;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -83,6 +90,62 @@ final class ReadingPasswordAuthenticationTest extends TestCase
         self::assertNotFalse($bytes);
         $reader = new DocumentReader(authentication: new StandardPasswordAuthentication(new PreparedPassword('unused')));
         self::assertNull($reader->read(new FileBytes($bytes))->permissions());
+    }
+
+    public function testRevisionFourUsesItsFixed128BitKeyWhenLengthIsAbsent(): void
+    {
+        $document = $this->editedEncryption(
+            'qpdf-r4-128-metadata-encrypted.pdf',
+            new PdfDocEncodedPassword(new HexadecimalString('user')),
+            static fn (ReadDocument $raw, DictionaryType $dictionary): DictionaryType => new DictionaryType(...array_values(array_filter(
+                iterator_to_array($dictionary->entries(), false),
+                static fn (Entry $entry): bool => $entry->key->value !== 'Length',
+            )))
+        );
+        self::assertSame(4, $document->permissions()?->revision);
+        $this->assertPageContentsReadable($document);
+    }
+
+    public function testAStandardCryptFilterNameIsIgnoredBeforeItsSuppliedValueIsInspected(): void
+    {
+        $document = $this->editedEncryption(
+            'qpdf-r5-metadata-encrypted.pdf',
+            new PreparedPassword('user'),
+            static function (ReadDocument $raw, DictionaryType $dictionary): DictionaryType {
+                $filters = $raw->resolve($dictionary->get('CF'));
+                self::assertInstanceOf(DictionaryType::class, $filters);
+                return $dictionary->with(new Entry(new NameType('CF'), $filters->with(new Entry(new NameType('Identity'), new IntegerType(17)))));
+            }
+        );
+        self::assertSame(5, $document->permissions()?->revision);
+        $this->assertPageContentsReadable($document);
+    }
+
+    /** @param \Closure(ReadDocument, DictionaryType): DictionaryType $edit */
+    private function editedEncryption(string $filename, PdfDocEncodedPassword|PreparedPassword $password, \Closure $edit): ReadDocument
+    {
+        $authentication = new class ($edit, new StandardPasswordAuthentication($password)) implements DocumentAuthentication {
+            public function __construct(private readonly \Closure $edit, private readonly StandardPasswordAuthentication $authentication)
+            {
+            }
+
+            public function authenticate(ReadDocument $raw, DictionaryType $encryption, ?ObjectIdentifier $encryptionObject): DocumentDecryption
+            {
+                return $this->authentication->authenticate($raw, ($this->edit)($raw, $encryption), $encryptionObject);
+            }
+        };
+        return (new DocumentReader(authentication: $authentication))->read($this->source($filename));
+    }
+
+    private function assertPageContentsReadable(ReadDocument $document): void
+    {
+        $pages = (new PageTreeReader($document))->read();
+        self::assertCount(1, $pages);
+        foreach ($pages as $page) {
+            foreach ((new PageContentsReader($document))->read($page) as $stream) {
+                self::assertStringContainsString('BT', $document->streamData($stream));
+            }
+        }
     }
 
     private function source(string $filename): FileBytes
