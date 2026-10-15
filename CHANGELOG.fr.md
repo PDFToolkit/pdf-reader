@@ -4,6 +4,8 @@
 
 ## Non publié
 
+## 0.5.0 - 2026-10-15
+
 - Ajouter l’authentification Adobe.PubSec explicite par certificat (s3/s4 RC4 ;
   s5 RC4, AESV2, AESV3 et AESV4), clés par filtre, EFOpen différé, budgets
   cumulatifs destinataires/credentials et PDF MAC source via DefaultCryptFilter.

@@ -2,7 +2,7 @@
 
 [English](../source-mac.md) | Français
 
-Le lecteur 0.4 utilise le vérificateur du core 0.9 pour les MAC PDF
+Le lecteur 0.5 utilise le vérificateur du core 0.9 pour les MAC PDF
 **ISO/TS 32004:2024**. Un `StandardPasswordAuthentication` choisi explicitement
 authentifie le mot de passe et les permissions chiffrées, vérifie tout MAC
 signalé sur les octets originaux, puis autorise la lecture du catalogue et du

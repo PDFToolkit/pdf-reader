@@ -4,6 +4,8 @@ English | [Français](CHANGELOG.fr.md)
 
 ## Unreleased
 
+## 0.5.0 - 2026-10-15
+
 - Add explicit Adobe.PubSec certificate authentication (s3/s4 RC4; s5 RC4,
   AESV2, AESV3 and AESV4), per-filter keys, deferred EFOpen access, cumulative
   recipient/credential budgets and source PDF MAC with DefaultCryptFilter.

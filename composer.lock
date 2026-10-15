@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "089b8c6d37062f12a27dcf700d2bf366",
+    "content-hash": "98bc3adb6cf82c339e97aab8f8d835fc",
     "packages": [
         {
             "name": "roukmoute/pdf",
@@ -4555,5 +4555,5 @@
     "platform-overrides": {
         "php": "8.3.0"
     },
-    "plugin-api-version": "2.9.0"
+    "plugin-api-version": "2.6.0"
 }

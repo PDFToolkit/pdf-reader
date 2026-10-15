@@ -2,7 +2,7 @@
 
 English | [Français](fr/source-mac.md)
 
-Reader 0.4 uses the core 0.9 verifier for **ISO/TS 32004:2024** PDF MACs.
+Reader 0.5 uses the core 0.9 verifier for **ISO/TS 32004:2024** PDF MACs.
 An explicitly selected `StandardPasswordAuthentication` authenticates the
 password and encrypted permissions, verifies any indicated MAC against the
 original file bytes, then permits the catalog and protected content to be read.
