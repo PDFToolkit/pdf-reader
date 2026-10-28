@@ -8,10 +8,12 @@ use PDF\Reading\Filters\Ascii85Decoder;
 use PDF\Reading\Filters\AsciiHexDecoder;
 use PDF\Reading\Filters\DecodedBytes;
 use PDF\Reading\Filters\FlateDecoder;
+use PDF\Reading\Filters\IdentityDecoder;
 use PDF\Reading\Filters\LzwDecoder;
 use PDF\Reading\Filters\PredictorDecoder;
 use PDF\Reading\Filters\PredictorParameters;
 use PDF\Reading\Filters\RunLengthDecoder;
+use PDF\Reading\Security\CryptDecodeParameters;
 use PDF\Syntax\FileStructure\BasicType;
 use PDF\Syntax\Filters\EarlyChange;
 use PDF\Syntax\Object\ArrayType;
@@ -82,6 +84,7 @@ final readonly class StreamDecoder
                 'ASCIIHexDecode' => new AsciiHexDecoder($this->limits),
                 'ASCII85Decode' => new Ascii85Decoder($this->limits),
                 'RunLengthDecode' => new RunLengthDecoder($this->limits),
+                'Crypt' => $this->identity($parameter, $resolver, $index),
                 default => throw new UnsupportedPdfFeature('The stream filter is not supported.'),
             };
             $bytes = $decoder->decode($bytes, $budget);
@@ -137,5 +140,17 @@ final readonly class StreamDecoder
             throw new ParseException('LZW EarlyChange must be zero or one.');
         }
         return new EarlyChange(new IntegerType($value));
+    }
+
+    private function identity(?BasicType $parameters, ?ObjectResolver $resolver, int $index): IdentityDecoder
+    {
+        if ($index !== 0) {
+            throw new ParseException('Crypt must occur exactly once at the beginning of a stream filter chain.');
+        }
+        $settings = new CryptDecodeParameters($parameters instanceof DictionaryType ? $parameters : null, $resolver);
+        if ($settings->name !== 'Identity') {
+            throw new UnsupportedPdfFeature('A non-Identity Crypt filter requires its authenticated security handler.');
+        }
+        return new IdentityDecoder($this->limits);
     }
 }

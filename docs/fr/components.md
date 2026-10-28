@@ -118,7 +118,7 @@ Les flux de fichiers externes exigent un `ExternalStreamSource` explicite ; voir
 | `DecodedBytes` | Accumulateur contrôlant la limite d'une sortie et le budget cumulé avant de retenir une tranche. |
 
 DCTDecode, JPXDecode, CCITTFaxDecode et JBIG2Decode restent à implémenter.
-Crypt est appliqué par le contexte du document authentifié, avant les codecs. La lecture structurelle d'un flux image peut donc réussir,
+Le filtre standard Crypt/Identity fonctionne aussi sans dictionnaire de chiffrement. Il doit être premier, contrôle les paramètres Type/Name facultatifs et compte ses octets décodés. Les autres filtres Crypt exigent le contexte du document authentifié, avant les codecs. Les tableaux 14 et 26 d’ISO 32000-2 (pages physiques 67–68 et 107 du PDF EC3 conservé) définissent ces contrats ; `tools/validate_identity_filters.py` compare quatre PDF produits indépendamment avec qpdf. La lecture structurelle d'un flux image peut donc réussir,
 tandis que sa demande de décodage est refusée.
 
 ## Limites et diagnostics

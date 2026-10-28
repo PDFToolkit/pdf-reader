@@ -115,7 +115,7 @@ External-file streams require an explicit `ExternalStreamSource`; see the [exter
 | `DecodedBytes` | Accumulator checking the output limit and cumulative budget before retaining a slice. |
 
 DCTDecode, JPXDecode, CCITTFaxDecode and JBIG2Decode are not implemented.
-Crypt is handled by the selected authenticated document context, before codecs. Structural reading of an image stream may therefore succeed
+The standard Crypt/Identity filter also works without an encryption dictionary. It must be first, validates the optional Type/Name parameters and charges decoded-byte budgets. Other Crypt filters require the selected authenticated document context, before codecs. ISO 32000-2 Tables 14 and 26 (retained EC3 physical pages 67–68, 107) define these contracts; `tools/validate_identity_filters.py` compares four independently produced PDFs with qpdf. Structural reading of an image stream may therefore succeed
 while a decoding request is rejected.
 
 ## Limits and diagnostics

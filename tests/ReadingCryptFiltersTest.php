@@ -60,6 +60,16 @@ final class ReadingCryptFiltersTest extends TestCase
         self::assertNull($stream->dictionary()->get('Filter'));
     }
 
+    public function testAuthenticatedCryptAlsoValidatesItsParameterType(): void
+    {
+        $this->expectException(ParseException::class);
+        $this->expectExceptionMessage('CryptFilterDecodeParms');
+        $this->context()->object(new EncodedStream(new DictionaryType(
+            new Entry(new NameType('Filter'), new NameType('Crypt')),
+            new Entry(new NameType('DecodeParms'), new DictionaryType(new Entry(new NameType('Type'), new NameType('Wrong')))),
+        ), 'identity bytes'), $this->identifier(), $this->resolver(), new ReadBudget(new ReaderLimits()));
+    }
+
     public function testCryptCannotOccurAfterADecompressionFilter(): void
     {
         $this->expectException(ParseException::class);

@@ -135,12 +135,7 @@ final readonly class DocumentDecryption
             if ($parameter !== null && !$parameter instanceof NullType && !$parameter instanceof DictionaryType) {
                 throw new ParseException('Crypt DecodeParms must resolve to a dictionary or null.');
             }
-            $name = $parameter instanceof DictionaryType ? $parameter->get('Name') : null;
-            $name = $name === null ? null : $resolver->resolve($name);
-            if ($name !== null && !$name instanceof NullType && !$name instanceof NameType) {
-                throw new ParseException('A Crypt filter Name must resolve to a name.');
-            }
-            $selected = $name instanceof NameType ? $name->value : 'Identity';
+            $selected = (new CryptDecodeParameters($parameter instanceof DictionaryType ? $parameter : null, $resolver))->name;
             $this->filter($selected);
         }
         if ($selected === null) {
