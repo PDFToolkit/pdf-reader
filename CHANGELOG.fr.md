@@ -4,6 +4,12 @@
 
 ## Non publié
 
+## 0.6.1 - 2026-10-28
+
+- Accepte le core stable `^0.12` aux côtés de `^0.9`, `^0.10` et `^0.11`, sans modifier les API ni les limites de ressources du Reader.
+- Conserve les dépendances stables verrouillées et vérifie séparément la compatibilité avec le candidat core 0.12 sur PHP 8.3, 8.4 et 8.5.
+- Cette version de maintenance prend en charge le graphe de dépendances de développement du core avant la version fonctionnelle indépendante Reader 0.7.
+
 ## 0.6.0 - 2026-10-15
 
 - Ajouter une `StructuralPolicy::Pdf20` explicite pour les identifiants canoniques EC3, les références de toutes les entrées ObjStm, les valeurs communes récursivement directes des flux xref et leurs associations interdites ; conserver la compatibilité historique par défaut. Corriger la tokenisation générale des accolades et vérifier les deux politiques sur toutes les sources indépendantes d’historique physique.
