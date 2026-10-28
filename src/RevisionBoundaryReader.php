@@ -18,11 +18,12 @@ final readonly class RevisionBoundaryReader
 
     public function read(PhysicalCrossReference $reference, ReadDocument $physicalGraph): RevisionBoundary
     {
-        $cursor = new ByteCursor($this->source->bytes, $reference->endOffset);
+        $tailReference = $reference->linearized->main ?? $reference;
+        $cursor = new ByteCursor($this->source->bytes, $tailReference->endOffset);
         $indexed = [];
-        if ($reference->stream) {
+        if ($tailReference->stream) {
             foreach ($physicalGraph->crossReferences()->entries() as $entry) {
-                if ($entry->kind === EntryKind::Uncompressed && $entry->firstField >= $reference->endOffset) {
+                if ($entry->kind === EntryKind::Uncompressed && $entry->firstField >= $tailReference->endOffset) {
                     $indexed[$entry->firstField] = $entry;
                 }
             }
@@ -38,12 +39,39 @@ final readonly class RevisionBoundaryReader
             $span = $physicalGraph->objectSpan($identifier) ?? throw new \LogicException('An ordinary indexed object retains its source span.');
             $cursor->seek($span->end);
         } while (true);
+        $boundary = $this->footer($start, $reference->section->offset->value);
+        if ($reference->linearized !== null) {
+            $length = $reference->linearized->declaredLength;
+            if (!$boundary->acceptsByteLength($length)) {
+                throw new ParseException('Linearized L must identify the complete initial physical EOF interval.');
+            }
+            return new RevisionBoundary($boundary->footerOffset, $boundary->eofOffset, $boundary->eofMarkerEnd, $length, $boundary->maximumEndOffset);
+        }
+        return $boundary;
+    }
+
+    /** A traditional first-page table has a dummy footer; a first-page xref stream may omit it. */
+    public function firstPageFooter(PhysicalCrossReference $reference): ?RevisionBoundary
+    {
+        $cursor = new ByteCursor($this->source->bytes, $reference->endOffset);
+        $parser = new SyntaxParser($cursor, $this->limits, $this->budget);
+        if (!$parser->atKeyword('startxref')) {
+            if ($reference->stream) {
+                return null;
+            }
+            throw new ParseException('A linearized first-page table requires its dummy footer.', $cursor->position());
+        }
+        return $this->footer($cursor->position(), 0);
+    }
+
+    private function footer(int $start, int $expectedOffset): RevisionBoundary
+    {
         $tail = substr($this->source->bytes, $start, $this->limits->maxTokenBytes);
         if (!preg_match('/\Astartxref[\x00\x09\x0a\x0c\x0d\x20]+([0-9]+)[\x00\x09\x0a\x0c\x0d\x20]+%%EOF(?=[\x00\x09\x0a\x0c\x0d\x20]|\z)/', $tail, $match)) {
             throw new ParseException('A physical xref requires a complete footer after its body and any indexed trailing objects.', $start);
         }
         $offset = (new SyntaxParser(new ByteCursor($match[1]), $this->limits, $this->budget))->unsignedInteger();
-        if ($offset !== $reference->section->offset->value) {
+        if ($offset !== $expectedOffset) {
             throw new ParseException('A physical footer must identify its own cross-reference section.', $start);
         }
         $markerEnd = $start + strlen($match[0]);

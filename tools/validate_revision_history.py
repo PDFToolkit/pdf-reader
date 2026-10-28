@@ -74,17 +74,18 @@ def trailing_objects_initial():
     return prefix + xref() + tail + f'startxref\n{offsets[7]}\n%%EOF\n'.encode()
 
 
-def produce(directory):
+def produce(directory, qpdf):
     certificate, private_key = identity(directory, 'history')
     signer = signers.SimpleSigner(signing_cert=certificate, signing_key=private_key, cert_registry=SimpleCertificateStore())
     records = []
-    for kind in ('table', 'stream', 'hybrid', 'stream-tail'):
+    for kind in ('table', 'stream', 'hybrid', 'stream-tail', 'linearized-table', 'linearized-stream'):
         for encrypted in (False, True):
             if kind == 'stream-tail' and encrypted:
                 continue
-            writer = PdfFileWriter(stream_xrefs=kind != 'table')
+            stream_xrefs = kind not in ('table', 'linearized-table')
+            writer = PdfFileWriter(stream_xrefs=stream_xrefs)
             writer.root[generic.pdf_name('/HistoryMarker')] = generic.TextStringObject('initial')
-            if kind != 'table':
+            if stream_xrefs:
                 container = writer.prepare_object_stream()
                 writer.root[generic.pdf_name('/HistoryCompressed')] = writer.add_object(
                     generic.DictionaryObject({generic.pdf_name('/Value'): generic.TextStringObject('compressed historical object')}),
@@ -101,6 +102,14 @@ def produce(directory):
             elif kind == 'stream-tail':
                 initial = trailing_objects_initial()
                 assert initial == (ROOT / 'tests/Fixtures/revision-history/trailing-xref.pdf').read_bytes()
+            elif kind.startswith('linearized-'):
+                input_path = directory / f'{kind}-encrypted{int(encrypted)}-input.pdf'
+                initial_path = directory / f'{kind}-encrypted{int(encrypted)}-initial.pdf'
+                input_path.write_bytes(initial)
+                password = ['--password=owner'] if encrypted else []
+                run([qpdf, *password, '--static-id', '--linearize',
+                    '--object-streams=' + ('generate' if stream_xrefs else 'disable'), input_path, initial_path])
+                initial = initial_path.read_bytes()
             update = IncrementalPdfFileWriter(io.BytesIO(initial), strict=kind != 'hybrid')
             if encrypted:
                 update.encrypt('owner')
@@ -122,7 +131,8 @@ def produce(directory):
             path = directory / f'{kind}-encrypted{int(encrypted)}.pdf'
             path.write_bytes(final)
             records.append({'path': path, 'encrypted': encrypted, 'hybrid': kind == 'hybrid',
-                'compressed': kind in ('stream', 'hybrid'),
+                'compressed': kind in ('stream', 'hybrid', 'linearized-stream'),
+                'linearized': kind.startswith('linearized-'),
                 'prefixes': [initial, signed, final]})
     return records
 
@@ -142,12 +152,15 @@ def validate(record, args):
     expected = PdfFileReader(io.BytesIO(source), strict=not record.get('hybrid', False))
     if record.get('encrypted'):
         expected.decrypt('user')
-    assert len(actual['revisions']) == expected.xrefs.total_revisions
+    # pyHanko counts the forward main xref of a linearized initial file as an
+    # additional revision. Reader exposes complete physical file prefixes instead.
+    xref_extra = int(record.get('linearized', False))
+    assert len(actual['revisions']) + xref_extra == expected.xrefs.total_revisions
     signatures = 0
     for revision in actual['revisions']:
         ordinal = revision['ordinal']
         assert not revision['rawAuthenticated'] and revision['rawMac'] is None
-        assert revision['xref'] == expected.xrefs.get_startxref_for_revision(ordinal)
+        assert revision['xref'] == expected.xrefs.get_startxref_for_revision(ordinal + xref_extra)
         assert source[revision['footer']:revision['footer'] + 9] == b'startxref'
         assert source[revision['eof']:revision['minimumEnd']] == b'%%EOF'
         assert all(byte in b'\x00\x09\x0a\x0c\x0d\x20' for byte in source[revision['minimumEnd']:revision['maximumEnd']])
@@ -160,7 +173,7 @@ def validate(record, args):
         independent = PdfFileReader(io.BytesIO(prefix), strict=not record.get('hybrid', False))
         if record.get('encrypted'):
             independent.decrypt('user')
-        assert independent.xrefs.total_revisions == ordinal + 1
+        assert independent.xrefs.total_revisions == ordinal + 1 + xref_extra
         for item in revision['objects']:
             if item['span'] is not None:
                 start, end = item['span']
@@ -194,7 +207,8 @@ def validate(record, args):
         password = ['--password=user'] if record.get('encrypted') else []
         run([args.qpdf, *password, '--suppress-recovery', '--check', temporary])
     return {'file': path.name, 'revisions': len(actual['revisions']), 'mathematicalSignatures': signatures,
-        'encrypted': record.get('encrypted', False), 'hybrid': record.get('hybrid', False)}
+        'encrypted': record.get('encrypted', False), 'hybrid': record.get('hybrid', False),
+        'linearized': record.get('linearized', False), 'independentXrefSections': expected.xrefs.total_revisions}
 
 
 def main():
@@ -207,7 +221,7 @@ def main():
     with tempfile.TemporaryDirectory(prefix='reader-revision-history-') as temporary:
         directory = (args.work_dir or Path(temporary)).resolve()
         directory.mkdir(parents=True, exist_ok=True)
-        records = produce(directory)
+        records = produce(directory, args.qpdf)
         for filename in ('classic', 'object-streams', 'incremental', 'deleted-object', 'reused-generation'):
             path = directory / (filename + '.pdf')
             path.write_bytes((ROOT / 'tests/Fixtures/pdf' / path.name).read_bytes())
@@ -217,6 +231,7 @@ def main():
             'signatureVerifications': sum(item['mathematicalSignatures'] for item in reports),
             'certificateTrust': 'not asserted; offline validation with no trust roots',
             'modificationAuthorization': 'not asserted',
+            'linearizedHistory': 'two initial xref sections form one complete physical revision',
             'structuralPolicies': ['Compatible', 'Pdf20'], 'policySourceReads': 2 * len(reports)}, indent=2))
 
 

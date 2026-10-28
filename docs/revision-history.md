@@ -2,7 +2,7 @@
 
 English | [Français](fr/revision-history.md)
 
-Reader 0.6 exposes the actual source prefixes of a chronological incremental
+Reader exposes the actual source prefixes of a chronological incremental
 PDF. These are immutable physical views, with the original bytes, cross-reference
 sections and effective object identities. They do not establish signature trust,
 DocMDP/FieldMDP authority or permission to modify the document.
@@ -31,6 +31,15 @@ retain their existing semantics. `PhysicalCrossReference` preserves the section,
 its lexical `endOffset`, its `stream` flag and the optional hybrid `auxiliary`.
 The table remains the owner of `/Prev`; the supplement's entries take precedence.
 
+An initial linearized file has two xref sections but only one complete physical
+revision. Its first-page section owns `crossReference`; `linearized` retains the
+main section, the optional first-page dummy footer, the linearization dictionary's
+source span and its declared `L`. `physicalParts()` returns the exact xref bodies,
+including any hybrid supplements. A valid `L` fixes the initial prefix length
+inside its actual EOF interval, even when updates append more whitespace.
+This groups physical sections; it does not interpret hint streams or certify
+optimized network delivery.
+
 ## Exact EOF and signed lengths
 
 Each `RevisionBoundary` records five absolute offsets:
@@ -40,7 +49,7 @@ Each `RevisionBoundary` records five absolute offsets:
 | `footerOffset` | First byte of the actual `startxref` keyword, after any indexed trailing objects. |
 | `eofOffset` | First `%` of the verified `%%EOF` marker. |
 | `eofMarkerEnd` | First byte after the five-byte marker; minimum admissible length. |
-| `endOffset` | Conventional prefix end, including the marker's first line ending when present. |
+| `endOffset` | Conventional prefix end, including the marker's first line ending when present; a linearized initial revision uses its verified `L`. |
 | `maximumEndOffset` | First subsequent non-whitespace byte, or the source length. |
 
 `acceptsByteLength($length)` checks the inclusive interval from `eofMarkerEnd`
@@ -99,7 +108,10 @@ syntax and an appended footer pointing back to an older xref are rejected.
 The supported organization is a chronological `/Prev` chain of tables, streams
 or hybrid sections. Ordinary indexed objects may follow a primary xref stream
 before its footer; their actual extents, including indirect stream lengths, are
-validated before locating `startxref`. Linearized/forward chains, unindexed objects
+validated before locating `startxref`. The initial linearized pair is recognized
+from its actual first object and bounded direct parameters. Its forward `/Prev`
+must identify the main section exactly, with no further `/Prev`; its final footer
+points back to the first-page section. Arbitrary forward chains, unindexed objects
 and comments inside the footer are explicitly outside this inspection API. Some are valid PDF layouts;
 ordinary `read()` retains its previous behavior. This is a bounded structural
 inspection service, not a PDF conformance validator or repair operation.
@@ -112,9 +124,12 @@ revision, a real CMS approval signature, and a later object update. The hybrid
 initial source has an actual companion table and `/XRefStm`; its signature is
 created afterwards. A separately assembled initial layout adds indexed objects
 after its xref stream, including a stream with an indirect length; unmodified
-pyHanko signs and updates that source too. Five existing pypdf/qpdf fixtures add
-deletion and generation reuse. All 30 prefixes from 12 sources pass qpdf without recovery. PyHanko independently
-checks xref revision offsets, object resolution and 14 mathematical signature
+pyHanko signs and updates that source too. Four initial files are independently
+linearized with qpdf (tables/streams, clear/encrypted), then signed and updated by
+pyHanko. PyHanko counts their two initial xref sections separately; the oracle maps
+them explicitly to one complete physical revision. Five existing pypdf/qpdf fixtures add
+deletion and generation reuse. All 42 prefixes from 16 sources pass qpdf without recovery. PyHanko independently
+checks xref revision offsets, object resolution and 22 mathematical signature
 verifications. Validation is offline with no trusted certificate roots; certificate
 trust and authorization of later modifications are deliberately not asserted.
 

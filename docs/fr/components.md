@@ -41,7 +41,7 @@ conserve `crossReference`, `boundary`, `rawDocument()` et `source(?int $byteLeng
 `ReadDocument::crossReferences()` expose l’index effectif, dont `entries()` garde
 aussi les entrées libres et indisponibles ; `objectSpan(ObjectIdentifier)` donne
 l’étendue ordinaire ou null. Voir le [contrat physique](revision-history.md) pour
-les bornes, suppléments hybrides, Contents, budgets et limites d’authentification.
+les bornes, suppléments hybrides, sections linéarisées regroupées, Contents, budgets et limites d’authentification.
 
 ## Pages, héritage et contenu
 

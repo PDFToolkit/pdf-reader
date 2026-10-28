@@ -1,0 +1,22 @@
+{
+  "generator": "qpdf version 12.4.2",
+  "source": "tests/Fixtures/pdf/classic.pdf",
+  "sourceSha256": "4e414c54c6920e4c99ab27d02c700e8194fdfa5385c7c13c8870708ac8a22528",
+  "staticId": true,
+  "cases": [
+    {
+      "file": "linearized-table.pdf",
+      "bytes": 2537,
+      "sha256": "d45dc976973d59eea5af20c274e750288131f4eafce160ba6b405cbe0e4e0fa0",
+      "objectStreams": "disable",
+      "physicalRevisions": 1
+    },
+    {
+      "file": "linearized-stream.pdf",
+      "bytes": 2712,
+      "sha256": "ea1a9f6a75d70608402e8232c78a7e1dd8e3a3ff19672a187f76ae699abbfa68",
+      "objectStreams": "generate",
+      "physicalRevisions": 1
+    }
+  ]
+}

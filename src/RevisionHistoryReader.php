@@ -38,6 +38,7 @@ final readonly class RevisionHistoryReader
         $strings = new SourceStringSpans($budget);
         $reader = new CrossReferenceReader($source, $this->limits, $budget, $decoder, $strings, $this->structuralPolicy);
         $boundaryReader = new RevisionBoundaryReader($source, $this->limits, $budget);
+        $linearizedReader = new LinearizedRevisionReader($source, $this->limits, $budget, $reader, $boundaryReader, $strings, $this->structuralPolicy);
         $physical = [];
         $newerSize = null;
         do {
@@ -53,11 +54,12 @@ final readonly class RevisionHistoryReader
                 throw new ParseException('Trailer Size cannot shrink across physical revisions.', $offset);
             }
             $newerSize = $size;
-            $physical[] = $reference;
             $previous = $reference->section->previous?->value;
             if ($previous !== null && $previous >= $offset) {
-                throw new UnsupportedPdfFeature('Physical histories require a strictly chronological Prev chain; linearized or forward chains are not accepted.');
+                $reference = $linearizedReader->group($reference);
+                $previous = null;
             }
+            $physical[] = $reference;
             $offset = $previous;
         } while ($offset !== null);
         $physical = array_reverse($physical);
@@ -67,6 +69,12 @@ final readonly class RevisionHistoryReader
         $trailerEntries = [];
         $objectExtents = [];
         foreach ($physical as $ordinal => $reference) {
+            if ($reference->linearized !== null) {
+                array_unshift($sections, $reference->linearized->main->section);
+                foreach ($reference->linearized->main->section->trailer->entries() as $entry) {
+                    $trailerEntries[$entry->key->value] = $entry;
+                }
+            }
             array_unshift($sections, $reference->section);
             foreach ($reference->section->trailer->entries() as $entry) {
                 $trailerEntries[$entry->key->value] = $entry;
@@ -154,10 +162,12 @@ final readonly class RevisionHistoryReader
         $previousEnd = 0;
         $protected = [];
         foreach ($physical as $ordinal => $reference) {
-            foreach ([$reference, $reference->auxiliary] as $part) {
-                if ($part !== null) {
-                    $protected[] = [$part->section->offset->value, $part->endOffset, $part->stream];
-                }
+            foreach ($reference->physicalParts() as $part) {
+                $protected[] = [$part->section->offset->value, $part->endOffset, $part->stream];
+            }
+            $firstPageFooter = $reference->linearized?->firstPageFooter;
+            if ($firstPageFooter !== null) {
+                $protected[] = [$firstPageFooter->footerOffset, $firstPageFooter->eofMarkerEnd, false];
             }
             $protected[] = [$boundaries[$ordinal]->footerOffset, $boundaries[$ordinal]->eofMarkerEnd, false];
         }
@@ -193,13 +203,15 @@ final readonly class RevisionHistoryReader
             $extents[$span->start] = $span->end;
         }
         foreach ($physical as $ordinal => $reference) {
-            foreach ([$reference, $reference->auxiliary] as $part) {
-                if ($part !== null) {
-                    if (isset($extents[$part->section->offset->value]) && $extents[$part->section->offset->value] !== $part->endOffset) {
-                        throw new ParseException('A cross-reference stream has exactly its actual indirect-object extent.');
-                    }
-                    $extents[$part->section->offset->value] = $part->endOffset;
+            foreach ($reference->physicalParts() as $part) {
+                if (isset($extents[$part->section->offset->value]) && $extents[$part->section->offset->value] !== $part->endOffset) {
+                    throw new ParseException('A cross-reference stream has exactly its actual indirect-object extent.');
                 }
+                $extents[$part->section->offset->value] = $part->endOffset;
+            }
+            $firstPageFooter = $reference->linearized?->firstPageFooter;
+            if ($firstPageFooter !== null) {
+                $extents[$firstPageFooter->footerOffset] = $firstPageFooter->eofMarkerEnd;
             }
             $extents[$boundaries[$ordinal]->footerOffset] = $boundaries[$ordinal]->eofMarkerEnd;
         }

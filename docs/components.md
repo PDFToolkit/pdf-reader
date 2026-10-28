@@ -40,7 +40,7 @@ requested traversal; loading the catalog alone does not visit that tree.
 `ReadDocument::crossReferences()` exposes the effective index, whose `entries()`
 includes free and unavailable records; `objectSpan(ObjectIdentifier)` returns
 the ordinary extent or null. See the [physical contract](revision-history.md) for
-bounds, hybrid supplements, Contents, budgets and authentication boundaries.
+bounds, hybrid supplements, grouped linearized sections, Contents, budgets and authentication boundaries.
 
 ## Pages, inheritance and contents
 

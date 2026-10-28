@@ -28,6 +28,25 @@
         60,
         61
       ]
+    },
+    {
+      "document": "ISO_32000-2_sponsored_EC3.pdf",
+      "path": "https://github.com/PDFToolkit/pdf/blob/25b426190b1c2b8d9d26a3fbf94f71c8014725b3/resources/reference-documents/ISO_32000-2_sponsored_EC3.pdf",
+      "sha256": "90f4b666d46405dd62630a98d514158b4de5304b749523c4081680ac4fe2e230",
+      "clauses": [
+        "Annex F.2",
+        "Annex F.3.2",
+        "Annex F.3.3",
+        "Annex F.3.9"
+      ],
+      "physicalPdfPages": [
+        895,
+        896,
+        897,
+        898,
+        899,
+        900
+      ]
     }
   ],
   "implementation": [
@@ -35,27 +54,34 @@
     "src/RevisionBoundaryReader.php",
     "src/ReadRevision.php",
     "src/ReadRevisionHistory.php",
-    "src/ReadDocument.php"
+    "src/ReadDocument.php",
+    "src/LinearizedRevisionReader.php",
+    "src/LinearizedRevisionParts.php"
   ],
   "tests": [
     "tests/ReadingRevisionHistoryTest.php",
-    "tools/validate_revision_history.py"
+    "tools/validate_revision_history.py",
+    "tests/ReadingLinearizedHistoryTest.php",
+    "tools/build_linearized_fixtures.py --check"
   ],
   "boundaries": [
     "Physical views have no signature, trust or modification authority.",
     "Exact ByteRange endpoints must be selected and authenticated separately; EOF whitespace is never normalized.",
-    "Linearized or forward Prev chains and unindexed syntax remain unsupported by history inspection; read behavior remains unchanged.",
+    "Only the validated initial linearized pair may use forward Prev; unindexed syntax and arbitrary forward chains remain unsupported by history inspection.",
     "Objects after primary xref streams are accepted only with verified indexed nonoverlapping extents.",
-    "Encrypted raw object-stream contents are not authenticated or decrypted by physical inspection."
+    "Encrypted raw object-stream contents are not authenticated or decrypted by physical inspection.",
+    "Linearization hints and optimized delivery are not interpreted or certified. The initial L must identify its exact physical EOF interval."
   ],
   "oracle": {
-    "sources": 12,
-    "prefixes": 30,
-    "mathematicalSignatureVerifications": 14,
+    "sources": 16,
+    "prefixes": 42,
+    "mathematicalSignatureVerifications": 22,
     "tools": [
       "pyHanko",
       "qpdf --suppress-recovery --check"
     ],
-    "trust": "Offline; no trust roots, no modification authorization claim."
+    "trust": "Offline; no trust roots, no modification authorization claim.",
+    "linearizedSources": 4,
+    "linearizedMapping": "Two initial xref sections counted by pyHanko correspond to one complete physical revision."
   }
 }

@@ -52,7 +52,9 @@ jobs:
       - name: Compare hybrid initial, incremental and linearized documents
         run: python tools/validate_hybrid.py
       - name: Compare exact physical revisions and external signed histories
-        run: python tools/validate_revision_history.py
+        run: |
+          python tools/build_linearized_fixtures.py --check
+          python tools/validate_revision_history.py
       - run: php examples/inspect.php tests/Fixtures/pdf/object-streams.pdf
       - run: php examples/parse-value.php
       - run: php examples/pages.php tests/Fixtures/page-tree/classic.pdf

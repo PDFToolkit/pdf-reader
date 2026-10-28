@@ -13,3 +13,12 @@ L’oracle compare les octets committés à ce producteur, les contrôle avec qp
 pyHanko, puis crée une véritable signature CMS et une mise à jour ultérieure avec
 les API pyHanko non modifiées. Les clés éphémères des certificats et les variantes
 signées restent dans le répertoire de validation choisi et ne sont pas committées.
+
+`linearized-table.pdf` et `linearized-stream.pdf` sont réécrits indépendamment
+à partir de `../pdf/classic.pdf` par qpdf 12.4.2 avec `--static-id --linearize` et
+des politiques explicites de flux d’objets. `linearized-manifest.json` conserve
+les empreintes source/sorties. Exécuter `python tools/build_linearized_fixtures.py
+--check` depuis la racine pour reproduire exactement leurs octets. Les tests
+natifs couvrent regroupement, incréments ultérieurs, paramètres invalides et
+budgets partagés. L’oracle produit aussi des fichiers linéarisés clairs/chiffrés,
+puis les signe et les met à jour indépendamment.

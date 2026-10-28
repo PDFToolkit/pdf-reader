@@ -2,7 +2,7 @@
 
 [English](../revision-history.md) | Français
 
-Le Reader 0.6 expose les véritables préfixes sources d’un PDF incrémental
+Le Reader expose les véritables préfixes sources d’un PDF incrémental
 chronologique. Ces vues physiques immuables conservent les octets d’origine,
 les sections xref et les identités d’objets effectives. Elles n’établissent ni
 confiance dans une signature, ni autorité DocMDP/FieldMDP, ni permission de modifier.
@@ -32,6 +32,15 @@ gardent leur sémantique. `PhysicalCrossReference` conserve la section, sa fin
 lexicale `endOffset`, le booléen `stream` et l’éventuel supplément hybride
 `auxiliary`. La table porte `/Prev` ; les entrées du supplément prévalent.
 
+Un fichier initial linéarisé possède deux sections xref, mais une seule révision
+physique complète. Sa section de première page porte `crossReference` ; `linearized`
+conserve la section principale, l’éventuel footer factice de première page,
+l’étendue source du dictionnaire de linéarisation et sa longueur déclarée `L`.
+`physicalParts()` retourne les corps xref exacts, suppléments hybrides compris.
+Un `L` valide fixe la longueur du préfixe initial dans son véritable intervalle EOF,
+même si les mises à jour ajoutent des blancs. Ce regroupement physique n’interprète
+pas les flux de hints et ne certifie pas une distribution réseau optimisée.
+
 ## EOF exact et longueurs signées
 
 Chaque `RevisionBoundary` conserve cinq offsets absolus :
@@ -41,7 +50,7 @@ Chaque `RevisionBoundary` conserve cinq offsets absolus :
 | `footerOffset` | Premier octet du véritable mot-clé `startxref`, après les éventuels objets indexés finaux. |
 | `eofOffset` | Premier `%` du marqueur `%%EOF` vérifié. |
 | `eofMarkerEnd` | Premier octet après ses cinq caractères ; longueur minimale admissible. |
-| `endOffset` | Fin conventionnelle du préfixe, incluant la première fin de ligne du marqueur si présente. |
+| `endOffset` | Fin conventionnelle du préfixe, incluant la première fin de ligne du marqueur si présente ; une révision initiale linéarisée utilise son `L` vérifié. |
 | `maximumEndOffset` | Premier octet suivant qui n’est pas un blanc, ou longueur totale de la source. |
 
 `acceptsByteLength($length)` contrôle l’intervalle inclusif entre `eofMarkerEnd`
@@ -104,8 +113,11 @@ xref sont refusés.
 L’organisation prise en charge est une chaîne `/Prev` chronologique de tables,
 flux ou sections hybrides. Des objets ordinaires indexés peuvent suivre le flux
 xref principal avant son footer ; leurs étendues réelles, y compris les longueurs
-indirectes de flux, sont vérifiées avant de localiser `startxref`. Chaînes
-linéarisées/progressant vers l’avant, objets non indexés et commentaires dans le
+indirectes de flux, sont vérifiées avant de localiser `startxref`. La paire initiale
+linéarisée est reconnue à partir de son véritable premier objet et de ses paramètres
+directs bornés. Son `/Prev` vers l’avant doit désigner exactement la section
+principale, sans autre `/Prev` ; son footer final désigne la section de première
+page. Chaînes arbitraires progressant vers l’avant, objets non indexés et commentaires dans le
 footer restent hors de cette API d’inspection. Certaines
 de ces organisations sont des PDF valides ; `read()` conserve son comportement.
 Ce service fournit une inspection structurelle bornée, pas une validation générale
@@ -120,9 +132,12 @@ mise à jour ultérieure d’objet. La source hybride initiale a une vraie table
 associée et `/XRefStm` ; sa signature est créée ensuite. Une organisation initiale
 assemblée séparément ajoute des objets indexés après le flux xref, dont un flux
 de longueur indirecte ; pyHanko non modifié signe et met aussi à jour cette source.
-Cinq fixtures pypdf/qpdf existantes ajoutent suppression et réutilisation de
-génération. Les 30 préfixes des 12 sources passent qpdf sans récupération. PyHanko
-contrôle indépendamment les offsets xref des révisions, la résolution d’objets et 14 vérifications
+Quatre fichiers initiaux sont linéarisés indépendamment par qpdf (tables/flux,
+clair/chiffré), puis signés et mis à jour par pyHanko. PyHanko compte séparément
+leurs deux sections xref initiales ; l’oracle les associe explicitement à une seule
+révision physique complète. Cinq fixtures pypdf/qpdf existantes ajoutent suppression et réutilisation de
+génération. Les 42 préfixes des 16 sources passent qpdf sans récupération. PyHanko
+contrôle indépendamment les offsets xref des révisions, la résolution d’objets et 22 vérifications
 mathématiques de signatures. La validation est hors ligne sans racine de
 confiance ; la confiance dans les certificats et l’autorisation des modifications
 ultérieures ne sont volontairement pas attestées.
