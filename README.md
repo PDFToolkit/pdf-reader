@@ -198,6 +198,7 @@ types before selecting embedded-file encryption. Page and object metadata stay
 protected by their chosen filter; explicit Identity and codec bytes are preserved.
 
 - [Explicit EC3 structural policy](docs/structural-policy.md)
+- [CCITT fax decoding](docs/fax.md)
 - [External stream data](docs/external-streams.md)
 - [Physical revision history](docs/revision-history.md)
 - [Architecture and object boundaries](docs/architecture.md)

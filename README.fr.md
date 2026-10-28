@@ -205,6 +205,7 @@ Les métadonnées de page/objet suivent leur filtre ; Identity explicite et les
 octets des codecs sont préservés.
 
 - [Politique structurelle EC3 explicite](docs/fr/structural-policy.md)
+- [Décodage fax CCITT](docs/fr/fax.md)
 - [Données de flux externes](docs/fr/external-streams.md)
 - [Historique physique des révisions](docs/fr/revision-history.md)
 - [Architecture et frontières des objets](docs/fr/architecture.md)

@@ -1,0 +1,654 @@
+{
+  "license": "MIT",
+  "encoder": "Pillow 13.0.0 / libtiff 4.7.2",
+  "cases": [
+    {
+      "name": "mh-byte-aligned",
+      "width": 41,
+      "height": 9,
+      "params": {
+        "K": 0,
+        "Columns": 41,
+        "Rows": 9,
+        "EndOfBlock": false,
+        "BlackIs1": true,
+        "EncodedByteAlign": true
+      },
+      "encoded": "hDodZOsQ6hOnMHQ8/CHQ6ch06Hx1YB0OQ6tOh1HiHrQ17h0PjqGOY6HWQDXhOx25j7oduh0OHh90Oh0Ox0Oh8fHQ+OnQ6DVRDqIdPwhx+jVYn3MeHx06HQ+PODXch06djodDp8dOh8dA",
+      "bitmap": "FQcgok+ALmKn6WgAX6EowXCAw60e+oOAxPefZeUAdlXq2tKAjo6Yv4CAgmfdpW4Az9J6ppaA",
+      "encodedSha256": "ed0476d051aa31768494e2226e77e0902082c1c3ba484d57e471ba9ba11a6884",
+      "tiff": "mh-byte-aligned.tiff"
+    },
+    {
+      "name": "group4-checkerboard",
+      "width": 64,
+      "height": 8,
+      "params": {
+        "K": -1,
+        "Columns": 64,
+        "Rows": 8,
+        "EndOfBlock": true,
+        "BlackIs1": true
+      },
+      "encoded": "Ns2zbNs2zbNs2yas2zbNs2zbNs25tm2bZtm2bZtm2TVm2bZtm2bZtm3Ns2zbNs2zbNs2yas2zbNs2zbNs25tm2bZtm2bZtm2TVm2bZtm2bZtm3ABABA=",
+      "bitmap": "Dw8PDw8PDw/w8PDw8PDw8A8PDw8PDw8P8PDw8PDw8PAPDw8PDw8PD/Dw8PDw8PDwDw8PDw8PDw/w8PDw8PDw8A==",
+      "encodedSha256": "cab6699036c50318f110bfa7baed0f9d2302787cfed0d8c933f1a468fb39f8df",
+      "tiff": "group4-checkerboard.tiff"
+    },
+    {
+      "name": "group4-runs-and-pass",
+      "width": 256,
+      "height": 16,
+      "params": {
+        "K": -1,
+        "Columns": 256,
+        "Rows": 16,
+        "EndOfBlock": true,
+        "BlackIs1": true
+      },
+      "encoded": "JqC5XMBog1g1g1g1g1g1g1g1g1g1g1g1g1g1g1ABABA=",
+      "bitmap": "//8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP/////+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB///////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP///////gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB////////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP////////4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB/////////8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP/////////+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB///////////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP///////////gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB////////////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP////////////4AAAAAAAAAAAAAAAAAAAAAAAAAAAAB/////////////8AAAAAAAAAAAAAAAAAAAAAAAAAAAAP/////////////+AAAAAAAAAAAAAAAAAAAAAAAAAAAB///////////////AAAAAAAAAAAAAAAAAAAAAAAAAAAP///////////////gAAAAAAAAAAAAAAAAAAAAAAAAAB/////8=",
+      "encodedSha256": "ec38014e52c9b45fdcb899af8082db5a2802cbbf48b6e0d2170dc366935eaa1f",
+      "tiff": "group4-runs-and-pass.tiff"
+    },
+    {
+      "name": "group4-random",
+      "width": 41,
+      "height": 9,
+      "params": {
+        "K": -1,
+        "Columns": 41,
+        "Rows": 9,
+        "EndOfBlock": true,
+        "BlackIs1": true
+      },
+      "encoded": "I+YzGR0XRHRHyOiOjiLoLSQIqLSSCCjDSCQUW0o9ndJaKHl9JIEEE0r0hrFpBhBXbtBF2oRUBBDaUIIIocIIWGlZUMjojtihZThsE6hAg0ggjjgi8CUER2tpkdBBVCQIj+0EEoAIAIA=",
+      "bitmap": "YxpWoJGARomqOWeAAxHpkmuANi+zGsMAP0KRnTyAjcE2V4mARrz8CeSA0XNncXmA46xEsTaA",
+      "encodedSha256": "14b61ab10d39553c7e7f518cfb539fea42942550b7de3bfcc6b7235dc60fafa6",
+      "tiff": "group4-random.tiff"
+    },
+    {
+      "name": "group4-long-makeup",
+      "width": 6145,
+      "height": 3,
+      "params": {
+        "K": -1,
+        "Columns": 6145,
+        "Rows": 3,
+        "EndOfBlock": true,
+        "BlackIs1": true
+      },
+      "encoded": "JqA+BoBRvcAEAEA=",
+      "bitmap": "////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+      "encodedSha256": "8b72ed61e242d0d66942378f26d4ec45bacf4e9ced4a979c27889ba04d0a33d8",
+      "tiff": "group4-long-makeup.tiff"
+    },
+    {
+      "name": "group4-one-pixel",
+      "width": 1,
+      "height": 3,
+      "params": {
+        "K": -1,
+        "Columns": 1,
+        "Rows": 3,
+        "EndOfBlock": true,
+        "BlackIs1": true
+      },
+      "encoded": "qwAQAQ==",
+      "bitmap": "AIAA",
+      "encodedSha256": "4954303bfd7af67f158da646cc87417de518fa554c5373b32c7c5229c5abf713",
+      "tiff": "group4-one-pixel.tiff"
+    },
+    {
+      "name": "group3-one-dimensional",
+      "width": 64,
+      "height": 8,
+      "params": {
+        "K": 0,
+        "Columns": 64,
+        "Rows": 8,
+        "EndOfBlock": false,
+        "BlackIs1": true,
+        "EndOfLine": true
+      },
+      "encoded": "ABt27du3bt2wATV27du3bt27ABt27du3bt2wATV27du3bt27ABt27du3bt2wATV27du3bt27ABt27du3bt2wATV27du3bt27",
+      "bitmap": "Dw8PDw8PDw/w8PDw8PDw8A8PDw8PDw8P8PDw8PDw8PAPDw8PDw8PD/Dw8PDw8PDwDw8PDw8PDw/w8PDw8PDw8A==",
+      "encodedSha256": "f77b1642ca4cb0b43c47299797dd69bb5b699b9b46af68c44539c4428e4c3416",
+      "tiff": "group3-one-dimensional.tiff"
+    },
+    {
+      "name": "group3-mixed-dimensional",
+      "width": 64,
+      "height": 8,
+      "params": {
+        "K": 2,
+        "Columns": 64,
+        "Rows": 8,
+        "EndOfBlock": false,
+        "BlackIs1": true,
+        "EndOfLine": true
+      },
+      "encoded": "ABmoLmA0AAoNQAZqDcQDcAFBqADNQzCALgAoNQAZqGlYZQAKMA==",
+      "bitmap": "//8AAAAP/////+AAAB///////AAAP///////gAB////////wAP////////4B/////////8P//////////////w==",
+      "encodedSha256": "6d958981c0ce74750bf558257940000f8466fb06bbd9b29025b7e005bf497118",
+      "tiff": "group3-mixed-dimensional.tiff"
+    },
+    {
+      "name": "group4-rows-without-eofb",
+      "width": 41,
+      "height": 9,
+      "params": {
+        "K": -1,
+        "Columns": 41,
+        "Rows": 9,
+        "EndOfBlock": false,
+        "BlackIs1": true
+      },
+      "encoded": "I+YzGR0XRHRHyOiOjiLoLSQIqLSSCCjDSCQUW0o9ndJaKHl9JIEEE0r0hrFpBhBXbtBF2oRUBBDaUIIIocIIWGlZUMjojtihZThsE6hAg0ggjjgi8CUER2tpkdBBVCQIj+0EEoA=",
+      "bitmap": "YxpWoJGARomqOWeAAxHpkmuANi+zGsMAP0KRnTyAjcE2V4mARrz8CeSA0XNncXmA46xEsTaA",
+      "encodedSha256": "c05242c5c7fe37808578d29c8415577b73596f86f019cd06b120b1f1a18d5eb8",
+      "tiff": "group4-random.tiff"
+    },
+    {
+      "name": "group3-return-to-control",
+      "width": 64,
+      "height": 8,
+      "params": {
+        "K": 0,
+        "Columns": 64,
+        "Rows": 1,
+        "EndOfBlock": true,
+        "BlackIs1": true,
+        "EndOfLine": true
+      },
+      "encoded": "ABt27du3bt2wATV27du3bt27ABt27du3bt2wATV27du3bt27ABt27du3bt2wATV27du3bt27ABt27du3bt2wATV27du3bt27ABABABABABAB",
+      "bitmap": "Dw8PDw8PDw/w8PDw8PDw8A8PDw8PDw8P8PDw8PDw8PAPDw8PDw8PD/Dw8PDw8PDwDw8PDw8PDw/w8PDw8PDw8A==",
+      "encodedSha256": "df1b978bc8c01ab5755a42bcd6b57ac7e2a16ddc4b751345d8f155963a931044",
+      "tiff": "group3-one-dimensional.tiff"
+    },
+    {
+      "name": "group3-positive-k-equivalence",
+      "width": 64,
+      "height": 8,
+      "params": {
+        "K": 99,
+        "Columns": 64,
+        "Rows": 8,
+        "EndOfBlock": false,
+        "BlackIs1": true,
+        "EndOfLine": true
+      },
+      "encoded": "ABmoLmA0AAoNQAZqDcQDcAFBqADNQzCALgAoNQAZqGlYZQAKMA==",
+      "bitmap": "//8AAAAP/////+AAAB///////AAAP///////gAB////////wAP////////4B/////////8P//////////////w==",
+      "encodedSha256": "6d958981c0ce74750bf558257940000f8466fb06bbd9b29025b7e005bf497118",
+      "tiff": "group3-mixed-dimensional.tiff"
+    },
+    {
+      "name": "group3-optional-eol",
+      "width": 64,
+      "height": 8,
+      "params": {
+        "K": 0,
+        "Columns": 64,
+        "Rows": 8,
+        "EndOfBlock": false,
+        "BlackIs1": true,
+        "EndOfLine": false
+      },
+      "encoded": "ABt27du3bt2wATV27du3bt27ABt27du3bt2wATV27du3bt27ABt27du3bt2wATV27du3bt27ABt27du3bt2wATV27du3bt27",
+      "bitmap": "Dw8PDw8PDw/w8PDw8PDw8A8PDw8PDw8P8PDw8PDw8PAPDw8PDw8PD/Dw8PDw8PDwDw8PDw8PDw/w8PDw8PDw8A==",
+      "encodedSha256": "f77b1642ca4cb0b43c47299797dd69bb5b699b9b46af68c44539c4428e4c3416",
+      "tiff": "group3-one-dimensional.tiff"
+    },
+    {
+      "name": "mh-unknown-rows",
+      "width": 41,
+      "height": 9,
+      "params": {
+        "K": 0,
+        "Columns": 41,
+        "Rows": 0,
+        "EndOfBlock": false,
+        "BlackIs1": true,
+        "EncodedByteAlign": true
+      },
+      "encoded": "hDodZOsQ6hOnMHQ8/CHQ6ch06Hx1YB0OQ6tOh1HiHrQ17h0PjqGOY6HWQDXhOx25j7oduh0OHh90Oh0Ox0Oh8fHQ+OnQ6DVRDqIdPwhx+jVYn3MeHx06HQ+PODXch06djodDp8dOh8dA",
+      "bitmap": "FQcgok+ALmKn6WgAX6EowXCAw60e+oOAxPefZeUAdlXq2tKAjo6Yv4CAgmfdpW4Az9J6ppaA",
+      "encodedSha256": "ed0476d051aa31768494e2226e77e0902082c1c3ba484d57e471ba9ba11a6884",
+      "tiff": "mh-byte-aligned.tiff"
+    },
+    {
+      "name": "group4-eofb-overrides-rows",
+      "width": 41,
+      "height": 9,
+      "params": {
+        "K": -1,
+        "Columns": 41,
+        "Rows": 1,
+        "EndOfBlock": true,
+        "BlackIs1": true
+      },
+      "encoded": "I+YzGR0XRHRHyOiOjiLoLSQIqLSSCCjDSCQUW0o9ndJaKHl9JIEEE0r0hrFpBhBXbtBF2oRUBBDaUIIIocIIWGlZUMjojtihZThsE6hAg0ggjjgi8CUER2tpkdBBVCQIj+0EEoAIAIA=",
+      "bitmap": "YxpWoJGARomqOWeAAxHpkmuANi+zGsMAP0KRnTyAjcE2V4mARrz8CeSA0XNncXmA46xEsTaA",
+      "encodedSha256": "14b61ab10d39553c7e7f518cfb539fea42942550b7de3bfcc6b7235dc60fafa6",
+      "tiff": "group4-random.tiff"
+    },
+    {
+      "name": "uncompressed-g3-table",
+      "width": 20,
+      "height": 1,
+      "params": {
+        "K": 0,
+        "EndOfLine": true,
+        "EndOfBlock": false,
+        "Columns": 20,
+        "Rows": 1,
+        "BlackIs1": false
+      },
+      "encoded": "ABAPpEIIEA==",
+      "bitmap": "W73w",
+      "encodedSha256": "0b6f3fbf8b743339322cb6fb781c7208eadf18f984d637a3fb6e995cb638ff22",
+      "origin": "ITU-T T.4 (1999) table 5 / T.6 (1988) table 4"
+    },
+    {
+      "name": "uncompressed-g4-cross-row",
+      "width": 7,
+      "height": 3,
+      "params": {
+        "K": -1,
+        "EndOfBlock": true,
+        "Columns": 7,
+        "Rows": 3,
+        "BlackIs1": false
+      },
+      "encoded": "A+kQgwIAEAE=",
+      "bitmap": "Wt58",
+      "encodedSha256": "41abf863562336a2abd35897aa9b0d1a665a2e5b42e2fcbc54adf6b64db2e7aa",
+      "origin": "ITU-T T.4 (1999) table 5 / T.6 (1988) table 4"
+    },
+    {
+      "name": "uncompressed-g4-to-vertical",
+      "width": 8,
+      "height": 2,
+      "params": {
+        "K": -1,
+        "EndOfBlock": true,
+        "Columns": 8,
+        "Rows": 2,
+        "BlackIs1": false
+      },
+      "encoded": "A+CAXABABA==",
+      "bitmap": "f38=",
+      "encodedSha256": "f58e51973986dbad142b1644622b06ea7da78db64765e3bcc0a65b3545510b18",
+      "origin": "ITU-T T.4 (1999) table 5 / T.6 (1988) table 4"
+    },
+    {
+      "name": "uncompressed-g3-to-black-run",
+      "width": 8,
+      "height": 1,
+      "params": {
+        "K": 0,
+        "EndOfBlock": false,
+        "Columns": 8,
+        "Rows": 1,
+        "BlackIs1": false
+      },
+      "encoded": "APAGYA==",
+      "bitmap": "4A==",
+      "encodedSha256": "9d392f0834b56d338ecc12f2ebfb8c4cecc0b716ad61ef42e7f0b8d7d589b348",
+      "origin": "ITU-T T.4 (1999) table 5 / T.6 (1988) table 4"
+    },
+    {
+      "name": "uncompressed-g4-to-black-run",
+      "width": 8,
+      "height": 1,
+      "params": {
+        "K": -1,
+        "EndOfBlock": true,
+        "Columns": 8,
+        "Rows": 1,
+        "BlackIs1": false
+      },
+      "encoded": "A8AcAEAE",
+      "bitmap": "4A==",
+      "encodedSha256": "3d7e6691a1caec288c13674e3bb84ce5bb6fde85cae74e3cf82b300522365fb9",
+      "origin": "ITU-T T.4 (1999) table 5 / T.6 (1988) table 4"
+    },
+    {
+      "name": "uncompressed-g4-exit-cross-row",
+      "width": 3,
+      "height": 2,
+      "params": {
+        "K": -1,
+        "EndOfBlock": true,
+        "Columns": 3,
+        "Rows": 2,
+        "BlackIs1": false
+      },
+      "encoded": "A/ACABAB",
+      "bitmap": "IOA=",
+      "encodedSha256": "4566a6b9df7a92a7e117069c028175bf809d252b1f02ef08204a4c8549eba87e",
+      "origin": "ITU-T T.4 (1999) table 5 / T.6 (1988) table 4"
+    },
+    {
+      "name": "uncompressed-g3-exit-0-0",
+      "width": 8,
+      "height": 1,
+      "params": {
+        "K": 0,
+        "Columns": 8,
+        "Rows": 1,
+        "EndOfBlock": false,
+        "BlackIs1": false
+      },
+      "encoded": "APgXgA==",
+      "bitmap": "fw==",
+      "encodedSha256": "1e2ad4750f1ae6082b54b2e1e5f7b9ab67d450b8cb18d481396d283962867ce7",
+      "origin": "ITU-T T.4 table 5 / T.6 table 4 exhaustive exit codes"
+    },
+    {
+      "name": "uncompressed-g3-exit-0-1",
+      "width": 8,
+      "height": 1,
+      "params": {
+        "K": 0,
+        "Columns": 8,
+        "Rows": 1,
+        "EndOfBlock": false,
+        "BlackIs1": false
+      },
+      "encoded": "APgYwA==",
+      "bitmap": "AA==",
+      "encodedSha256": "ce500aebcc1d4bca8935bfbcb8d155b2bf302733db0290d9f2a64da99bf7824a",
+      "origin": "ITU-T T.4 table 5 / T.6 table 4 exhaustive exit codes"
+    },
+    {
+      "name": "uncompressed-g3-exit-1-0",
+      "width": 8,
+      "height": 1,
+      "params": {
+        "K": 0,
+        "Columns": 8,
+        "Rows": 1,
+        "EndOfBlock": false,
+        "BlackIs1": false
+      },
+      "encoded": "APgLgA==",
+      "bitmap": "fw==",
+      "encodedSha256": "440ee93115796efa056875b238802759680618497f51020d8033a0b697142480",
+      "origin": "ITU-T T.4 table 5 / T.6 table 4 exhaustive exit codes"
+    },
+    {
+      "name": "uncompressed-g3-exit-1-1",
+      "width": 8,
+      "height": 1,
+      "params": {
+        "K": 0,
+        "Columns": 8,
+        "Rows": 1,
+        "EndOfBlock": false,
+        "BlackIs1": false
+      },
+      "encoded": "APgMgA==",
+      "bitmap": "QA==",
+      "encodedSha256": "3c7603272375fa7da0df75d17904ce83e194f227d238f223146daa9f8be2b856",
+      "origin": "ITU-T T.4 table 5 / T.6 table 4 exhaustive exit codes"
+    },
+    {
+      "name": "uncompressed-g3-exit-2-0",
+      "width": 8,
+      "height": 1,
+      "params": {
+        "K": 0,
+        "Columns": 8,
+        "Rows": 1,
+        "EndOfBlock": false,
+        "BlackIs1": false
+      },
+      "encoded": "APgFgA==",
+      "bitmap": "fw==",
+      "encodedSha256": "8c23b1a8c7366f471982938c0aff74383ed56ca0890b0cf722f79ebf892e25f5",
+      "origin": "ITU-T T.4 table 5 / T.6 table 4 exhaustive exit codes"
+    },
+    {
+      "name": "uncompressed-g3-exit-2-1",
+      "width": 8,
+      "height": 1,
+      "params": {
+        "K": 0,
+        "Columns": 8,
+        "Rows": 1,
+        "EndOfBlock": false,
+        "BlackIs1": false
+      },
+      "encoded": "APgGYA==",
+      "bitmap": "YA==",
+      "encodedSha256": "6396f28af848c3d54534be7e7522ac6a5c7bfec409c551598e97ad2e22b6a4b2",
+      "origin": "ITU-T T.4 table 5 / T.6 table 4 exhaustive exit codes"
+    },
+    {
+      "name": "uncompressed-g3-exit-3-0",
+      "width": 8,
+      "height": 1,
+      "params": {
+        "K": 0,
+        "Columns": 8,
+        "Rows": 1,
+        "EndOfBlock": false,
+        "BlackIs1": false
+      },
+      "encoded": "APgCsA==",
+      "bitmap": "fw==",
+      "encodedSha256": "54c27528f09c853e896da0cd786baae3d63acff29e334420a9368def5ac53d04",
+      "origin": "ITU-T T.4 table 5 / T.6 table 4 exhaustive exit codes"
+    },
+    {
+      "name": "uncompressed-g3-exit-3-1",
+      "width": 8,
+      "height": 1,
+      "params": {
+        "K": 0,
+        "Columns": 8,
+        "Rows": 1,
+        "EndOfBlock": false,
+        "BlackIs1": false
+      },
+      "encoded": "APgDYA==",
+      "bitmap": "cA==",
+      "encodedSha256": "c6ff1df17172438c65606da8aaf72dd7d68b6df6c0822e32fad1d77f0becddec",
+      "origin": "ITU-T T.4 table 5 / T.6 table 4 exhaustive exit codes"
+    },
+    {
+      "name": "uncompressed-g3-exit-4-0",
+      "width": 8,
+      "height": 1,
+      "params": {
+        "K": 0,
+        "Columns": 8,
+        "Rows": 1,
+        "EndOfBlock": false,
+        "BlackIs1": false
+      },
+      "encoded": "APgBQA==",
+      "bitmap": "fw==",
+      "encodedSha256": "bdfc757c28f5f999f921e47f5bf234f4cd12ce39d675e928c8018f89ca904148",
+      "origin": "ITU-T T.4 table 5 / T.6 table 4 exhaustive exit codes"
+    },
+    {
+      "name": "uncompressed-g3-exit-4-1",
+      "width": 8,
+      "height": 1,
+      "params": {
+        "K": 0,
+        "Columns": 8,
+        "Rows": 1,
+        "EndOfBlock": false,
+        "BlackIs1": false
+      },
+      "encoded": "APgBwA==",
+      "bitmap": "eA==",
+      "encodedSha256": "b6d4254a3b4a5396e1d0178ddb890f4353eba832838b5df04bdea15492dca3e2",
+      "origin": "ITU-T T.4 table 5 / T.6 table 4 exhaustive exit codes"
+    },
+    {
+      "name": "uncompressed-g4-exit-0-0",
+      "width": 8,
+      "height": 1,
+      "params": {
+        "K": -1,
+        "Columns": 8,
+        "Rows": 1,
+        "EndOfBlock": true,
+        "BlackIs1": false
+      },
+      "encoded": "A+BQAQAQ",
+      "bitmap": "fw==",
+      "encodedSha256": "614d876e1ef6be097a3944ac9aeaeccd789633b61f1ca70ca4fdaf4958862900",
+      "origin": "ITU-T T.4 table 5 / T.6 table 4 exhaustive exit codes"
+    },
+    {
+      "name": "uncompressed-g4-exit-0-1",
+      "width": 8,
+      "height": 1,
+      "params": {
+        "K": -1,
+        "Columns": 8,
+        "Rows": 1,
+        "EndOfBlock": true,
+        "BlackIs1": false
+      },
+      "encoded": "A+BwAQAQ",
+      "bitmap": "AA==",
+      "encodedSha256": "1ce81ccda955ccdf3762d6955dd3c20705a279661fd27f910ee27f63b35d2d82",
+      "origin": "ITU-T T.4 table 5 / T.6 table 4 exhaustive exit codes"
+    },
+    {
+      "name": "uncompressed-g4-exit-1-0",
+      "width": 8,
+      "height": 1,
+      "params": {
+        "K": -1,
+        "Columns": 8,
+        "Rows": 1,
+        "EndOfBlock": true,
+        "BlackIs1": false
+      },
+      "encoded": "A+AoAIAI",
+      "bitmap": "fw==",
+      "encodedSha256": "747bc0f44f22c204a46788b8bd0b843e930d8692fe3de72881074c80bfe5a765",
+      "origin": "ITU-T T.4 table 5 / T.6 table 4 exhaustive exit codes"
+    },
+    {
+      "name": "uncompressed-g4-exit-1-1",
+      "width": 8,
+      "height": 1,
+      "params": {
+        "K": -1,
+        "Columns": 8,
+        "Rows": 1,
+        "EndOfBlock": true,
+        "BlackIs1": false
+      },
+      "encoded": "A+A4AIAI",
+      "bitmap": "QA==",
+      "encodedSha256": "307f221ba585a86dfbde3e35b1aa9542709762c488fa2ffd24da9233ce4a9aa8",
+      "origin": "ITU-T T.4 table 5 / T.6 table 4 exhaustive exit codes"
+    },
+    {
+      "name": "uncompressed-g4-exit-2-0",
+      "width": 8,
+      "height": 1,
+      "params": {
+        "K": -1,
+        "Columns": 8,
+        "Rows": 1,
+        "EndOfBlock": true,
+        "BlackIs1": false
+      },
+      "encoded": "A+AUAEAE",
+      "bitmap": "fw==",
+      "encodedSha256": "8e336f63dfa2e7fc818a6af9e7185c0b6e529965205991ecefc6b1cfd8c7b710",
+      "origin": "ITU-T T.4 table 5 / T.6 table 4 exhaustive exit codes"
+    },
+    {
+      "name": "uncompressed-g4-exit-2-1",
+      "width": 8,
+      "height": 1,
+      "params": {
+        "K": -1,
+        "Columns": 8,
+        "Rows": 1,
+        "EndOfBlock": true,
+        "BlackIs1": false
+      },
+      "encoded": "A+AcAEAE",
+      "bitmap": "YA==",
+      "encodedSha256": "5a97f984b47eb568b6414975776842a644a197345e351e8f2017d6237c35a20b",
+      "origin": "ITU-T T.4 table 5 / T.6 table 4 exhaustive exit codes"
+    },
+    {
+      "name": "uncompressed-g4-exit-3-0",
+      "width": 8,
+      "height": 1,
+      "params": {
+        "K": -1,
+        "Columns": 8,
+        "Rows": 1,
+        "EndOfBlock": true,
+        "BlackIs1": false
+      },
+      "encoded": "A+AKACAC",
+      "bitmap": "fw==",
+      "encodedSha256": "fb11dc43e9344b4d3c7ef5f94e973d148a46748a117db8cf2b596b2b2d3818ff",
+      "origin": "ITU-T T.4 table 5 / T.6 table 4 exhaustive exit codes"
+    },
+    {
+      "name": "uncompressed-g4-exit-3-1",
+      "width": 8,
+      "height": 1,
+      "params": {
+        "K": -1,
+        "Columns": 8,
+        "Rows": 1,
+        "EndOfBlock": true,
+        "BlackIs1": false
+      },
+      "encoded": "A+AOACAC",
+      "bitmap": "cA==",
+      "encodedSha256": "5b617a994753c73c01cf10208197539e92e1c29d8970d572ff1c2826f21c2db4",
+      "origin": "ITU-T T.4 table 5 / T.6 table 4 exhaustive exit codes"
+    },
+    {
+      "name": "uncompressed-g4-exit-4-0",
+      "width": 8,
+      "height": 1,
+      "params": {
+        "K": -1,
+        "Columns": 8,
+        "Rows": 1,
+        "EndOfBlock": true,
+        "BlackIs1": false
+      },
+      "encoded": "A+AFABAB",
+      "bitmap": "fw==",
+      "encodedSha256": "f12b774cde2a64f2436e701ff9dbd3d81bddcc0553699e5b9995876b85c8b15d",
+      "origin": "ITU-T T.4 table 5 / T.6 table 4 exhaustive exit codes"
+    },
+    {
+      "name": "uncompressed-g4-exit-4-1",
+      "width": 8,
+      "height": 1,
+      "params": {
+        "K": -1,
+        "Columns": 8,
+        "Rows": 1,
+        "EndOfBlock": true,
+        "BlackIs1": false
+      },
+      "encoded": "A+AHABAB",
+      "bitmap": "eA==",
+      "encodedSha256": "811ee9428412bb272e74dddb1f58eccf5f56babf0f460eb39de50b977cd0b3cb",
+      "origin": "ITU-T T.4 table 5 / T.6 table 4 exhaustive exit codes"
+    }
+  ]
+}

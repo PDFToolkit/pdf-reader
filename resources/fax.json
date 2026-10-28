@@ -1,0 +1,66 @@
+{
+  "mechanism": "CCITTFaxDecode",
+  "references": [
+    {
+      "document": "ISO_32000-2_sponsored_EC3.pdf",
+      "sha256": "90f4b666d46405dd62630a98d514158b4de5304b749523c4081680ac4fe2e230",
+      "physicalPdfPages": [
+        58,
+        59
+      ],
+      "clauses": [
+        "7.4.6",
+        "Table 11"
+      ]
+    },
+    {
+      "document": "ITU-T T.4 (04/1999)",
+      "sha256": "96a19346960beef2ce08d58bbb1e90c2e93a229c68d2490f7b6b6f945e8a933c",
+      "physicalPdfPages": [
+        18,
+        19
+      ],
+      "clauses": [
+        "4.2.1–4.2.4",
+        "Tables 4–5"
+      ],
+      "url": "https://www.itu.int/rec/dologin_pub.asp?id=T-REC-T.4-199904-S%21%21PDF-E&lang=e&type=items"
+    },
+    {
+      "document": "ITU-T T.6 (11/1988)",
+      "sha256": "8ccbe2d203e03ee2ac37478d50d2d946bab49dfb45376eb0f773009d183a7767",
+      "physicalPdfPages": [
+        10,
+        11
+      ],
+      "clauses": [
+        "2.3.1",
+        "2.4.1.2",
+        "Table 4"
+      ],
+      "url": "https://www.itu.int/rec/dologin_pub.asp?id=T-REC-T.6-198811-I%21%21PDF-E&lang=e&type=items"
+    }
+  ],
+  "implementation": [
+    "src/Filters/CcittFaxBits.php",
+    "src/Filters/CcittFaxCodes.php",
+    "src/Filters/CcittFaxDecoder.php",
+    "src/Filters/CcittFaxLimits.php",
+    "src/Filters/CcittFaxParameters.php",
+    "src/Filters/CcittFaxRow.php",
+    "src/Filters/CcittFaxRowException.php",
+    "src/Filters/CcittFaxRowReader.php",
+    "src/Filters/CcittFaxUncompressed.php"
+  ],
+  "tests": [
+    "tests/ReadingCcittFaxTest.php",
+    "tools/build_fax_fixtures.py --check",
+    "tools/validate_fax.py"
+  ],
+  "evidence": {
+    "libtiffAndPopplerCases": 14,
+    "normativeUncompressedVectors": 26,
+    "independentUncompressedDecoderOracle": false,
+    "boundary": "Rendering already decoded bytes verifies sample representation, not the uncompressed extension decoder."
+  }
+}

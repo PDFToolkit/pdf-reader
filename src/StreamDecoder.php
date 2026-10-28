@@ -6,6 +6,8 @@ namespace PDF\Reading;
 
 use PDF\Reading\Filters\Ascii85Decoder;
 use PDF\Reading\Filters\AsciiHexDecoder;
+use PDF\Reading\Filters\CcittFaxDecoder;
+use PDF\Reading\Filters\CcittFaxParameters;
 use PDF\Reading\Filters\DecodedBytes;
 use PDF\Reading\Filters\FlateDecoder;
 use PDF\Reading\Filters\IdentityDecoder;
@@ -17,6 +19,7 @@ use PDF\Reading\Security\CryptDecodeParameters;
 use PDF\Syntax\FileStructure\BasicType;
 use PDF\Syntax\Filters\EarlyChange;
 use PDF\Syntax\Object\ArrayType;
+use PDF\Syntax\Object\BooleanType;
 use PDF\Syntax\Object\DictionaryType;
 use PDF\Syntax\Object\IntegerType;
 use PDF\Syntax\Object\NameType;
@@ -85,6 +88,7 @@ final readonly class StreamDecoder
                 'ASCII85Decode' => new Ascii85Decoder($this->limits),
                 'RunLengthDecode' => new RunLengthDecoder($this->limits),
                 'Crypt' => $this->identity($parameter, $resolver, $index),
+                'CCITTFaxDecode' => new CcittFaxDecoder($this->limits, $this->faxParameters($parameter, $resolver)),
                 default => throw new UnsupportedPdfFeature('The stream filter is not supported.'),
             };
             $bytes = $decoder->decode($bytes, $budget);
@@ -152,5 +156,32 @@ final readonly class StreamDecoder
             throw new UnsupportedPdfFeature('A non-Identity Crypt filter requires its authenticated security handler.');
         }
         return new IdentityDecoder($this->limits);
+    }
+
+    private function faxParameters(?BasicType $parameters, ?ObjectResolver $resolver): CcittFaxParameters
+    {
+        $dictionary = $parameters instanceof DictionaryType ? $parameters : new DictionaryType();
+        return new CcittFaxParameters(
+            k: $this->integerParameter($dictionary, 'K', 0, $resolver),
+            columns: $this->integerParameter($dictionary, 'Columns', 1728, $resolver),
+            rows: $this->integerParameter($dictionary, 'Rows', 0, $resolver),
+            endOfLine: $this->booleanParameter($dictionary, 'EndOfLine', false, $resolver),
+            encodedByteAlign: $this->booleanParameter($dictionary, 'EncodedByteAlign', false, $resolver),
+            endOfBlock: $this->booleanParameter($dictionary, 'EndOfBlock', true, $resolver),
+            blackIs1: $this->booleanParameter($dictionary, 'BlackIs1', false, $resolver),
+            damagedRowsBeforeError: $this->integerParameter($dictionary, 'DamagedRowsBeforeError', 0, $resolver),
+        );
+    }
+
+    private function booleanParameter(DictionaryType $dictionary, string $key, bool $default, ?ObjectResolver $resolver): bool
+    {
+        $value = $this->resolved($dictionary->get($key), $resolver);
+        if ($value === null || $value instanceof NullType) {
+            return $default;
+        }
+        if (!$value instanceof BooleanType) {
+            throw new ParseException('Stream parameter ' . $key . ' must be boolean.');
+        }
+        return $value->value;
     }
 }

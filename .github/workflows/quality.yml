@@ -32,6 +32,7 @@ jobs:
       - run: composer audit --locked
       - run: composer check
       - run: python -m pip install --require-hashes -r tools/source-mac-validation-requirements.txt
+      - run: sudo apt-get update && sudo apt-get install -y poppler-utils
       - uses: ./.github/actions/setup-qpdf
       - name: Validate the independent PDF fixtures
         run: python tools/validate_reader_fixtures.py
@@ -39,6 +40,11 @@ jobs:
         run: python tools/validate_page_tree_fixture.py
       - name: Compare LZW and packed predictors with qpdf
         run: python tools/validate_filter_cases.py
+      - name: Validate CCITT fax samples and independent PDF rendering
+        run: |
+          python tools/build_fax_fixtures.py --check
+          mkdir -p _build/fax
+          python tools/validate_fax.py --report _build/fax/report.json
       - name: Compare standard Identity crypt streams with qpdf
         run: python tools/validate_identity_filters.py
       - name: Compare explicit external stream data with independent codecs

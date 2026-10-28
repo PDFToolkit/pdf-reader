@@ -114,7 +114,7 @@ External-file streams require an explicit `ExternalStreamSource`; see the [exter
 | `PredictorDecoder` | Reconstructs TIFF or PNG rows after Flate or LZW. PNG row tags identify the applied algorithm. |
 | `DecodedBytes` | Accumulator checking the output limit and cumulative budget before retaining a slice. |
 
-DCTDecode, JPXDecode, CCITTFaxDecode and JBIG2Decode are not implemented.
+[CCITTFaxDecode](fax.md) supports MH/MR/MMR and the T.4/T.6 uncompressed extension with bounded recovery. DCTDecode, JPXDecode and JBIG2Decode are not implemented.
 The standard Crypt/Identity filter also works without an encryption dictionary. It must be first, validates the optional Type/Name parameters and charges decoded-byte budgets. Other Crypt filters require the selected authenticated document context, before codecs. ISO 32000-2 Tables 14 and 26 (retained EC3 physical pages 67–68, 107) define these contracts; `tools/validate_identity_filters.py` compares four independently produced PDFs with qpdf. Structural reading of an image stream may therefore succeed
 while a decoding request is rejected.
 
