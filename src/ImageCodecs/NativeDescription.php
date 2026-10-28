@@ -12,7 +12,7 @@ final readonly class NativeDescription
     public int $rowBytes;
     public int $byteLength;
 
-    public function __construct(public int $width, public int $height, public int $components, public int $precision, public ColorInformation $color, CodecRequest $request, public ?int $colorTransform = null, ?InspectionBudget $inspection = null)
+    public function __construct(public int $width, public int $height, public int $components, public int $precision, public ColorInformation $color, CodecRequest $request, public ?int $colorTransform = null, ?InspectionBudget $inspection = null, public int $minimumGhostscriptRevision = 0)
     {
         $limits = $request->limits;
         if ($width < 1 || $height < 1 || $components < 1) {

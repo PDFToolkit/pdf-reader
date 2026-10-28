@@ -109,14 +109,15 @@ class ImageCodecOracle:
             for metadata in ('color','channelDefinitions','chromaKey'):
                 assert decoded['auto'][case['file']][metadata] == decoded['php'][case['file']][metadata], (case['file'],metadata)
             native = decoded['native'][case['file']]
-            if case['native'] and self.args.require_native:
+            native_qualified = case['native'] and environment['native']['available'] and environment['native'].get('revision', 0) >= case.get('nativeMinimumRevision', 0)
+            if native_qualified and self.args.require_native:
                 self.check(case, native)
                 assert decoded['auto'][case['file']]['backend'] == 'ghostscript'
-            elif not case['native']:
+            elif not native_qualified:
                 assert native.get('error') == 'PDF\\Reading\\ImageCodecs\\CodecUnavailable', native
                 assert decoded['auto'][case['file']]['backend'] == 'php'
             checks.append({'file':case['file'],'sha256':case['sha256'],'backend':decoded['auto'][case['file']]['backend'],
-                           'planes':'exact','nativeProfile':case['native'],'evidence':case.get('oracle','Explicit JBIG2 bitmap and external corpus qualification')})
+                           'planes':'exact','nativeProfile':case['native'],'nativeQualified':native_qualified,'nativeMinimumRevision':case.get('nativeMinimumRevision',0),'evidence':case.get('oracle','Explicit JBIG2 bitmap and external corpus qualification')})
         (ROOT/'_build').mkdir(exist_ok=True)
         live = []
         with tempfile.TemporaryDirectory(prefix='image-codecs-', dir=ROOT/'_build') as temporary:

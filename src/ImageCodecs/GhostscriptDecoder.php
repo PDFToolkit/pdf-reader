@@ -22,7 +22,9 @@ final readonly class GhostscriptDecoder implements Decoder
         };
         $parameters = $description->colorTransform === null ? '' : '/ColorTransform ' . $description->colorTransform;
         $input = $request->bytes;
-        $prefix = '/' . $request->filter . ' /Filter resourcestatus { pop pop } '
+        $prefix = 'revision ' . $description->minimumGhostscriptRevision . ' lt '
+            . '{ (%stderr) (w) file (PDFTOOLKIT_CODEC_UNAVAILABLE) writestring quit } if '
+            . '/' . $request->filter . ' /Filter resourcestatus { pop pop } '
             . '{ (%stderr) (w) file (PDFTOOLKIT_CODEC_UNAVAILABLE) writestring quit } ifelse '
             . '(%stdin) (r) file /f exch def ';
         if ($request->filter === 'JBIG2Decode' && $request->globals !== null && $request->globals !== '') {

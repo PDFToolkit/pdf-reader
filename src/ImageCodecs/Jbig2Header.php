@@ -27,7 +27,18 @@ final class Jbig2Header
         if ($this->width === null || $this->height === null) {
             throw new ParseException('Embedded JBIG2 has no page information.');
         }
-        return new NativeDescription($this->width, $this->height, 1, 1, new ColorInformation('Gray'), $request, inspection: $this->inspection);
+        // Before 10.03.0, Ghostscript's public filter did not complete a page
+        // when the EOF notification arrived after the final input bytes.
+        return new NativeDescription(
+            $this->width,
+            $this->height,
+            1,
+            1,
+            new ColorInformation('Gray'),
+            $request,
+            inspection: $this->inspection,
+            minimumGhostscriptRevision: $this->endedPage ? 0 : 10030
+        );
     }
 
     private function segments(string $bytes, bool $globals, CodecRequest $request): void

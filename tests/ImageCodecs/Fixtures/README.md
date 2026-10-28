@@ -26,3 +26,5 @@ python tools/validate_image_codecs.py --php php --require-native --report _build
 The oracle compares actual decoded planes, ICC/channel metadata, native selection, pypdf stream/decryption binding, qpdf structure, and live Pillow/Poppler results. JPEG rounding tolerances are explicit. No fixture count proves universal codec conformance.
 
 L’oracle compare les plans décodés, métadonnées ICC/canaux, sélection native, liaison et déchiffrement des flux par pypdf, structure qpdf et résultats réels Pillow/Poppler. Les tolérances JPEG sont explicites. Aucun nombre de fixtures ne prouve une conformité universelle.
+
+The no-end-of-page globals case declares `nativeMinimumRevision=10030`: the oracle requires exact native samples with Ghostscript ≥10.03.0, and explicit native unavailability plus exact PHP fallback on older versions. / Le cas globals sans fin de page fixe `nativeMinimumRevision=10030` : l’oracle exige les échantillons natifs exacts avec Ghostscript ≥10.03.0, et une indisponibilité native explicite avec repli PHP exact sur les versions antérieures.

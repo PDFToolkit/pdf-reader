@@ -414,7 +414,8 @@
       "native": true,
       "source": "pdftoolkit/pdf-codecs:tests/Jbig2/Fixtures/text-c0-tr0-op0.jb2; page-zero dictionary split without entropy changes",
       "globals": "text-globals.globals",
-      "globalsSha256": "52018dfbe68c29d5e7888910c08bb480c6196164c6652cd5696943bb74226227"
+      "globalsSha256": "52018dfbe68c29d5e7888910c08bb480c6196164c6652cd5696943bb74226227",
+      "nativeMinimumRevision": 10030
     },
     {
       "file": "icc-gray.jp2",

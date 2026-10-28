@@ -101,7 +101,7 @@ final readonly class NativeProcess
                 }
             }
             if ($diagnostics === 'PDFTOOLKIT_CODEC_UNAVAILABLE') {
-                throw new CodecUnavailable('The installed Ghostscript lacks the required image filter.');
+                throw new CodecUnavailable('The installed Ghostscript lacks the required image filter or revision for this profile.');
             }
             if ($request->filter === 'JPXDecode') {
                 // These fixed OpenJPEG notices describe unchanged raw components.

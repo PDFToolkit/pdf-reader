@@ -99,7 +99,7 @@ final class ImageProfileTest extends TestCase
             self::markTestSkipped('Ghostscript and prlimit required.');
         }
         $case = json_decode(file_get_contents(__DIR__ . '/Fixtures/globals-pdf.json'), true, flags: JSON_THROW_ON_ERROR);
-        foreach ([new GhostscriptDecoder(), new PhpDecoder()] as $backend) {
+        foreach ([new AutomaticDecoder(), new PhpDecoder()] as $backend) {
             foreach (['globals.pdf', 'globals-encrypted.pdf'] as $file) {
                 $document = (new DocumentReader(authentication: new StandardPasswordAuthentication(new PreparedPassword('user')), imageDecoder: $backend))
                     ->read(new FileBytes(file_get_contents(__DIR__ . '/Fixtures/' . $file)));
@@ -112,6 +112,27 @@ final class ImageProfileTest extends TestCase
                 }
             }
         }
+    }
+
+    public function testNativeJbig2WithoutEndOfPageRequiresEofCompletionSupport(): void
+    {
+        $case = ['filter' => 'JBIG2Decode', 'file' => 'text-globals.jb2', 'globals' => 'text-globals.globals'];
+        $request = $this->request($case);
+        $description = (new Jbig2Header())->read($request);
+        self::assertSame(10030, $description->minimumGhostscriptRevision);
+        $complete = (new Jbig2Header())->read($this->request(['filter' => 'JBIG2Decode', 'file' => 'generic-t0-tp0.jb2']));
+        self::assertSame(0, $complete->minimumGhostscriptRevision);
+        try {
+            $tools = NativeTools::discover();
+        } catch (CodecUnavailable) {
+            self::markTestSkipped('Ghostscript and prlimit required.');
+        }
+        $revision = (int) trim((new NativeProcess($tools))->run('revision == quit', '', $request, 1024));
+        if ($revision < $description->minimumGhostscriptRevision) {
+            $this->expectException(CodecUnavailable::class);
+        }
+        $image = (new GhostscriptDecoder($tools))->decode($request);
+        self::assertSame('6a4875ddaceaa91fb3369f0f6d962f77442daf1b1d97733457d12bcabdf79441', hash('sha256', $image->components[0]->bytes));
     }
 
     public function testMissingNativeFilterIsAFeatureFailureEvenWithLargeUnreadInput(): void
