@@ -99,7 +99,7 @@ Resolution is on demand. Opening checks the catalog and xref structures but
 does not visit every object or resource. A defect in an object not loaded yet
 may be reported during a later access. The reader does not repair damaged
 files and rejects unsupported mechanisms, including unverified PDF MACs,
-unknown security handlers and image-specific decompression codecs.
+unknown security handlers and unavailable image-codec profiles. [Image decoding](image-codecs.md) is explicit, with per-image limits, cumulative document budgets and bounded native execution when selected.
 
 Diagnostics and extracted values must not be sent to an HTML page without
 escaping or published without access controls. Data in dictionaries, names

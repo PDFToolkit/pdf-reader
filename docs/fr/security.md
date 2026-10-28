@@ -108,7 +108,7 @@ mais ne visite pas tous les objets ni toutes les ressources. Un défaut dans un
 objet non encore chargé peut être signalé lors d'un accès ultérieur. Le lecteur
 ne répare pas les fichiers endommagés et refuse les mécanismes non pris en
 charge, notamment les PDF MAC non vérifiés, les handlers inconnus
-et les codecs de décompression propres aux images.
+et les profils de codecs image indisponibles. Le [décodage d’image](image-codecs.md) est explicite, avec limites par image, budgets documentaires cumulés et exécution native bornée lorsqu’elle est sélectionnée.
 
 Les diagnostics et valeurs extraites ne doivent pas être envoyés dans une
 page HTML sans échappement ni publiés sans contrôle d'accès. Les données
