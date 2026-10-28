@@ -39,6 +39,8 @@ jobs:
         run: python tools/validate_page_tree_fixture.py
       - name: Compare LZW and packed predictors with qpdf
         run: python tools/validate_filter_cases.py
+      - name: Compare explicit external stream data with independent codecs
+        run: python tools/validate_external_streams.py
       - name: Authenticate independently encrypted Standard-handler PDFs
         run: python tools/validate_authentication.py
       - name: Authenticate independently encrypted Adobe.PubSec PDFs

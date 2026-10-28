@@ -102,6 +102,8 @@ interprète la chaîne `/Filter` et ses `/DecodeParms`. Les noms de filtre compl
 sont utilisés. Un filtre inconnu est refusé au moment du décodage, sans empêcher
 la conservation de ses octets encodés.
 
+Les flux de fichiers externes exigent un `ExternalStreamSource` explicite ; voir le [guide des flux externes](external-streams.md) pour FFilter, acquisition et limites cumulées.
+
 ### Namespace `PDF\Reading\Filters`
 
 | Composant | Rôle |
@@ -124,7 +126,7 @@ tandis que sa demande de décodage est refusée.
 | Composant | Rôle |
 | --- | --- |
 | `ReaderLimits` | Valeur immuable des plafonds, configurables par arguments nommés. Tous doivent être strictement positifs. |
-| `ReadBudget` | Compteurs cumulatifs de valeurs analysées, entrées xref, octets conservés et octets décodés, propres à une lecture. |
+| `ReadBudget` | Compteurs cumulatifs de valeurs analysées, entrées xref, octets conservés, octets décodés et tentatives d’acquisition externe, propres à une lecture. |
 | `ParseException` | Erreur de structure ou de budget ; propriété `offset` facultative pour la position dans les bytes. |
 | `UnsupportedPdfFeature` | Sous-type de `ParseException`, distinguant un mécanisme volontairement non pris en charge. |
 

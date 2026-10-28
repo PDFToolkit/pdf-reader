@@ -36,7 +36,7 @@ des mots de passe, la [vérification des PDF MAC source](source-mac.md) et
 | Données conservées | Budget cumulé des noms, chaînes et octets encodés, contrôlé avant leur conservation ; des vues répétées ou chevauchantes ne peuvent pas multiplier ces copies sans plafond. |
 | ObjStm | Contrôle de `/N`, `/First`, numéros et offsets ; une valeur par tranche ; validation du numéro désigné par l'index xref ; génération zéro et longueur non comprimée. |
 | Décompression | Limite sur chaque sortie, budget cumulé sur toutes les étapes et longueur de chaîne de filtres ; décompression Flate progressive ; refus des données tronquées et des lignes de prédicteur invalides. |
-| Mécanismes externes | Pas d'exécution d'actions PDF ou JavaScript. Le décodage des streams `/F`, `/FFilter` ou `/FDecodeParms` externes est refusé. |
+| Mécanismes externes | Pas d'exécution d'actions PDF ou JavaScript. Les flux externes exigent une capacité applicative explicite ; tentatives, octets acquis et décodage partagent les plafonds configurés. Voir les [flux externes](external-streams.md). |
 | Écriture | Références et streams externes refusent leur sérialisation sans import et remappage ; aucun fichier de sortie n'est ouvert par le lecteur. |
 
 Les tests [ReadingSyntaxTest](../../tests/ReadingSyntaxTest.php),

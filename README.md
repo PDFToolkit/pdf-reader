@@ -45,6 +45,8 @@ prefixes, xref sections, effective objects and Contents provenance under shared
 budgets. Raw inspection precedes separate authentication; it grants no signature
 or modification authority.
 
+External-file data can be supplied through an explicit application object. See the [external stream guide](docs/external-streams.md) for filter selection and bounds.
+
 ## Read pages
 
 Run this example from a reader checkout after `composer install`.
@@ -196,6 +198,7 @@ types before selecting embedded-file encryption. Page and object metadata stay
 protected by their chosen filter; explicit Identity and codec bytes are preserved.
 
 - [Explicit EC3 structural policy](docs/structural-policy.md)
+- [External stream data](docs/external-streams.md)
 - [Physical revision history](docs/revision-history.md)
 - [Architecture and object boundaries](docs/architecture.md)
 - [Pages, inheritance and content streams](docs/pages.md)

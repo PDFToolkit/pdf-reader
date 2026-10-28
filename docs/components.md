@@ -99,6 +99,8 @@ interprets the `/Filter` chain and its `/DecodeParms`. Full filter names are
 used. An unknown filter is rejected at decoding time without preventing its
 encoded bytes from being retained.
 
+External-file streams require an explicit `ExternalStreamSource`; see the [external stream guide](external-streams.md) for FFilter, acquisition and cumulative limits.
+
 ### `PDF\Reading\Filters` namespace
 
 | Component | Role |
@@ -121,7 +123,7 @@ while a decoding request is rejected.
 | Component | Role |
 | --- | --- |
 | `ReaderLimits` | Immutable ceiling values, configurable through named arguments. All must be strictly positive. |
-| `ReadBudget` | Cumulative counters for parsed values, xref entries, retained bytes and decoded bytes, scoped to one read. |
+| `ReadBudget` | Cumulative counters for parsed values, xref entries, retained bytes, decoded bytes and external acquisition attempts, scoped to one read. |
 | `ParseException` | Structure or budget error; optional `offset` property for a position in bytes. |
 | `UnsupportedPdfFeature` | `ParseException` subtype distinguishing a deliberately unsupported mechanism. |
 

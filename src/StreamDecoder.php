@@ -23,22 +23,16 @@ use PDF\Syntax\Object\NullType;
 /** Explicit stream decoding; encoded stream objects retain their original bytes. */
 final readonly class StreamDecoder
 {
-    public function __construct(private ReaderLimits $limits = new ReaderLimits())
+    public function __construct(private ReaderLimits $limits = new ReaderLimits(), private ?ExternalStreamSource $externalStreams = null)
     {
     }
 
     public function decode(EncodedStream $stream, ReadBudget $budget, ?ObjectResolver $resolver = null): string
     {
-        $dictionary = $stream->dictionary();
-        foreach (['F', 'FFilter', 'FDecodeParms'] as $externalKey) {
-            $value = $this->resolved($dictionary->get($externalKey), $resolver);
-            if ($value !== null && !$value instanceof NullType) {
-                throw new UnsupportedPdfFeature('Decoding external-file streams is not supported.');
-            }
-        }
-        $filter = $this->resolved($dictionary->get('Filter'), $resolver);
-        $parameters = $this->resolved($dictionary->get('DecodeParms'), $resolver);
-        $bytes = $stream->encodedBytes();
+        $input = StreamInput::from($stream, $this->limits, $budget, $resolver, $this->externalStreams);
+        $filter = $input->filter;
+        $parameters = $input->parameters;
+        $bytes = $input->bytes;
         if ($filter === null || $filter instanceof NullType) {
             if ($parameters !== null && !$parameters instanceof NullType) {
                 throw new ParseException('DecodeParms requires a Filter entry.');

@@ -20,6 +20,8 @@ final readonly class ReaderLimits
         public int $maxFilters = 16,
         public int $maxParsedValues = 500000,
         public int $maxRetainedBytes = 134217728,
+        public int $maxExternalStreamBytes = 67108864,
+        public int $maxExternalStreamRequests = 64,
     ) {
         foreach (get_object_vars($this) as $limit) {
             if ($limit < 1) {

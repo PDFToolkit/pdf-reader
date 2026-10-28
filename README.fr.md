@@ -47,6 +47,8 @@ préfixes exacts, sections xref, objets effectifs et provenance Contents, avec d
 budgets partagés. L’inspection brute précède toute authentification séparée ;
 elle ne donne aucune autorité de signature ou de modification.
 
+Les données de fichiers externes peuvent être fournies par un objet applicatif explicite. Voir le [guide des flux externes](docs/fr/external-streams.md) pour les filtres et limites.
+
 ## Lire les pages
 
 Cet exemple se lance depuis un checkout du lecteur après `composer install`.
@@ -203,6 +205,7 @@ Les métadonnées de page/objet suivent leur filtre ; Identity explicite et les
 octets des codecs sont préservés.
 
 - [Politique structurelle EC3 explicite](docs/fr/structural-policy.md)
+- [Données de flux externes](docs/fr/external-streams.md)
 - [Historique physique des révisions](docs/fr/revision-history.md)
 - [Architecture et frontières des objets](docs/fr/architecture.md)
 - [Pages, héritage et flux de contenu](docs/fr/pages.md)

@@ -11,6 +11,7 @@ final class ReadBudget
     private int $crossReferenceEntries = 0;
     private int $decodedBytes = 0;
     private int $retainedBytes = 0;
+    private int $externalRequests = 0;
 
     public function __construct(private readonly ReaderLimits $limits)
     {
@@ -22,6 +23,14 @@ final class ReadBudget
             throw new ParseException('The cumulative parsed-value limit was exceeded.');
         }
         ++$this->parsedValues;
+    }
+
+    public function externalRequest(): void
+    {
+        if ($this->externalRequests >= $this->limits->maxExternalStreamRequests) {
+            throw new ParseException('The cumulative external-stream acquisition limit was exceeded.');
+        }
+        ++$this->externalRequests;
     }
 
     public function crossReferences(int $count): void

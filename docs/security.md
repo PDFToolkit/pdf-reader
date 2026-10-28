@@ -33,7 +33,7 @@ preparation, [source PDF MAC verification](source-mac.md), and [public-key authe
 | Retained data | Cumulative budget for names, strings and encoded bytes, checked before retention; repeated or overlapping views cannot multiply copies without a ceiling. |
 | ObjStm | `/N`, `/First`, numbers and offsets checked; one value per slice; number identified by the xref index validated; generation zero and uncompressed length. |
 | Decompression | Limit on each output, cumulative budget across all stages and bounded filter-chain length; incremental Flate decompression; truncated data and invalid predictor rows rejected. |
-| External mechanisms | No execution of PDF or JavaScript actions. Decoding external `/F`, `/FFilter` or `/FDecodeParms` streams is rejected. |
+| External mechanisms | No execution of PDF or JavaScript actions. External streams require an explicit application capability; acquisition attempts, bytes and decoding share configured limits. See [external streams](external-streams.md). |
 | Writing | External references and streams reject serialisation without import and remapping; the reader opens no output file. |
 
 Tests [ReadingSyntaxTest](../tests/ReadingSyntaxTest.php),
