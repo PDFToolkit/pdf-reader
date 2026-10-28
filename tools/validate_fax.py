@@ -53,12 +53,21 @@ def main():
             encoded = base64.b64decode(case['encoded'])
             assert actual == expected, f'{name}: native decoded pixels'
             assert hashlib.sha256(encoded).hexdigest() == case['encodedSha256']
+            prefix = native[name].get('prefix')
+            if case['params'].get('EndOfBlock', True) or case['params'].get('Rows', 0) > 0:
+                assert prefix is not None
+                assert base64.b64decode(prefix['bytes']) == expected, f'{name}: prefix pixels'
+                assert prefix['encodedBytes'] == len(encoded), f'{name}: prefix endpoint'
+                assert prefix['following'] == ' EI q Q after', f'{name}: following bytes retained'
+                assert prefix['rows'] == case['height'], f'{name}: prefix row count'
+            else:
+                assert prefix is None
             source = FIXTURES / f'{name}.pdf'
             assert source.read_bytes() == pdf(case), f'{name}: source reproducibility'
             image = PdfReader(source, strict=True).pages[0]['/Resources']['/XObject']['/Fax']
             assert image._data == encoded, f'{name}: input stream binding'
             run([args.qpdf, '--check', source])
-            item = {'name': name, 'inputSha256': hashlib.sha256(source.read_bytes()).hexdigest(), 'decodedSha256': hashlib.sha256(actual).hexdigest(), 'nativePixels': True, 'qpdf': True}
+            item = {'name': name, 'inputSha256': hashlib.sha256(source.read_bytes()).hexdigest(), 'decodedSha256': hashlib.sha256(actual).hexdigest(), 'nativePixels': True, 'qpdf': True, 'prefixFraming': prefix is not None}
             if 'tiff' in case:
                 assert pixels(FIXTURES / case['tiff'], case) == expected, f'{name}: Pillow/libtiff source pixels'
                 rendered = directory / (name + '-compressed')

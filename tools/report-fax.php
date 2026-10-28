@@ -2,7 +2,12 @@
 
 declare(strict_types=1);
 
+use PDF\Reading\ByteCursor;
 use PDF\Reading\DocumentReader;
+use PDF\Reading\Filters\CcittFaxDecoder;
+use PDF\Reading\Filters\CcittFaxParameters;
+use PDF\Reading\ReadBudget;
+use PDF\Reading\ReaderLimits;
 use PDF\Reading\EncodedStream;
 use PDF\Reading\FileBytes;
 use PDF\Reading\PageTreeReader;
@@ -25,6 +30,26 @@ foreach ($manifest['cases'] as $case) {
         throw new RuntimeException('Invalid fax image.');
     }
     $bytes = $document->streamData($image);
-    $output[$case['name']] = ['bytes' => base64_encode($bytes), 'sha256' => hash('sha256', $bytes)];
+    $entry = ['bytes' => base64_encode($bytes), 'sha256' => hash('sha256', $bytes)];
+    if (($case['params']['EndOfBlock'] ?? true) || ($case['params']['Rows'] ?? 0) > 0) {
+        $parameters = [];
+        foreach ($case['params'] as $key => $value) {
+            $parameters[lcfirst($key)] = $value;
+        }
+        $encoded = base64_decode($case['encoded'], true);
+        if (!is_string($encoded)) {
+            throw new RuntimeException('Invalid fixture encoding.');
+        }
+        $cursor = new ByteCursor('before' . $encoded . ' EI q Q after', 6);
+        $prefix = (new CcittFaxDecoder(parameters: new CcittFaxParameters(...$parameters)))
+            ->decodePrefix($cursor, new ReadBudget(new ReaderLimits()));
+        $entry['prefix'] = [
+            'bytes' => base64_encode($prefix->samples),
+            'encodedBytes' => $prefix->encodedBytes,
+            'following' => $cursor->read($cursor->remaining()),
+            'rows' => $prefix->rows,
+        ];
+    }
+    $output[$case['name']] = $entry;
 }
 echo json_encode($output, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT) . "\n";

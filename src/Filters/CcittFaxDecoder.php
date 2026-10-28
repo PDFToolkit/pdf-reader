@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PDF\Reading\Filters;
 
+use PDF\Reading\ByteCursor;
 use PDF\Reading\ParseException;
 use PDF\Reading\ReadBudget;
 use PDF\Reading\ReaderLimits;
@@ -20,12 +21,29 @@ final readonly class CcittFaxDecoder implements Decoder
 
     public function decode(string $bytes, ReadBudget $budget): string
     {
+        if (strlen($bytes) > $this->limits->maxFileBytes) {
+            throw new ParseException('CCITT input exceeds the configured byte limit.');
+        }
+        return $this->process(new ByteCursor($bytes), $budget, false)->samples;
+    }
+
+    /** Decode one self-delimiting prefix and leave the cursor at its first following byte. */
+    public function decodePrefix(ByteCursor $cursor, ReadBudget $budget): CcittFaxPrefix
+    {
+        if (!$this->parameters->endOfBlock && $this->parameters->rows === 0) {
+            throw new ParseException('A CCITT prefix needs EndOfBlock or a positive Rows count.');
+        }
+        return $this->process($cursor, $budget, true);
+    }
+
+    private function process(ByteCursor $cursor, ReadBudget $budget, bool $prefix): CcittFaxPrefix
+    {
         $settings = $this->parameters;
         $rowBytes = $settings->rowBytes();
-        if ($rowBytes > $this->limits->maxDecodedStreamBytes || strlen($bytes) > $this->limits->maxFileBytes) {
+        if ($rowBytes > $this->limits->maxDecodedStreamBytes || $cursor->remaining() > $this->limits->maxFileBytes) {
             throw new ParseException('CCITT input or scanline exceeds the configured byte limit.');
         }
-        $bits = new CcittFaxBits($bytes, $this->workLimits);
+        $bits = new CcittFaxBits($cursor, $this->workLimits);
         $reader = new CcittFaxRowReader($this->workLimits);
         $reference = new CcittFaxRow($settings->columns);
         $uncompressed = new CcittFaxUncompressed();
@@ -35,15 +53,14 @@ final readonly class CcittFaxDecoder implements Decoder
         $synchronized = false;
         for ($row = 0; ; ++$row) {
             if (!$settings->endOfBlock && (($settings->rows > 0 && $row === $settings->rows) || !$uncompressed->active() && $bits->exhausted())) {
-                return $output;
+                return $this->complete($output, $row, $bits, $reader, $prefix);
             }
             if (!$uncompressed->active() && !$synchronized && $settings->encodedByteAlign) {
                 $bits->align();
             }
             if (!$uncompressed->active() && $settings->k < 0 && $bits->peek(24) === 0x001001) {
                 $bits->read(24);
-                $bits->finish();
-                return $output;
+                return $this->complete($output, $row, $bits, $reader, $prefix);
             }
             $synchronized = false;
             $rowStart = $bits->position();
@@ -65,8 +82,7 @@ final readonly class CcittFaxDecoder implements Decoder
                                 throw new CcittFaxRowException('CCITT RTC requires one-dimensional tag bits.');
                             }
                         }
-                        $bits->finish();
-                        return $output;
+                        return $this->complete($output, $row, $bits, $reader, $prefix);
                     }
                     $oneDimensional = $settings->k === 0 || $settings->k > 0 && $tag === 1;
                 } elseif ($settings->endOfLine) {
@@ -103,5 +119,20 @@ final readonly class CcittFaxDecoder implements Decoder
             $reference = $next;
             $previousDamaged = $isDamaged;
         }
+    }
+
+    private function complete(string $samples, int $rows, CcittFaxBits $bits, CcittFaxRowReader $reader, bool $prefix): CcittFaxPrefix
+    {
+        try {
+            if ($prefix) {
+                $bits->align();
+            } else {
+                $bits->finish();
+            }
+        } catch (CcittFaxRowException $error) {
+            // Codec termination/padding is not a damaged image row eligible for recovery.
+            throw new ParseException($error->getMessage());
+        }
+        return new CcittFaxPrefix($samples, intdiv($bits->position(), 8), $rows, $bits->work(), $reader->transitions());
     }
 }

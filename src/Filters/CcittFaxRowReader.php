@@ -9,10 +9,17 @@ use PDF\Reading\ReadBudget;
 use PDF\Reading\UnsupportedPdfFeature;
 
 /** T.4/T.6 Huffman, pass, horizontal and vertical scanline decoding. */
-final readonly class CcittFaxRowReader
+final class CcittFaxRowReader
 {
-    public function __construct(private CcittFaxLimits $limits, private CcittFaxCodes $codes = new CcittFaxCodes())
+    private int $transitions = 0;
+
+    public function __construct(private readonly CcittFaxLimits $limits, private readonly CcittFaxCodes $codes = new CcittFaxCodes())
     {
+    }
+
+    public function transitions(): int
+    {
+        return $this->transitions;
     }
 
     public function read(CcittFaxBits $bits, int $columns, CcittFaxRow $reference, bool $oneDimensional, ReadBudget $budget, CcittFaxUncompressed $uncompressed): CcittFaxRow
@@ -139,6 +146,7 @@ final readonly class CcittFaxRowReader
             throw new ParseException('CCITT exceeds its scanline transition budget.');
         }
         $budget->retained(32);
+        ++$this->transitions;
         $changes[] = $position;
     }
 }

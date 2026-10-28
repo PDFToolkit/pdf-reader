@@ -31,6 +31,14 @@ $pixels = $decoder->decode($encoded, $documentBudget);
 
 Ces classes appartiennent à `PDF\Reading\Filters` ; `$documentBudget` est un `PDF\Reading\ReadBudget`. Chaque invocation possède son état mutable de bits/lignes ; la configuration immuable est réutilisable.
 
+## Cadrer un préfixe sans deviner les délimiteurs PDF
+
+`CcittFaxDecoder::decodePrefix(ByteCursor, ReadBudget)` utilise le même automate T.4/T.6 que `decode()`. Il consomme exactement un préfixe encodé dont la fin est déterminable et son remplissage zéro jusqu’à l’octet suivant. Le résultat immuable `CcittFaxPrefix` expose `samples`, `encodedBytes`, `rows`, `bitReads` et `transitions` ; le curseur fourni reste au premier octet suivant. Son décalage initial est pris en charge sans copier le contenu restant. L’anticipation restaure le curseur tout en conservant la charge de travail.
+
+Un préfixe exige `EndOfBlock=true` ou `Rows` positif. Sans l’un de ces critères, seul un flux complet borné séparément permet d’établir l’épuisement ; l’API de préfixe refuse de deviner une frontière. Reader ne recherche jamais `EI` et n’interprète pas la syntaxe du contenu PDF. L’appelant valide son propre délimiteur suivant. Les octets zéro après la première frontière alignée restent à l’appelant ; `decode()` vérifie toujours l’entrée complète et n’accepte que le remplissage zéro autorisé après terminaison, même lorsque `Rows` fournit la frontière.
+
+Chaque appel possède son état mutable. Octets décodés, stockage des transitions et anticipation conservent les mêmes bornes d’octets/travail. Les compteurs du résultat permettent au parseur contenant de débiter également son budget cumulatif de document. L’oracle JSON vérifie les échantillons et décalages exacts des 39 cas du corpus dont la fin est déterminable ; le cas restant `Rows=0, EndOfBlock=false` reste pris en charge uniquement comme flux complet. Les régressions couvrent aussi `EI` adjacent, des octets `EI` littéraux dans des pixels non compressés, un remplissage invalide et l’anticipation bornée.
+
 ## Preuves et limites
 
 `tools/build_fax_fixtures.py` conserve 40 petits flux d'images PDF synthétiques : 14 cas encodés indépendamment par libtiff (MH, G3, G4, alignement, largeurs étroites/non multiples de huit, longues séquences de prolongation, EOL facultatif, terminaison et équivalence des K positifs) et 26 vecteurs explicites des tables ITU pour le mode non compressé. Les TIFF originaux, empreintes des données encodées et bitmaps attendus sont dans `tests/Fixtures/fax`. Le générateur n'importe aucun décodeur PHP.

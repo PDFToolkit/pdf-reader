@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PDF\Reading\Filters;
 
+use PDF\Reading\ByteCursor;
 use PDF\Reading\ParseException;
 
 /** MSB-first bounded view; lookahead restores position but still consumes work. */
@@ -11,9 +12,20 @@ final class CcittFaxBits
 {
     private int $position = 0;
     private int $work = 0;
+    private int $buffer = 0;
+    private int $bufferBits = 0;
+    private readonly ByteCursor $cursor;
+    private readonly int $start;
 
-    public function __construct(private readonly string $bytes, private readonly CcittFaxLimits $limits)
+    public function __construct(string|ByteCursor $bytes, private readonly CcittFaxLimits $limits)
     {
+        $this->cursor = is_string($bytes) ? new ByteCursor($bytes) : $bytes;
+        $this->start = $this->cursor->position();
+    }
+
+    public function work(): int
+    {
+        return $this->work;
     }
 
     public function position(): int
@@ -23,7 +35,7 @@ final class CcittFaxBits
 
     public function remaining(): int
     {
-        return strlen($this->bytes) * 8 - $this->position;
+        return $this->cursor->remaining() * 8 + $this->bufferBits;
     }
 
     /** @phpstan-impure */
@@ -38,7 +50,12 @@ final class CcittFaxBits
         $this->work += $count;
         $value = 0;
         for ($index = 0; $index < $count; ++$index, ++$this->position) {
-            $value = ($value << 1) | ((ord($this->bytes[intdiv($this->position, 8)]) >> (7 - $this->position % 8)) & 1);
+            if ($this->bufferBits === 0) {
+                $this->buffer = ord($this->cursor->read(1));
+                $this->bufferBits = 8;
+            }
+            --$this->bufferBits;
+            $value = ($value << 1) | (($this->buffer >> $this->bufferBits) & 1);
         }
         return $value;
     }
@@ -49,10 +66,16 @@ final class CcittFaxBits
             return null;
         }
         $position = $this->position;
+        $cursor = $this->cursor->position();
+        $buffer = $this->buffer;
+        $bufferBits = $this->bufferBits;
         try {
             return $this->read($count);
         } finally {
             $this->position = $position;
+            $this->cursor->seek($cursor);
+            $this->buffer = $buffer;
+            $this->bufferBits = $bufferBits;
         }
     }
 
@@ -100,19 +123,29 @@ final class CcittFaxBits
     /** Finds the next synchronization pattern without treating codec padding or budgets as repair permission. */
     public function recover(int $rowStart): void
     {
-        $this->position = $rowStart;
+        $this->seek($rowStart);
         $zeros = 0;
         for ($searched = 0; $searched < $this->limits->maxRecoveryBits && $this->remaining() > 0; ++$searched) {
             if ($this->read() === 0) {
                 ++$zeros;
             } else {
                 if ($zeros >= 11) {
-                    $this->position -= 12;
+                    $this->seek($this->position - 12);
                     return;
                 }
                 $zeros = 0;
             }
         }
         throw new ParseException('CCITT damaged-row recovery did not find EOL within its bounded search.');
+    }
+
+    private function seek(int $position): void
+    {
+        $this->cursor->seek($this->start + intdiv($position, 8));
+        $this->position = intdiv($position, 8) * 8;
+        $this->bufferBits = 0;
+        if ($position % 8 !== 0) {
+            $this->read($position % 8);
+        }
     }
 }

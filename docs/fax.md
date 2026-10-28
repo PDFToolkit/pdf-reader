@@ -31,6 +31,14 @@ $pixels = $decoder->decode($encoded, $documentBudget);
 
 The classes are in `PDF\Reading\Filters`; `$documentBudget` is a `PDF\Reading\ReadBudget`. Each invocation owns its mutable bit/row state; immutable configuration is reusable.
 
+## Frame a prefix without guessing PDF delimiters
+
+`CcittFaxDecoder::decodePrefix(ByteCursor, ReadBudget)` uses the same T.4/T.6 automaton as `decode()`. It consumes exactly one self-delimiting encoded prefix and its zero padding to the next byte. The immutable `CcittFaxPrefix` result exposes `samples`, `encodedBytes`, `rows`, `bitReads` and `transitions`; the supplied cursor remains at the first following byte. Its existing offset is supported without copying the remaining content. Lookahead restores the cursor while retaining its work charge.
+
+A prefix requires `EndOfBlock=true` or a positive `Rows` count. Without either, only a separately bounded whole stream can establish exhaustion; the prefix API refuses to guess a boundary. Reader never searches for `EI` or interprets PDF content syntax. The caller validates its own following delimiter. Zero bytes after the first byte-aligned endpoint remain with the caller; `decode()` still checks the complete input and accepts only permitted zero padding after termination, including when `Rows` supplies the endpoint.
+
+Each call owns its mutable state. The decoded bytes, transition storage and lookahead remain subject to the same byte/work limits. The result's work counters allow a containing content parser to debit its own cumulative document budget as well. The JSON oracle checks samples and exact offsets for all 39 self-delimiting corpus cases; the remaining `Rows=0, EndOfBlock=false` case remains supported only as a complete stream. Regressions additionally exercise adjacent `EI`, literal `EI` bytes inside uncompressed pixels, malformed padding and bounded lookahead.
+
 ## Evidence and its limits
 
 `tools/build_fax_fixtures.py` records 40 small synthetic PDF image streams: 14 independently encoded libtiff cases (MH, G3, G4, byte alignment, narrow/non-byte widths, long make-up runs, optional EOL, termination and positive K equivalence) and 26 explicit ITU table vectors for uncompressed mode. The original TIFFs, encoded hashes and expected packed bitmaps are retained in `tests/Fixtures/fax`. The generator imports no PHP decoder.
