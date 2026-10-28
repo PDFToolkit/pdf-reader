@@ -14,7 +14,7 @@ final class Jbig2Header
     private ?int $width = null;
     private ?int $height = null;
     private bool $endedPage = false;
-    /** @var array<int, true> */
+    /** @var array<int, positive-int> */
     private array $numbers = [];
 
     public function read(CodecRequest $request): NativeDescription
@@ -71,11 +71,16 @@ final class Jbig2Header
             } elseif ($count > 4 || (($countFlags & 31) >> ($count + 1)) !== 0) {
                 throw new ParseException('Invalid JBIG2 reference count or retention flags.');
             }
+            $depth = 1;
             for ($i = 0; $i < $count; ++$i) {
                 $reference = $number <= 256 ? $cursor->byte() : ($number <= 65536 ? $cursor->word() : $cursor->uint32());
                 if ($reference >= $number || !isset($this->numbers[$reference])) {
                     throw new ParseException('JBIG2 refers to an unavailable preceding segment.');
                 }
+                $depth = max($depth, 1 + $this->numbers[$reference]);
+            }
+            if ($depth > $request->maximumDepth) {
+                throw new CodecLimit('JBIG2 segment dependency depth exceeds its limit.');
             }
             $page = ($flags & 64) !== 0 ? $cursor->uint32() : $cursor->byte();
             if ($globals && $page !== 0) {
@@ -100,7 +105,7 @@ final class Jbig2Header
             // Integer-key hash bucket, zval, growth capacity and lookup work.
             $this->inspection->retain(128);
             $this->inspection->work(1);
-            $this->numbers[$number] = true;
+            $this->numbers[$number] = $depth;
             if ($type === 48) {
                 if ($globals || $page !== 1 || $this->width !== null || $length !== 19) {
                     throw new ParseException('Invalid or repeated JBIG2 page information.');

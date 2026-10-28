@@ -135,6 +135,18 @@ final class ImageProfileTest extends TestCase
         self::assertSame('6a4875ddaceaa91fb3369f0f6d962f77442daf1b1d97733457d12bcabdf79441', hash('sha256', $image->components[0]->bytes));
     }
 
+    public function testNativeJbig2ChecksDependencyDepthAcrossGlobalsBeforeExecution(): void
+    {
+        $directory = __DIR__ . '/Fixtures/';
+        $bytes = file_get_contents($directory . 'text-globals.jb2');
+        $globals = file_get_contents($directory . 'text-globals.globals');
+        $accepted = (new Jbig2Header())->read(new CodecRequest('JBIG2Decode', $bytes, 65536, 65536, 2, globals: $globals));
+        self::assertSame([11, 11], [$accepted->width, $accepted->height]);
+        $this->expectException(CodecLimit::class);
+        $this->expectExceptionMessage('dependency depth');
+        (new Jbig2Header())->read(new CodecRequest('JBIG2Decode', $bytes, 65536, 65536, 1, globals: $globals));
+    }
+
     public function testMissingNativeFilterIsAFeatureFailureEvenWithLargeUnreadInput(): void
     {
         try {
