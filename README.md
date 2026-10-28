@@ -19,10 +19,10 @@ The package is available on
 application:
 
 ```console
-composer require "pdftoolkit/pdf-reader:^0.6"
+composer require "pdftoolkit/pdf-reader:^0.7"
 ```
 
-The reader uses `roukmoute/pdf:^0.9 || ^0.10 || ^0.11 || ^0.12`, installed
+The reader uses `roukmoute/pdf:^0.11 || ^0.12`, installed
 automatically by Composer. PHP 8.3 or newer on a 64-bit platform and the `ctype`,
 `iconv` and `zlib` extensions are required for this combination. The application's
 `composer.lock` records the selected versions and revisions.
@@ -47,7 +47,7 @@ or modification authority.
 
 External-file data can be supplied through an explicit application object. See the [external stream guide](docs/external-streams.md) for filter selection and bounds.
 
-Reader 0.7 adds an [explicit import bridge](docs/import.md) with native reference remapping, bounded cycles and stream policies. Source signatures and encryption authority are not transferred.
+Reader 0.7 adds [native/PHP image decoding](docs/image-codecs.md), with lossless component-plane access, and an [explicit import bridge](docs/import.md) with native reference remapping, bounded cycles and stream policies. Source signatures and encryption authority are not transferred.
 
 ## Read pages
 
@@ -153,6 +153,7 @@ encodings are not interpreted to extract text or render a page.
 | Hybrid xref | `/XRefStm` entries override the companion table; the table trailer owns `/Prev`; cumulative budgets cover both. |
 | Object streams | `/ObjStm` members, with header, offset and expected object number validation. |
 | Filters | FlateDecode, LZWDecode (EarlyChange 0/1), ASCIIHexDecode, ASCII85Decode and RunLengthDecode; explicit filter chains and parameters. |
+| Images | CCITT fax in PHP; DCT, JPX and JBIG2 through qualified native filters or the optional PHP codec package. [Exact profiles and metadata](docs/image-codecs.md). |
 | Predictors | TIFF 2 and PNG 10 to 15, with 1-, 2-, 4-, 8- and 16-bit components. |
 | Resolution | A missing, free or different-generation object yields `NullType`. |
 | Page tree | Complete ordered traversal, checks for every `/Count` and `/Parent`, rejection of cycles or repeated descendants, dedicated traversal limits. |
@@ -166,7 +167,7 @@ standalone and signature-attached MACs are supported; applications can require
 one with `SourceIntegrityPolicy::RequirePdfMac`. Adobe.PubSec authentication supports
 explicit recipient capabilities, independent filter keys and deferred attachment access.
 See the [public-key guide](docs/public-key-authentication.md) and [PDF MAC guide](docs/source-mac.md).
-Unimplemented codecs are explicitly rejected. A stream using an unknown codec can be preserved in
+Unavailable codecs and unsupported image profiles are explicitly rejected. A stream using an unknown codec can be preserved in
 encoded form; requesting decoding raises `UnsupportedPdfFeature`.
 
 The [import bridge](docs/import.md) copies selected graphs into the writer. Document merging, content rewriting, text extraction, rendering, forms, signature validation and PDF repair remain separate mechanisms. Source references and streams still reject direct serialization; import creates new native identities.
@@ -198,6 +199,7 @@ protected by their chosen filter; explicit Identity and codec bytes are preserve
 
 - [Explicit EC3 structural policy](docs/structural-policy.md)
 - [CCITT fax decoding](docs/fax.md)
+- [Native and PHP image codecs](docs/image-codecs.md)
 - [External stream data](docs/external-streams.md)
 - [Physical revision history](docs/revision-history.md)
 - [Architecture and object boundaries](docs/architecture.md)

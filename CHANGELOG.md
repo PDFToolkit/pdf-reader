@@ -4,6 +4,16 @@ English | [Français](CHANGELOG.fr.md)
 
 ## Unreleased
 
+## 0.7.0 - 2026-10-28
+
+- Add explicit native-first image decoding with bounded Ghostscript processes and an optional `pdftoolkit/pdf-codecs` PHP fallback. Preserve malformed-input and resource failures; missing capabilities report the Composer installation command without installing anything.
+- Expose `ReadDocument::imageData()` with exact component planes, precision, signedness, sampling origins, ICC/colour alternatives and alpha associations. Keep ordinary `streamData()` lossless and explicit when a flat byte representation is unavailable. Resolve filtered/encrypted JBIG2 globals through the same document budgets and cycle guards.
+- Keep image codecs unavailable during cross-reference, object-stream and physical-history parsing. Validate qualified native profiles before execution and use PHP for profiles requiring richer geometry, metadata or corrected decoding mechanisms.
+- Implement bounded CCITT 1D/mixed/2D decoding, T.4/T.6 uncompressed extensions, explicit damage recovery and exact prefix framing for inline-image consumers. Retain source bytes and configurable cumulative resource limits.
+- Add explicitly supplied external stream data using F/FFilter/FDecodeParms; never acquire external paths or URLs implicitly. Correct Identity Crypt parameter handling and physical-revision boundary cases.
+- Add atomic, document-scoped graph import with preserved object identity/cycles, explicit encoded/decoded stream policy and XML metadata handling. Reject active source security/signature structures and keep permission/version decisions with the application.
+- Require stable core `^0.11 || ^0.12` for the native import contracts. Maintain independent versions, bilingual guides and reproducible PDF/codec validation evidence.
+
 ## 0.6.1 - 2026-10-28
 
 - Accept stable core `^0.12` alongside `^0.9`, `^0.10` and `^0.11`, keeping all Reader APIs and resource limits unchanged.

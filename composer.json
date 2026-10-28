@@ -26,10 +26,12 @@
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.0",
         "phpstan/phpstan": "^2.1",
-        "phpunit/phpunit": "^12.0"
+        "phpunit/phpunit": "^12.0",
+        "pdftoolkit/pdf-codecs": "^0.1"
     },
     "suggest": {
-        "ext-openssl": "Required when explicitly selecting native AES or OpenSSL certificate authentication."
+        "ext-openssl": "Required when explicitly selecting native AES or OpenSSL certificate authentication.",
+        "pdftoolkit/pdf-codecs": "Optional pure PHP image decoder when no compatible native engine is available: composer require pdftoolkit/pdf-codecs:^0.1"
     },
     "license": "MIT",
     "authors": [

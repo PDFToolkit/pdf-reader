@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "82b7fc5f6123dbad271ecde2c4dfcc3f",
+    "content-hash": "5217e79244c340fa573bdf9ed800ec56",
     "packages": [
         {
             "name": "roukmoute/pdf",
-            "version": "v0.11.0",
+            "version": "v0.12.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PDFToolkit/pdf.git",
-                "reference": "25b426190b1c2b8d9d26a3fbf94f71c8014725b3"
+                "reference": "44fd56797614775f21ec9df996a85eaf54f68a04"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PDFToolkit/pdf/zipball/25b426190b1c2b8d9d26a3fbf94f71c8014725b3",
-                "reference": "25b426190b1c2b8d9d26a3fbf94f71c8014725b3",
+                "url": "https://api.github.com/repos/PDFToolkit/pdf/zipball/44fd56797614775f21ec9df996a85eaf54f68a04",
+                "reference": "44fd56797614775f21ec9df996a85eaf54f68a04",
                 "shasum": ""
             },
             "require": {
@@ -29,9 +29,9 @@
             },
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^3.0",
-                "pdftoolkit/pdf-fonts": "^0.1.12",
-                "pdftoolkit/pdf-images": "^0.1.12",
-                "pdftoolkit/pdf-reader": "^0.6",
+                "pdftoolkit/pdf-fonts": "^0.2",
+                "pdftoolkit/pdf-images": "^0.1.13",
+                "pdftoolkit/pdf-reader": "^0.6.1",
                 "phpstan/phpstan": "^2.1",
                 "phpunit/phpunit": "^12.0"
             },
@@ -42,7 +42,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.11.x-dev"
+                    "dev-master": "0.12.x-dev"
                 }
             },
             "autoload": {
@@ -80,7 +80,7 @@
                 "issues": "https://github.com/PDFToolkit/pdf/issues",
                 "source": "https://github.com/PDFToolkit/pdf"
             },
-            "time": "2026-10-15T21:35:13+00:00"
+            "time": "2026-10-28T19:06:49+00:00"
         }
     ],
     "packages-dev": [
@@ -765,6 +765,59 @@
                 "source": "https://github.com/nikic/PHP-Parser/tree/v5.9.0"
             },
             "time": "2026-09-13T18:51:52+00:00"
+        },
+        {
+            "name": "pdftoolkit/pdf-codecs",
+            "version": "v0.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/PDFToolkit/pdf-codecs.git",
+                "reference": "1f82ae19d6dd874c574a5601d37f3ac63e0d4170"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/PDFToolkit/pdf-codecs/zipball/1f82ae19d6dd874c574a5601d37f3ac63e0d4170",
+                "reference": "1f82ae19d6dd874c574a5601d37f3ac63e0d4170",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.3",
+                "php-64bit": "*"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.0",
+                "phpstan/phpstan": "^2.1",
+                "phpunit/phpunit": "^12.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "0.1.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "PDFToolkit\\Codecs\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Mathias STRASSER",
+                    "email": "contact@roukmoute.fr"
+                }
+            ],
+            "description": "Explicit bounded JPEG, JPEG 2000 and JBIG2 image decoding in PHP",
+            "homepage": "https://pdftoolkit.github.io/modules/codecs/",
+            "support": {
+                "docs": "https://pdftoolkit.github.io/modules/codecs/",
+                "issues": "https://github.com/PDFToolkit/pdf-codecs/issues",
+                "source": "https://github.com/PDFToolkit/pdf-codecs"
+            },
+            "time": "2026-10-28T20:15:16+00:00"
         },
         {
             "name": "phar-io/manifest",

@@ -4,6 +4,16 @@
 
 ## Non publié
 
+## 0.7.0 - 2026-10-28
+
+- Ajouter le décodage d’images natif prioritaire avec processus Ghostscript bornés et repli PHP optionnel `pdftoolkit/pdf-codecs`. Conserver les erreurs de données invalides et de ressources ; une capacité absente indique la commande Composer sans rien installer.
+- Exposer `ReadDocument::imageData()` avec plans exacts, précision, signe, origines d’échantillonnage, alternatives ICC/couleur et associations alpha. Garder `streamData()` sans perte, avec erreur explicite lorsqu’une représentation plate n’existe pas. Résoudre les données globales JBIG2 filtrées/chiffrées avec les mêmes budgets et gardes de cycles du document.
+- Interdire les codecs d’image pendant la lecture des références croisées, flux d’objets et historiques physiques. Vérifier le profil natif avant exécution et choisir PHP pour les géométries/métadonnées plus riches ou les mécanismes natifs incorrects.
+- Implémenter le CCITT borné 1D/mixte/2D, les extensions non compressées T.4/T.6, la récupération de lignes explicitement autorisée et la délimitation exacte des préfixes pour les images inline. Conserver les octets source et les limites cumulées configurables.
+- Ajouter les données de flux externes fournies explicitement avec F/FFilter/FDecodeParms ; ne consulter implicitement ni chemin ni URL. Corriger les paramètres Crypt Identity et les limites des révisions physiques.
+- Ajouter l’import atomique de graphes par document avec identités/cycles conservés, politique explicite de flux encodés/décodés et gestion des métadonnées XML. Refuser les structures actives de sécurité/signature source ; les choix de permission/version restent à l’application.
+- Exiger le core stable `^0.11 || ^0.12` pour les contrats d’import natif. Conserver les versions indépendantes, les guides bilingues et les preuves de validation PDF/codecs reproductibles.
+
 ## 0.6.1 - 2026-10-28
 
 - Accepte le core stable `^0.12` aux côtés de `^0.9`, `^0.10` et `^0.11`, sans modifier les API ni les limites de ressources du Reader.
