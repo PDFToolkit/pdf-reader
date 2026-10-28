@@ -34,7 +34,7 @@ La version 0.5 accepte la syntaxe PDF 1.0–1.7 et PDF 2.0, y compris la version
 Les dictionnaires PDF 2.0 deviennent accessibles aux interprètes optionnels,
 dont `pdftoolkit/pdf-to-html` ; cela n’interprète pas chaque mécanisme PDF 2.0.
 L’authentification Standard par mot de passe et Adobe.PubSec par certificat est
-explicite ; les handlers et codecs non pris en charge, le rendu et l’import restent des limites.
+explicite ; les handlers et codecs non pris en charge et le rendu restent des limites.
 Consulter le [guide d’authentification](docs/fr/authentication.md).
 
 Le lecteur 0.5 authentifie les MAC des PDF sources avec des identifiants explicites
@@ -48,6 +48,8 @@ budgets partagés. L’inspection brute précède toute authentification sépar�
 elle ne donne aucune autorité de signature ou de modification.
 
 Les données de fichiers externes peuvent être fournies par un objet applicatif explicite. Voir le [guide des flux externes](docs/fr/external-streams.md) pour les filtres et limites.
+
+Le Reader 0.7 ajoute un [pont d’import explicite](docs/fr/import.md), avec remappage des références natives, cycles bornés et politiques de flux. Les signatures et l’autorité de chiffrement source ne sont pas transférées.
 
 ## Lire les pages
 
@@ -172,11 +174,7 @@ le [guide clé publique](docs/fr/public-key-authentication.md) et le [guide PDF 
 Un codec inconnu peut être conservé encodé ; son décodage
 lève `UnsupportedPdfFeature`.
 
-L'import vers le writer, la réécriture, la fusion, l'extraction de texte, le
-rendu, les formulaires, la validation des signatures et la réparation des PDF restent des
-mécanismes à construire. Les références et flux externes refusent leur
-sérialisation : réutiliser leurs numéros dans un nouveau document serait
-incorrect sans import et remappage explicites.
+Le [pont d’import](docs/fr/import.md) copie des graphes sélectionnés vers le writer. Fusion de documents, réécriture du contenu, extraction de texte, rendu, formulaires, validation de signatures et réparation restent des mécanismes distincts. Les références et flux source refusent toujours leur sérialisation directe ; l’import crée de nouvelles identités natives.
 
 ## Développement
 

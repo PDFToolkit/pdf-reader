@@ -32,7 +32,7 @@ objet sans porter sa cible, et `EncodedStream` conserve un dictionnaire avec
 ses octets encodés. Ils implémentent `BasicType` pour rester utilisables dans
 les mêmes tableaux et dictionnaires. Leur `toPdf()` lève une exception : un
 import doit reconstruire les références du document destinataire avant que
-l'écriture puisse être correcte. Aucun pont d'import n'est encore implémenté.
+l'écriture puisse être correcte. Le [pont ImportSession](import.md) alloue les conteneurs natifs, remappe les références et scelle le graphe complet avant de le retourner, sans sérialiser ces vues source.
 
 ## Pipeline de lecture
 
@@ -154,10 +154,10 @@ référence ou filtre.
 La bibliothèque reçoit des `FileBytes`. L'application choisit le fichier,
 autorise sa lecture, borne son chargement et gère ses ressources. Les actions
 JavaScript, URI ou de lancement restent des dictionnaires ; la bibliothèque
-ne les exécute pas. Un flux externe n'est jamais chargé depuis `/F`.
+ne les exécute pas. Un flux externe n’est jamais chargé implicitement depuis `/F` ; son acquisition exige un port applicatif explicite.
 
 Cette étape fournit la syntaxe, la résolution structurelle et le parcours de
-pages. Les futurs imports, interpréteurs de contenu et moteurs de formulaire
+pages. L’import explicite, les interpréteurs de contenu et moteurs de formulaire
 pourront les composer sans ajouter ces responsabilités au parseur.
 
 [Composants](components.md) · [Sécurité](security.md) · [README](../../README.fr.md)

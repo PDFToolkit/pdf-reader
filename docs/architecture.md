@@ -30,7 +30,7 @@ without carrying its target, and `EncodedStream` retains a dictionary and its
 encoded bytes. They implement `BasicType` so they can be used in the same
 arrays and dictionaries. Their `toPdf()` throws an exception: an import must
 rebuild references in the destination document before writing can be correct.
-No import bridge is implemented yet.
+The explicit [ImportSession bridge](import.md) now allocates native containers, remaps references and seals the complete graph before returning it. It never serializes these source views.
 
 ## Reading pipeline
 
@@ -152,11 +152,9 @@ of the same document; they do not restart at zero for each reference or filter.
 
 The library receives `FileBytes`. The application selects the file, authorises
 reading, bounds loading and manages resources. JavaScript, URI and launch
-actions remain dictionaries; the library does not execute them. An external
-stream is never loaded from `/F`.
+actions remain dictionaries; the library does not execute them. An external stream is never loaded implicitly from `/F`; acquisition requires an explicit application-supplied port.
 
-This stage provides syntax, structural resolution and page traversal. Future
-importers, content interpreters and form engines can compose them without
+This stage provides syntax, structural resolution and page traversal. The explicit importer, content interpreters and form engines compose them without
 adding those responsibilities to the parser.
 
 [Components](components.md) · [Security](security.md) · [README](../README.md)

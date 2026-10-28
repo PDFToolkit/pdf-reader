@@ -32,7 +32,7 @@ Version 0.5 accepts PDF 1.0–1.7 and PDF 2.0 syntax, including the catalog
 This makes PDF 2.0 dictionaries available to optional interpreters such as
 `pdftoolkit/pdf-to-html`; it does not interpret every PDF 2.0 feature.
 Standard password and Adobe.PubSec certificate authentication are explicit; unsupported security handlers,
-codecs, rendering and importing remain explicit limits. See the
+codecs and rendering remain explicit limits. See the
 [authentication guide](docs/authentication.md) for construction and boundaries.
 
 Reader 0.5 authenticates source PDF MACs with explicit credentials before content
@@ -46,6 +46,8 @@ budgets. Raw inspection precedes separate authentication; it grants no signature
 or modification authority.
 
 External-file data can be supplied through an explicit application object. See the [external stream guide](docs/external-streams.md) for filter selection and bounds.
+
+Reader 0.7 adds an [explicit import bridge](docs/import.md) with native reference remapping, bounded cycles and stream policies. Source signatures and encryption authority are not transferred.
 
 ## Read pages
 
@@ -167,10 +169,7 @@ See the [public-key guide](docs/public-key-authentication.md) and [PDF MAC guide
 Unimplemented codecs are explicitly rejected. A stream using an unknown codec can be preserved in
 encoded form; requesting decoding raises `UnsupportedPdfFeature`.
 
-Import into the writer, rewriting, merging, text extraction, rendering, forms,
-signature validation and PDF repair remain to be implemented. External references and
-streams reject serialisation: reusing their numbers in a new document would
-be incorrect without explicit import and remapping.
+The [import bridge](docs/import.md) copies selected graphs into the writer. Document merging, content rewriting, text extraction, rendering, forms, signature validation and PDF repair remain separate mechanisms. Source references and streams still reject direct serialization; import creates new native identities.
 
 ## Development
 

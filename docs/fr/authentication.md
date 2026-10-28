@@ -76,8 +76,7 @@ Son comportement d'identité reste disponible.
 
 `EncodedStream::encodedBytes()` expose les octets déchiffrés prêts pour les codecs ;
 `originalEncodedBytes()` conserve le ciphertext source. Le plaintext conservé
-consomme le budget commun du document. L’import et l’écriture nécessitent encore
-une couche explicite de réattribution des références ; les objets source
+consomme le budget commun du document. L’import et l’écriture utilisent le [pont explicite de réattribution des références](import.md) ; les objets source
 authentifiés ne peuvent pas être sérialisés directement dans un nouveau document.
 
 Les PDF MAC source (`KDFSalt`/`AuthCode`) sont vérifiés avant l’interprétation

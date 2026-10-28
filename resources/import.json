@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "mechanism": "Explicit bounded source-to-native graph import",
+  "references": [
+    {
+      "document": "ISO_32000-2_sponsored_EC3.pdf",
+      "path": "https://github.com/PDFToolkit/pdf/blob/25b426190b1c2b8d9d26a3fbf94f71c8014725b3/resources/reference-documents/ISO_32000-2_sponsored_EC3.pdf",
+      "sha256": "90f4b666d46405dd62630a98d514158b4de5304b749523c4081680ac4fe2e230",
+      "clauses": [
+        "7.3.8",
+        "7.3.9",
+        "7.3.10",
+        "7.4.1",
+        "7.6.2",
+        "14.3.2 (EC3 #296)"
+      ],
+      "physicalPdfPages": [
+        46,
+        47,
+        48,
+        49,
+        50,
+        86,
+        87,
+        730
+      ]
+    }
+  ],
+  "implementation": [
+    "src/Import/ImportSession.php",
+    "src/Import/ImportLimits.php",
+    "src/Import/ImportBudget.php",
+    "src/Import/ImportGuard.php",
+    "src/Import/ImportStreams.php",
+    "src/Import/ImportedGraph.php",
+    "src/Import/ImportedDictionary.php",
+    "src/Import/ImportedArray.php",
+    "src/Import/ImportedStream.php",
+    "src/Import/PreservedFilter.php",
+    "src/Import/StreamImportMode.php"
+  ],
+  "tests": [
+    "tests/ReadingImportTest.php",
+    "tests/ReadingImportStreamsTest.php",
+    "tools/validate_import.py"
+  ],
+  "claims": [
+    "Document-scoped identity, generations and aliases; native references use new writer object numbers.",
+    "One-shot graph construction and sealing, bounded cycles and cumulative roots.",
+    "Explicit preservation of authenticated encoded plaintext or bounded decoding; original source ciphertext remains unchanged.",
+    "XML metadata is decoded and source PDF2 UTF-8 validated; writer owns destination encoding evidence and upgrade validation.",
+    "External acquisition requires an explicit import capability; source signatures, Encrypt/AuthCode and transport streams are rejected."
+  ],
+  "boundaries": [
+    "No implicit I/O, page extraction, content rewriting, semantic repair or document name-tree merging.",
+    "No SourceRevision to FileRevision conversion or signature/modification/trust authorization transfer.",
+    "Unavailable codecs remain opaque only in preserve mode; decoded mode fails explicitly.",
+    "This ledger describes implemented graph mechanics, not complete PDF semantic conformance."
+  ]
+}

@@ -72,8 +72,7 @@ standard filter. Its actual identity behaviour remains available.
 
 `EncodedStream::encodedBytes()` returns decrypted bytes ready for the remaining
 codecs; `originalEncodedBytes()` retains the original source ciphertext. Retained
-plaintext consumes the shared document budget. Import and writing still require
-an explicit remapping layer; authenticated source objects cannot be serialized
+plaintext consumes the shared document budget. Import and writing use the [explicit remapping bridge](import.md); authenticated source objects cannot be serialized
 directly into a new document.
 
 Source PDF MAC verification (`KDFSalt`/`AuthCode`) is performed before protected
