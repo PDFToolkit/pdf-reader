@@ -301,8 +301,8 @@ final class ReadingFiltersTest extends TestCase
 
     public function testUnsupportedFilterStillAllowsRawInspection(): void
     {
-        $stream = $this->stream(new NameType('DCTDecode'), 'jpeg bytes');
-        self::assertSame('jpeg bytes', $stream->encodedBytes());
+        $stream = $this->stream(new NameType('UnregisteredImageDecode'), 'opaque bytes');
+        self::assertSame('opaque bytes', $stream->encodedBytes());
         $this->expectException(UnsupportedPdfFeature::class);
         (new StreamDecoder())->decode($stream, new ReadBudget(new ReaderLimits()));
     }

@@ -49,6 +49,11 @@ final class ReadBudget
         $this->decodedBytes += $bytes;
     }
 
+    public function remainingDecodedBytes(): int
+    {
+        return $this->limits->maxTotalDecodedBytes - $this->decodedBytes;
+    }
+
     public function retained(int $bytes): void
     {
         if ($bytes < 0 || $bytes > $this->limits->maxRetainedBytes - $this->retainedBytes) {

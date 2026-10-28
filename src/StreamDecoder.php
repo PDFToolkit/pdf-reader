@@ -4,6 +4,12 @@ declare(strict_types=1);
 
 namespace PDF\Reading;
 
+use PDF\Reading\ImageCodecs\AutomaticDecoder;
+use PDF\Reading\ImageCodecs\CodecRequest;
+use PDF\Reading\ImageCodecs\DecodeContext;
+use PDF\Reading\ImageCodecs\DecodedImage;
+use PDF\Reading\ImageCodecs\Decoder as ImageDecoder;
+use PDF\Reading\ImageCodecs\ImageLimits;
 use PDF\Reading\Filters\Ascii85Decoder;
 use PDF\Reading\Filters\AsciiHexDecoder;
 use PDF\Reading\Filters\CcittFaxDecoder;
@@ -28,11 +34,34 @@ use PDF\Syntax\Object\NullType;
 /** Explicit stream decoding; encoded stream objects retain their original bytes. */
 final readonly class StreamDecoder
 {
-    public function __construct(private ReaderLimits $limits = new ReaderLimits(), private ?ExternalStreamSource $externalStreams = null)
+    public function __construct(private ReaderLimits $limits = new ReaderLimits(), private ?ExternalStreamSource $externalStreams = null, private ?ImageDecoder $imageDecoder = null, private ImageLimits $imageLimits = new ImageLimits(), private bool $allowImageCodecs = true)
     {
     }
 
     public function decode(EncodedStream $stream, ReadBudget $budget, ?ObjectResolver $resolver = null): string
+    {
+        $result = $this->decodeResult($stream, $budget, $resolver);
+        return $result instanceof DecodedImage ? $this->imageBytes($result) : $result;
+    }
+
+    public function imageBytes(DecodedImage $image): string
+    {
+        return $image->streamBytes($this->limits->maxDecodedStreamBytes, $this->imageLimits);
+    }
+
+    /** @internal Preserve image metadata for ReadDocument's shared decoding cache. */
+    public function decodeResult(EncodedStream $stream, ReadBudget $budget, ?ObjectResolver $resolver = null, ?DecodeContext $context = null): string|DecodedImage
+    {
+        $context ??= new DecodeContext($this->limits->maxDepth);
+        $context->enter($stream);
+        try {
+            return $this->filtered($stream, $budget, $resolver, $context);
+        } finally {
+            $context->leave($stream);
+        }
+    }
+
+    private function filtered(EncodedStream $stream, ReadBudget $budget, ?ObjectResolver $resolver, DecodeContext $context): string|DecodedImage
     {
         $input = StreamInput::from($stream, $this->limits, $budget, $resolver, $this->externalStreams);
         $filter = $input->filter;
@@ -80,6 +109,57 @@ final readonly class StreamDecoder
             }
             if ($parameter !== null && !$parameter instanceof NullType && !$parameter instanceof DictionaryType) {
                 throw new ParseException('Every DecodeParms element must resolve to a dictionary or null.');
+            }
+            if (in_array($name->value, ['DCTDecode', 'JPXDecode', 'JBIG2Decode'], true)) {
+                if (!$this->allowImageCodecs) {
+                    throw new UnsupportedPdfFeature('Image codecs are unavailable during structural PDF parsing.');
+                }
+                $globals = null;
+                $transform = null;
+                if ($name->value === 'DCTDecode' && $parameter instanceof DictionaryType) {
+                    $value = $this->resolved($parameter->get('ColorTransform'), $resolver);
+                    if ($value !== null && !$value instanceof NullType) {
+                        if (!$value instanceof IntegerType || !in_array($value->integer(), [0, 1], true)) {
+                            throw new ParseException('DCT ColorTransform must be zero or one.');
+                        }
+                        $transform = $value->integer();
+                    }
+                }
+                if ($name->value === 'JBIG2Decode' && $parameter instanceof DictionaryType) {
+                    $globalStream = $this->resolved($parameter->get('JBIG2Globals'), $resolver);
+                    if ($globalStream !== null && !$globalStream instanceof NullType) {
+                        if (!$globalStream instanceof EncodedStream) {
+                            throw new ParseException('JBIG2Globals must resolve to a stream.');
+                        }
+                        $globalResult = $resolver instanceof ReadDocument
+                            ? $resolver->streamData($globalStream)
+                            : $this->decodeResult($globalStream, $budget, $resolver, $context);
+                        $globals = $globalResult instanceof DecodedImage ? $this->imageBytes($globalResult) : $globalResult;
+                    }
+                }
+                $maximum = min($this->limits->maxDecodedStreamBytes, $budget->remainingDecodedBytes());
+                if ($maximum < 1) {
+                    throw new ImageCodecs\CodecLimit('The cumulative decoded-byte budget is exhausted.');
+                }
+                $image = ($this->imageDecoder ?? new AutomaticDecoder())->decode(new CodecRequest(
+                    $name->value,
+                    $bytes,
+                    $this->limits->maxFileBytes,
+                    $maximum,
+                    $this->limits->maxDepth,
+                    $this->imageLimits,
+                    $transform,
+                    $globals,
+                ));
+                if ($image->byteLength() > $maximum) {
+                    throw new ImageCodecs\CodecLimit('The image decoder returned more samples than its byte limit.');
+                }
+                $budget->decoded($image->byteLength());
+                if ($index === count($filters) - 1) {
+                    return $image;
+                }
+                $bytes = $this->imageBytes($image);
+                continue;
             }
             $decoder = match ($name->value) {
                 'FlateDecode' => new FlateDecoder($this->limits),

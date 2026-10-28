@@ -1,0 +1,477 @@
+{
+  "schemaVersion": 1,
+  "provenance": "Generated PDFToolkit fixtures, independent OpenJPEG/jbig2dec/Poppler oracles; source manifest hashes identify this snapshot, not a released version.",
+  "sourceManifests": {
+    "jpx": "847472dd33c4fde5e3806533ba9c1fa8d723fa6a6c1ed07be51c0e81d1bccca7",
+    "jbig2": "ae3653959e7d78ae4f6a92f681f3ea9b754ee568c35c681259f6ec3ae1821680"
+  },
+  "cases": [
+    {
+      "file": "precision-1-signed-0.jp2",
+      "sha256": "07389d71ced66d329eb1d09923da5822a18240dcf2b39953c555ffddf94420ac",
+      "bytes": 270,
+      "expected": "precision-1-signed-0.jp2.json",
+      "expectedSha256": "922c31e45eb701332f022438822d6fb2d17eca32081188c45b93a3d6b286b13f",
+      "oracle": "OpenJPEG 2.5.4 decode; lossless input comparison",
+      "tolerance": 0,
+      "features": [
+        "precision-1",
+        "signed-0",
+        "block-style-0",
+        "progression-0"
+      ],
+      "filter": "JPXDecode",
+      "native": true,
+      "source": "pdftoolkit/pdf-codecs:tests/Fixtures/jpx/precision-1-signed-0.jp2"
+    },
+    {
+      "file": "precision-2-signed-0.jp2",
+      "sha256": "e1ededb62cfcafa477ffd02573387a38e2e627702a9256356c8984c33c6c343f",
+      "bytes": 378,
+      "expected": "precision-2-signed-0.jp2.json",
+      "expectedSha256": "5d3f9239d87a715b786ac314c9fc349632767706774b0fea28af780006688a69",
+      "oracle": "OpenJPEG 2.5.4 decode; lossless input comparison",
+      "tolerance": 0,
+      "features": [
+        "precision-2",
+        "signed-0",
+        "block-style-0",
+        "progression-0"
+      ],
+      "filter": "JPXDecode",
+      "native": true,
+      "source": "pdftoolkit/pdf-codecs:tests/Fixtures/jpx/precision-2-signed-0.jp2"
+    },
+    {
+      "file": "precision-4-signed-0.jp2",
+      "sha256": "b230ab30c2acb682aecb2748d06b3ec7dbc68abc6a8e62b059756b0866f90345",
+      "bytes": 841,
+      "expected": "precision-4-signed-0.jp2.json",
+      "expectedSha256": "0b4bca7d2021ea6c3a4ca5455d16a1ad0acac86f4e239651f11bf9fb81dbfe47",
+      "oracle": "OpenJPEG 2.5.4 decode; lossless input comparison",
+      "tolerance": 0,
+      "features": [
+        "precision-4",
+        "signed-0",
+        "block-style-0",
+        "progression-0"
+      ],
+      "filter": "JPXDecode",
+      "native": true,
+      "source": "pdftoolkit/pdf-codecs:tests/Fixtures/jpx/precision-4-signed-0.jp2"
+    },
+    {
+      "file": "precision-8-signed-0.jp2",
+      "sha256": "b6c26ebf4f1fd513818fd4cdf3d31cbf6ca6dd7bdf045b51a06ec7faddf610b4",
+      "bytes": 1097,
+      "expected": "precision-8-signed-0.jp2.json",
+      "expectedSha256": "ab3fef9753b5f9368eacb93dc507c1a583da5dc05e44c91582772f7f6d0d341c",
+      "oracle": "OpenJPEG 2.5.4 decode; lossless input comparison",
+      "tolerance": 0,
+      "features": [
+        "precision-8",
+        "signed-0",
+        "block-style-0",
+        "progression-0"
+      ],
+      "filter": "JPXDecode",
+      "native": true,
+      "source": "pdftoolkit/pdf-codecs:tests/Fixtures/jpx/precision-8-signed-0.jp2"
+    },
+    {
+      "file": "precision-8-signed-1.jp2",
+      "sha256": "b056c2758a0d151ec27e3de4c1292540ad4835502d048a42b51d35f850f85ed0",
+      "bytes": 1097,
+      "expected": "precision-8-signed-1.jp2.json",
+      "expectedSha256": "0bd9d3200400575eb9ef75da693d145085f6eeabe38e116f188718bdd3e03fd8",
+      "oracle": "OpenJPEG 2.5.4 decode; lossless input comparison",
+      "tolerance": 0,
+      "features": [
+        "precision-8",
+        "signed-1",
+        "block-style-0",
+        "progression-0"
+      ],
+      "filter": "JPXDecode",
+      "native": false,
+      "source": "pdftoolkit/pdf-codecs:tests/Fixtures/jpx/precision-8-signed-1.jp2"
+    },
+    {
+      "file": "precision-12-signed-0.jp2",
+      "sha256": "d960244b1a6737726a554c7e1482955f11b0bbab07c61b377447368c990b16d6",
+      "bytes": 1216,
+      "expected": "precision-12-signed-0.jp2.json",
+      "expectedSha256": "05e305866ff543bab55244c4429613e762de5ad1c06f9d3be36a0daa3da10b19",
+      "oracle": "OpenJPEG 2.5.4 decode; lossless input comparison",
+      "tolerance": 0,
+      "features": [
+        "precision-12",
+        "signed-0",
+        "block-style-0",
+        "progression-0"
+      ],
+      "filter": "JPXDecode",
+      "native": false,
+      "source": "pdftoolkit/pdf-codecs:tests/Fixtures/jpx/precision-12-signed-0.jp2"
+    },
+    {
+      "file": "precision-16-signed-0.jp2",
+      "sha256": "aebb1b29c6c5fdc7dda2f7901ae89d1bf578380d1e2e09068fde1188dc87e846",
+      "bytes": 1284,
+      "expected": "precision-16-signed-0.jp2.json",
+      "expectedSha256": "1cb053e08b3079c28029bbe962075005cd491ba84ec05ff0eebdca6ce7e5591a",
+      "oracle": "OpenJPEG 2.5.4 decode; lossless input comparison",
+      "tolerance": 0,
+      "features": [
+        "precision-16",
+        "signed-0",
+        "block-style-0",
+        "progression-0"
+      ],
+      "filter": "JPXDecode",
+      "native": true,
+      "source": "pdftoolkit/pdf-codecs:tests/Fixtures/jpx/precision-16-signed-0.jp2"
+    },
+    {
+      "file": "odd-origin.j2k",
+      "sha256": "7fe4e4d24c489a3aaa9fa9897ed8550f8e484ca2c01f4a049a84415d74898297",
+      "bytes": 1360,
+      "expected": "odd-origin.j2k.json",
+      "expectedSha256": "460e576d593c54aa892277513aa40f813c0fe76b7d310d465573c29450dc5dc2",
+      "oracle": "OpenJPEG 2.5.4 decode; lossless input comparison",
+      "tolerance": 0,
+      "features": [
+        "precision-8",
+        "signed-0",
+        "block-style-0",
+        "progression-0"
+      ],
+      "filter": "JPXDecode",
+      "native": false,
+      "source": "pdftoolkit/pdf-codecs:tests/Fixtures/jpx/odd-origin.j2k"
+    },
+    {
+      "file": "palette.jp2",
+      "sha256": "89173e0b8ce0d45d8d5eda3a27d29461a36da916429f2538f57d65169f308e54",
+      "bytes": 1899,
+      "expected": "palette.jp2.json",
+      "expectedSha256": "78735fbc863d2ba2c97820b208fde1e127cea7f3a1b0bded6ea10b0db15c3544",
+      "oracle": "Normative JP2 palette mapping, independently expanded in Python",
+      "tolerance": 0,
+      "features": [
+        "pclr",
+        "cmap"
+      ],
+      "filter": "JPXDecode",
+      "native": false,
+      "source": "pdftoolkit/pdf-codecs:tests/Fixtures/jpx/palette.jp2"
+    },
+    {
+      "file": "alpha-1.jp2",
+      "sha256": "71b9211638225a39b60ba93e63055f89fe2cf1f824698d0ec5c742504d5800f7",
+      "bytes": 3818,
+      "expected": "alpha-1.jp2.json",
+      "expectedSha256": "48f4f4697c0a52419a48e829c0b18ae9fb043ede6abfda27ba72aced0d864f72",
+      "oracle": "Normative cdef alpha association",
+      "tolerance": 0,
+      "features": [
+        "cdef",
+        "alpha-1"
+      ],
+      "filter": "JPXDecode",
+      "native": false,
+      "source": "pdftoolkit/pdf-codecs:tests/Fixtures/jpx/alpha-1.jp2"
+    },
+    {
+      "file": "alpha-2.jp2",
+      "sha256": "7b0cb6c9d6f8096f58d14ab2c5df2fa5d5ee5b9fc05f8b0a09aa74ebf68026b5",
+      "bytes": 3818,
+      "expected": "alpha-2.jp2.json",
+      "expectedSha256": "7cf5de9bf4d61a2a4401256b319a5177c15b0e0d50f76a671a65910f79f90aac",
+      "oracle": "Normative cdef alpha association",
+      "tolerance": 0,
+      "features": [
+        "cdef",
+        "alpha-2"
+      ],
+      "filter": "JPXDecode",
+      "native": false,
+      "source": "pdftoolkit/pdf-codecs:tests/Fixtures/jpx/alpha-2.jp2"
+    },
+    {
+      "file": "color-alternatives.jpx",
+      "sha256": "ad1f5802169fe396792a784ebe8ee1ed68c8b1a8bc5d375f72532ecba5a56d63",
+      "bytes": 3914,
+      "expected": "color-alternatives.jpx.json",
+      "expectedSha256": "e94d99d2851266e05ea1c2e654f2b8f868eacf60c9caa80bbb12a0fb37a811fd",
+      "oracle": "Normative JPX colr priorities and exact EP",
+      "tolerance": 0,
+      "features": [
+        "colr-alternatives",
+        "CIELab",
+        "EP"
+      ],
+      "filter": "JPXDecode",
+      "native": false,
+      "source": "pdftoolkit/pdf-codecs:tests/Fixtures/jpx/color-alternatives.jpx"
+    },
+    {
+      "name": "generic-t0-tp0",
+      "file": "generic-t0-tp0.jb2",
+      "sha256": "c7a6e83fb4aee81c9bbc0db296387db6c01378a268b4884914c1fc442db2a13d",
+      "features": [
+        "generic",
+        "arithmetic",
+        "template0",
+        "no-prediction"
+      ],
+      "requiredProof": "libjbig2dec",
+      "width": 19,
+      "height": 11,
+      "samples": "556aa0696d203366608e71c0f07e00ffffe00fc1e071ce20ccd98096d2c0aad540",
+      "samplesSha256": "2ca26f83267832f04d10427d6ebfc91ed24a6fd32c81005fbbd09730192b0d32",
+      "filter": "JBIG2Decode",
+      "native": true,
+      "source": "pdftoolkit/pdf-codecs:tests/Jbig2/Fixtures/generic-t0-tp0.jb2"
+    },
+    {
+      "name": "generic-extended",
+      "file": "generic-extended.jb2",
+      "sha256": "729863267ef3da9428e2448e1d2b3914fd949705c481f411d503dec03e8b2bd9",
+      "features": [
+        "generic",
+        "extended-template"
+      ],
+      "requiredProof": "normative-vector",
+      "oracleLimitation": "T.88 2018 7.4.6.2-3 and Figure3b; libjbig2dec/Poppler do not implement 12 AT",
+      "width": 19,
+      "height": 11,
+      "samples": "39ce60ce7380739ce09ce720e739c039ce60ce7380739ce09ce720e739c039ce60",
+      "samplesSha256": "d551e1cbdfef3d589a71e6d975c1dd7505c792da032fc567e69bb0ef49e08938",
+      "filter": "JBIG2Decode",
+      "native": false,
+      "source": "pdftoolkit/pdf-codecs:tests/Jbig2/Fixtures/generic-extended.jb2"
+    },
+    {
+      "name": "refinement-t0-tp0",
+      "file": "refinement-t0-tp0.jb2",
+      "sha256": "437f78b0161cc321d75872a83dec7ff0cef61c5c6f3810ddfe7a73bc6b753542",
+      "features": [
+        "generic-refinement",
+        "template0",
+        "no-prediction"
+      ],
+      "requiredProof": "poppler",
+      "width": 19,
+      "height": 11,
+      "samples": "6db6c0db6da0b6db606db6c0db6da0b6db606db6c0db6da0b6db606db6c0db6da0",
+      "samplesSha256": "5e1c147e1b2ac804677aacf18363914ccac69a5aebb887df8687025bca57c10a",
+      "filter": "JBIG2Decode",
+      "native": false,
+      "source": "pdftoolkit/pdf-codecs:tests/Jbig2/Fixtures/refinement-t0-tp0.jb2"
+    },
+    {
+      "name": "text-c0-tr0-op0",
+      "file": "text-c0-tr0-op0.jb2",
+      "sha256": "6a9ce4ea9e4a0a314b40abc8aa8f617a79410b4588f87b986e19482879a2f8f1",
+      "features": [
+        "text",
+        "arithmetic",
+        "huffman-dictionary",
+        "normal-direction",
+        "corner0",
+        "operator0",
+        "strips"
+      ],
+      "requiredProof": "libjbig2dec",
+      "width": 11,
+      "height": 11,
+      "samples": "00000000000000000000000000000000000000000000",
+      "samplesSha256": "6a4875ddaceaa91fb3369f0f6d962f77442daf1b1d97733457d12bcabdf79441",
+      "filter": "JBIG2Decode",
+      "native": true,
+      "source": "pdftoolkit/pdf-codecs:tests/Jbig2/Fixtures/text-c0-tr0-op0.jb2"
+    },
+    {
+      "name": "huffman-symbol-refinement-t0",
+      "file": "huffman-symbol-refinement-t0.jb2",
+      "sha256": "229226e6af087424fe48191d01702d244d5aa40d8a7f5f1c9cd944c44789bfc7",
+      "features": [
+        "symbols",
+        "huffman",
+        "refinement",
+        "template0"
+      ],
+      "requiredProof": "poppler",
+      "width": 3,
+      "height": 3,
+      "samples": "20c040",
+      "samplesSha256": "458f467660f44d74f466f7fc0638eb83e880ff6d1d96f6c8aab1e395d9fd3333",
+      "filter": "JBIG2Decode",
+      "native": false,
+      "source": "pdftoolkit/pdf-codecs:tests/Jbig2/Fixtures/huffman-symbol-refinement-t0.jb2"
+    },
+    {
+      "name": "huffman-text-refinement-t0",
+      "file": "huffman-text-refinement-t0.jb2",
+      "sha256": "4b14cd47097a4d8fed826598b82f19fffc542401985e750d30957df050e1f4b4",
+      "features": [
+        "text",
+        "huffman",
+        "refinement",
+        "template0"
+      ],
+      "requiredProof": "poppler",
+      "width": 3,
+      "height": 3,
+      "samples": "20c040",
+      "samplesSha256": "458f467660f44d74f466f7fc0638eb83e880ff6d1d96f6c8aab1e395d9fd3333",
+      "filter": "JBIG2Decode",
+      "native": false,
+      "source": "pdftoolkit/pdf-codecs:tests/Jbig2/Fixtures/huffman-text-refinement-t0.jb2"
+    },
+    {
+      "name": "retained-bitmap-contexts",
+      "file": "retained-bitmap-contexts.jb2",
+      "sha256": "7e386a5eefa046a86d28d05564b206231c8954bbe38c0d3f249651bc66fd62ac",
+      "features": [
+        "symbols",
+        "arithmetic",
+        "retained-contexts"
+      ],
+      "requiredProof": "normative-vector",
+      "oracleLimitation": "T.88 7.4.2.2/E.3.7-8 context copies; libjbig2dec NYI and Poppler resets retained states",
+      "width": 7,
+      "height": 5,
+      "samples": "5a6aacb4d6",
+      "samplesSha256": "9a908655f10f3f9c4f128d618c0c57511d26912d6c7488bc6c8e11de1a71040a",
+      "filter": "JBIG2Decode",
+      "native": false,
+      "source": "pdftoolkit/pdf-codecs:tests/Jbig2/Fixtures/retained-bitmap-contexts.jb2"
+    },
+    {
+      "name": "halftone-t0-skip0-op0-default0",
+      "file": "halftone-t0-skip0-op0-default0.jb2",
+      "sha256": "599a382679e2fc354a443a097a7e0b25f1b805ece85690d1ea7c64246e2514be",
+      "features": [
+        "halftone",
+        "arithmetic",
+        "template0",
+        "no-skip",
+        "operator0",
+        "default0"
+      ],
+      "requiredProof": "libjbig2dec",
+      "width": 7,
+      "height": 5,
+      "samples": "0000000000",
+      "samplesSha256": "8855508aade16ec573d21e6a485dfd0a7624085c1a14b5ecdd6485de0c6839a4",
+      "filter": "JBIG2Decode",
+      "native": true,
+      "source": "pdftoolkit/pdf-codecs:tests/Jbig2/Fixtures/halftone-t0-skip0-op0-default0.jb2"
+    },
+    {
+      "name": "halftone-t0-skip0-op0-default1",
+      "file": "halftone-t0-skip0-op0-default1.jb2",
+      "sha256": "f26a92b1ce7d1481379b910a313b3cdc2e7006733e40e8b5517955cfe5975f3a",
+      "features": [
+        "halftone",
+        "arithmetic",
+        "template0",
+        "no-skip",
+        "operator0",
+        "default1"
+      ],
+      "requiredProof": "normative-vector",
+      "oracleLimitation": "T.88 6.6.5/7.4.5.1 HDEFPIXEL=1; libjbig2dec memset1 bug, all corresponding default0 cases compare independently",
+      "width": 7,
+      "height": 5,
+      "samples": "0000000000",
+      "samplesSha256": "8855508aade16ec573d21e6a485dfd0a7624085c1a14b5ecdd6485de0c6839a4",
+      "filter": "JBIG2Decode",
+      "native": false,
+      "source": "pdftoolkit/pdf-codecs:tests/Jbig2/Fixtures/halftone-t0-skip0-op0-default1.jb2"
+    },
+    {
+      "name": "text-globals",
+      "file": "text-globals.jb2",
+      "sha256": "0b2e1fc4593ce0859578b6f0f625a9f12c1bc5d058cf7085d2b6ff5c586bb4a4",
+      "features": [
+        "text",
+        "arithmetic",
+        "huffman-dictionary",
+        "normal-direction",
+        "corner0",
+        "operator0",
+        "strips"
+      ],
+      "requiredProof": "libjbig2dec",
+      "width": 11,
+      "height": 11,
+      "samples": "00000000000000000000000000000000000000000000",
+      "samplesSha256": "6a4875ddaceaa91fb3369f0f6d962f77442daf1b1d97733457d12bcabdf79441",
+      "filter": "JBIG2Decode",
+      "native": true,
+      "source": "pdftoolkit/pdf-codecs:tests/Jbig2/Fixtures/text-c0-tr0-op0.jb2; page-zero dictionary split without entropy changes",
+      "globals": "text-globals.globals",
+      "globalsSha256": "52018dfbe68c29d5e7888910c08bb480c6196164c6652cd5696943bb74226227"
+    },
+    {
+      "file": "icc-gray.jp2",
+      "sha256": "a68aec928cfe1fa395a58aec08a2ab7e9bb8aaf359a4e90a549dd6f6a45fbd49",
+      "bytes": 1441,
+      "expected": "icc-gray.jp2.json",
+      "expectedSha256": "ab3fef9753b5f9368eacb93dc507c1a583da5dc05e44c91582772f7f6d0d341c",
+      "oracle": "Exact retained LittleCMS gray profile plus original decoded samples",
+      "tolerance": 0,
+      "features": [
+        "ICC",
+        "colr-method-2"
+      ],
+      "filter": "JPXDecode",
+      "native": false,
+      "source": "pdftoolkit/pdf-codecs:tests/Fixtures/jpx/icc-gray.jp2"
+    },
+    {
+      "file": "chroma-key.jpx",
+      "sha256": "2e0db88e8c3eb869a34bcda8be2982f68f19cf94723eb4a7f091c2fb4f7037ac",
+      "bytes": 3887,
+      "expected": "chroma-key.jpx.json",
+      "expectedSha256": "e94d99d2851266e05ea1c2e654f2b8f868eacf60c9caa80bbb12a0fb37a811fd",
+      "oracle": "Native chroma-key metadata retained without changing colour samples",
+      "tolerance": 0,
+      "features": [
+        "opct",
+        "chroma-key"
+      ],
+      "filter": "JPXDecode",
+      "native": false,
+      "source": "pdftoolkit/pdf-codecs:tests/Fixtures/jpx/chroma-key.jpx"
+    },
+    {
+      "file": "internal-fragments.jpx",
+      "sha256": "1547044899262fbef8ab40a109ce1b7a9590c12327501ec250ec5f26e89fec55",
+      "bytes": 1224,
+      "expected": "internal-fragments.jpx.json",
+      "expectedSha256": "ab3fef9753b5f9368eacb93dc507c1a583da5dc05e44c91582772f7f6d0d341c",
+      "oracle": "Identity of internal concatenated codestream; original OpenJPEG decoded samples",
+      "tolerance": 0,
+      "features": [
+        "ftbl",
+        "flst",
+        "mdat"
+      ],
+      "filter": "JPXDecode",
+      "native": false,
+      "source": "pdftoolkit/pdf-codecs:tests/Fixtures/jpx/internal-fragments.jpx"
+    }
+  ],
+  "auxiliaryFiles": {
+    "rgb.jpg": "b8890b5423ac3e5f5deaeec0bb48791d25247767a69798f5066b796b8f77d2a3",
+    "cmyk-progressive.jpg": "83b1835523353755f12975f2923594106d260905a65229844aeeb90cabaa685d",
+    "rgb-component-identifiers.jpg": "18ed69ee362431f5618d4b2130576a49cf761481fcb3a8d76ae10aa8b7739905",
+    "globals.pdf": "4ef02dd431768158d758e8c8bd020d9c245bf07d352ba8f11bf18574e639a8df",
+    "globals-encrypted.pdf": "9cc93d03ddd6a67993cfcb86faf1a51a12d35fc5ba661013355ecda0a3840d71",
+    "globals-pdf.json": "b211627607a4d826067e62154a902ecbe25286d14afd7b3d31c4c2a568ce9e8e"
+  }
+}

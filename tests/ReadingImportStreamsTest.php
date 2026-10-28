@@ -58,14 +58,14 @@ final class ReadingImportStreamsTest extends TestCase
         self::assertSame([], $native->filters);
     }
 
-    public function testOpaqueCodecIsPreservedWithoutExecutingAnUnavailableEngine(): void
+    public function testOpaqueCodecIsPreservedWithoutDecodingMalformedSampleData(): void
     {
         $document = $this->document('opaque JBIG2 bytes', '/Filter /JBIG2Decode /DecodeParms << /JBIG2Globals 4 0 R >>', [4 => (new ImportSource())->stream('globals')]);
         $native = $this->import($document);
         self::assertSame('opaque JBIG2 bytes', $native->data);
         self::assertSame('JBIG2Decode', $native->filters[0]->name()->value);
         self::assertSame('globals', $native->filters[0]->parameters()->get('JBIG2Globals')->target()->data);
-        $this->expectException(UnsupportedPdfFeature::class);
+        $this->expectException(ParseException::class);
         $this->import($document, StreamImportMode::Decode);
     }
 

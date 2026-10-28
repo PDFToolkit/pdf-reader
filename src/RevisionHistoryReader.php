@@ -34,7 +34,7 @@ final readonly class RevisionHistoryReader
         }
         $budget = new ReadBudget($this->limits);
         $offset = (new SyntaxParser(new ByteCursor($footer[1]), $this->limits, $budget))->unsignedInteger();
-        $decoder = new StreamDecoder($this->limits);
+        $decoder = new StreamDecoder($this->limits, allowImageCodecs: false);
         $strings = new SourceStringSpans($budget);
         $reader = new CrossReferenceReader($source, $this->limits, $budget, $decoder, $strings, $this->structuralPolicy);
         $boundaryReader = new RevisionBoundaryReader($source, $this->limits, $budget);

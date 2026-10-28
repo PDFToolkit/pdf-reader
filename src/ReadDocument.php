@@ -30,6 +30,10 @@ final class ReadDocument implements ObjectIdentityResolver
     private array $objectSpans = [];
     /** @var \SplObjectStorage<EncodedStream, string> */
     private \SplObjectStorage $decoded;
+    /** @var \SplObjectStorage<EncodedStream, ImageCodecs\DecodedImage> */
+    private \SplObjectStorage $images;
+    /** @var \SplObjectStorage<EncodedStream, null> */
+    private \SplObjectStorage $decoding;
 
     public function __construct(
         private readonly FileBytes $source,
@@ -45,6 +49,8 @@ final class ReadDocument implements ObjectIdentityResolver
         private readonly StructuralPolicy $structuralPolicy = StructuralPolicy::Compatible,
     ) {
         $this->decoded = new \SplObjectStorage();
+        $this->images = new \SplObjectStorage();
+        $this->decoding = new \SplObjectStorage();
     }
 
     public function header(): FileHeader
@@ -201,7 +207,7 @@ final class ReadDocument implements ObjectIdentityResolver
             if ($this->structuralPolicy === StructuralPolicy::Pdf20) {
                 (new ObjectStreamDictionaryValidation($this->index))->validate($stream->dictionary());
             }
-            $this->objectStreams[$container] = (new ObjectStreamReader($this->limits, $this->budget, $this->structuralPolicy))->read($stream, $this->streamData($stream), $this);
+            $this->objectStreams[$container] = (new ObjectStreamReader($this->limits, $this->budget, $this->structuralPolicy))->read($stream, (new StreamDecoder($this->limits, allowImageCodecs: false))->decode($stream, $this->budget, $this), $this);
         }
         $member = $this->objectStreams[$container][$ordinal] ?? null;
         if ($member === null || $member['number'] !== $number) {
@@ -212,9 +218,44 @@ final class ReadDocument implements ObjectIdentityResolver
 
     public function streamData(EncodedStream $stream): string
     {
+        $this->decodeStream($stream);
         if (!$this->decoded->offsetExists($stream)) {
-            $this->decoded[$stream] = $this->decoder->decode($stream, $this->budget, $this);
+            $bytes = $this->decoder->imageBytes($this->images[$stream]);
+            $this->budget->retained(strlen($bytes));
+            $this->decoded[$stream] = $bytes;
         }
         return $this->decoded[$stream];
+    }
+
+    /** Explicit image decoding retains precision, signedness, colour and alpha metadata. */
+    public function imageData(EncodedStream $stream): ImageCodecs\DecodedImage
+    {
+        $this->decodeStream($stream);
+        if (!$this->images->offsetExists($stream)) {
+            throw new UnsupportedPdfFeature('This stream does not end with an image codec.');
+        }
+        return $this->images[$stream];
+    }
+
+    private function decodeStream(EncodedStream $stream): void
+    {
+        if ($this->decoded->offsetExists($stream) || $this->images->offsetExists($stream)) {
+            return;
+        }
+        if ($this->decoding->offsetExists($stream) || count($this->decoding) >= $this->limits->maxDepth) {
+            throw new ParseException('Stream/global decoding contains a cycle or exceeds its depth limit.');
+        }
+        $this->decoding->offsetSet($stream, null);
+        try {
+            $result = $this->decoder->decodeResult($stream, $this->budget, $this);
+            if ($result instanceof ImageCodecs\DecodedImage) {
+                $this->budget->retained($result->retainedBytes());
+                $this->images[$stream] = $result;
+            } else {
+                $this->decoded[$stream] = $result;
+            }
+        } finally {
+            $this->decoding->offsetUnset($stream);
+        }
     }
 }

@@ -17,7 +17,7 @@ use PDF\Syntax\Object\NameType;
 /** Read PDF 1.0–2.0 syntax; source access and upload policy belong to the application. */
 final readonly class DocumentReader
 {
-    public function __construct(private ReaderLimits $limits = new ReaderLimits(), private ?DocumentAuthentication $authentication = null, private SourceIntegrityPolicy $sourceIntegrity = SourceIntegrityPolicy::AcceptUnprotected, private StructuralPolicy $structuralPolicy = StructuralPolicy::Compatible, private ?ExternalStreamSource $externalStreams = null)
+    public function __construct(private ReaderLimits $limits = new ReaderLimits(), private ?DocumentAuthentication $authentication = null, private SourceIntegrityPolicy $sourceIntegrity = SourceIntegrityPolicy::AcceptUnprotected, private StructuralPolicy $structuralPolicy = StructuralPolicy::Compatible, private ?ExternalStreamSource $externalStreams = null, private ?ImageCodecs\Decoder $imageDecoder = null, private ImageCodecs\ImageLimits $imageLimits = new ImageCodecs\ImageLimits())
     {
     }
 
@@ -37,7 +37,7 @@ final readonly class DocumentReader
     {
         return $policy === SourceIntegrityPolicy::AcceptUnprotected || $this->sourceIntegrity === SourceIntegrityPolicy::RequirePdfMac
             ? $this
-            : new self($this->limits, $this->authentication, $policy, $this->structuralPolicy, $this->externalStreams);
+            : new self($this->limits, $this->authentication, $policy, $this->structuralPolicy, $this->externalStreams, $this->imageDecoder, $this->imageLimits);
     }
 
     public function read(FileBytes $source): ReadDocument
@@ -56,7 +56,7 @@ final readonly class DocumentReader
         }
         $budget = new ReadBudget($this->limits);
         $offset = (new SyntaxParser(new ByteCursor($footer[1]), $this->limits, $budget))->unsignedInteger();
-        $decoder = new StreamDecoder($this->limits);
+        $decoder = new StreamDecoder($this->limits, allowImageCodecs: false);
         $strings = new SourceStringSpans($budget);
         $reader = new CrossReferenceReader($source, $this->limits, $budget, $decoder, $strings, $this->structuralPolicy);
         $sections = [];
@@ -87,7 +87,7 @@ final readonly class DocumentReader
         $index = new Index(...$sections);
         $physical = new SourceRevision($source, $sections[0]->trailer, $strings, $budget);
         // External acquisition is available only to the explicit content read, never to xref parsing.
-        $decoder = new StreamDecoder($this->limits, $this->externalStreams);
+        $decoder = new StreamDecoder($this->limits, $this->externalStreams, $this->imageDecoder, $this->imageLimits);
         $document = new ReadDocument($source, $fileHeader, $trailer, $index, $this->limits, $budget, $decoder, physicalRevision: $physical, sourceStrings: $strings, structuralPolicy: $this->structuralPolicy);
         // A null dictionary value is equivalent to absence, including a reference that resolves to null.
         // The completed index is required here; resolution keeps the same document's cumulative budgets.

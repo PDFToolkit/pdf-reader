@@ -1,0 +1,14 @@
+{
+  "generator": "pypdf clear PDF; qpdf AES-256 R6; random encryption salt/IV, regenerate hashes with fixtures",
+  "encodedSha256": "0b2e1fc4593ce0859578b6f0f625a9f12c1bc5d058cf7085d2b6ff5c586bb4a4",
+  "globalsSha256": "52018dfbe68c29d5e7888910c08bb480c6196164c6652cd5696943bb74226227",
+  "samplesSha256": "6a4875ddaceaa91fb3369f0f6d962f77442daf1b1d97733457d12bcabdf79441",
+  "files": {
+    "globals.pdf": "4ef02dd431768158d758e8c8bd020d9c245bf07d352ba8f11bf18574e639a8df",
+    "globals-encrypted.pdf": "9cc93d03ddd6a67993cfcb86faf1a51a12d35fc5ba661013355ecda0a3840d71"
+  },
+  "testPasswords": [
+    "user",
+    "owner"
+  ]
+}
