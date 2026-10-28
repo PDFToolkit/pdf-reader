@@ -23,7 +23,7 @@ consommateur :
 composer require "pdftoolkit/pdf-reader:^0.6"
 ```
 
-Le lecteur utilise le core `roukmoute/pdf:^0.9 || ^0.10 || ^0.11`,
+Le lecteur utilise le core `roukmoute/pdf:^0.9 || ^0.10 || ^0.11 || ^0.12`,
 installé automatiquement par Composer. PHP 8.3 ou supérieur sur une plateforme
 64 bits et les extensions `ctype`, `iconv` et `zlib` sont requis pour cet ensemble.
 Le fichier `composer.lock` du projet consommateur fixe les versions et les

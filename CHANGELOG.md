@@ -4,6 +4,12 @@ English | [Français](CHANGELOG.fr.md)
 
 ## Unreleased
 
+## 0.6.1 - 2026-10-28
+
+- Accept stable core `^0.12` alongside `^0.9`, `^0.10` and `^0.11`, keeping all Reader APIs and resource limits unchanged.
+- Preserve stable locked dependencies and verify compatibility against the core 0.12 candidate separately on PHP 8.3, 8.4 and 8.5.
+- This maintenance release supports the core development dependency graph before the independent Reader 0.7 feature release.
+
 ## 0.6.0 - 2026-10-15
 
 - Add an explicit `StructuralPolicy::Pdf20` for EC3 canonical identifiers, all ObjStm dictionary entry references, recursively direct common xref-stream values and prohibited xref associations; keep historical compatibility as the default. Correct general brace tokenisation and validate both policies against all independent physical-history sources.
