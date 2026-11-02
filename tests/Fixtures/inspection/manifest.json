@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "generator": "Independent physical syntax in tools/build_inspection_fixtures.py",
+  "rewriter": "qpdf version 12.4.2",
+  "fixtures": {
+    "classic.pdf": {
+      "bytes": 4565,
+      "sha256": "cee12ed5cd94314d47dd11bdd7425f5131981e7c72f06916cea6ae6e31fd6793"
+    },
+    "cycles-and-missing.pdf": {
+      "bytes": 4586,
+      "sha256": "ad1e36153c5bca2e1a721736ce312a1404efeb138e00bca46738a925ded5be85"
+    },
+    "object-streams.pdf": {
+      "bytes": 3851,
+      "sha256": "47066821b5f08391f45d54b70169f5b33eb152458b834f01276587f72a5873cb"
+    },
+    "untagged.pdf": {
+      "bytes": 1966,
+      "sha256": "a85c4ae8c5bc981912087489b1e94ebd230c77d184715a054ee098b9171168ae"
+    }
+  }
+}

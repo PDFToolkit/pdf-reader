@@ -38,6 +38,10 @@ jobs:
         run: python tools/validate_reader_fixtures.py
       - name: Validate independent nested page-tree fixtures
         run: python tools/validate_page_tree_fixture.py
+      - name: Compare source inspection with independent pypdf and qpdf fixtures
+        run: |
+          python tools/build_inspection_fixtures.py --check
+          python tools/validate_inspection.py --report _build/inspection-validation.json
       - name: Compare LZW and packed predictors with qpdf
         run: python tools/validate_filter_cases.py
       - name: Validate CCITT fax samples and independent PDF rendering
@@ -81,4 +85,5 @@ jobs:
           path: |
             _build/image-codecs-validation.json
             _build/fax/report.json
+            _build/inspection-validation.json
           if-no-files-found: warn
