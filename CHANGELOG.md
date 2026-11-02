@@ -4,6 +4,13 @@ English | [Français](CHANGELOG.fr.md)
 
 ## Unreleased
 
+## 0.8.0 - 2026-11-02
+
+- Add an immutable, bounded source inspection model independent of HTML derivation: original tags, typed properties, page/object identities, namespaces, role mappings and associated-file metadata.
+- Preserve byte strings, integer precision and physical reference chains; expose missing references, cycles, malformed branches and explicit partial results. Never decode page/image/attachment streams or acquire external files.
+- Publish a documented schemaVersion 1 JSON contract, English/French guides and independent pypdf/qpdf inspection validation alongside the PHP 8.3, 8.4 and 8.5 regression suite.
+
+
 ## 0.7.0 - 2026-10-28
 
 - Add explicit native-first image decoding with bounded Ghostscript processes and an optional `pdftoolkit/pdf-codecs` PHP fallback. Preserve malformed-input and resource failures; missing capabilities report the Composer installation command without installing anything.

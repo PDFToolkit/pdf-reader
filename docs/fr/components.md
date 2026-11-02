@@ -179,3 +179,7 @@ document. Une chaîne issue d’un flux d’objets décodé ne peut pas se faire
 pour une étendue du fichier source. Voir les [PDF MAC source](source-mac.md).
 
 `StructuralPolicy::Pdf20` active les [contrôles EC3 ciblés](structural-policy.md). `Compatible` reste la valeur par défaut ; la politique est conservée par l’authentification, les vues physiques et la composition de la politique d’intégrité.
+
+## Inspection source
+
+`Inspection\DocumentInspector` crée un `DocumentInspection` readonly à partir d’un `ReadDocument`. `InspectionLimits` borne cumulativement propriétés typées, arbre de structure, correspondances, associations et développement des objets. Aucun modèle HTML n’intervient. Voir le [contrat complet de l’instantané](inspection.md).

@@ -20,7 +20,7 @@ Le package est disponible sur
 consommateur :
 
 ```console
-composer require "pdftoolkit/pdf-reader:^0.7"
+composer require "pdftoolkit/pdf-reader:^0.8"
 ```
 
 Le lecteur utilise le core `roukmoute/pdf:^0.11 || ^0.12`,
@@ -50,6 +50,8 @@ elle ne donne aucune autorité de signature ou de modification.
 Les données de fichiers externes peuvent être fournies par un objet applicatif explicite. Voir le [guide des flux externes](docs/fr/external-streams.md) pour les filtres et limites.
 
 Le Reader 0.7 ajoute le [décodage d’images natif/PHP](docs/fr/image-codecs.md), avec accès aux plans sans perte, et un [pont d’import explicite](docs/fr/import.md), avec remappage des références natives, cycles bornés et politiques de flux. Les signatures et l’autorité de chiffrement source ne sont pas transférées.
+
+Reader 0.8 ajoute [l’inspection de la structure source](docs/fr/inspection.md) : balises et propriétés typées originales, références aux pages/objets, correspondances de rôles par espace de noms et métadonnées des fichiers associés, indépendamment de la dérivation HTML.
 
 ## Lire les pages
 

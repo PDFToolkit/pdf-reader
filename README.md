@@ -19,7 +19,7 @@ The package is available on
 application:
 
 ```console
-composer require "pdftoolkit/pdf-reader:^0.7"
+composer require "pdftoolkit/pdf-reader:^0.8"
 ```
 
 The reader uses `roukmoute/pdf:^0.11 || ^0.12`, installed
@@ -48,6 +48,8 @@ or modification authority.
 External-file data can be supplied through an explicit application object. See the [external stream guide](docs/external-streams.md) for filter selection and bounds.
 
 Reader 0.7 adds [native/PHP image decoding](docs/image-codecs.md), with lossless component-plane access, and an [explicit import bridge](docs/import.md) with native reference remapping, bounded cycles and stream policies. Source signatures and encryption authority are not transferred.
+
+Reader 0.8 adds [source structure inspection](docs/inspection.md): original tags and typed properties, page/object references, namespace role mappings and associated-file metadata, independently of HTML derivation.
 
 ## Read pages
 

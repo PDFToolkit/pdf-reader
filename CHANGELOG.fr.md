@@ -4,6 +4,13 @@
 
 ## Non publié
 
+## 0.8.0 - 2026-11-02
+
+- Ajouter un modèle d’inspection source immuable et borné, indépendant de la dérivation HTML : balises originales, propriétés typées, identités pages/objets, espaces de noms, correspondances de rôles et métadonnées des fichiers associés.
+- Préserver chaînes d’octets, précision entière et chaînes physiques de références ; exposer références manquantes, cycles, branches malformées et résultats partiels explicites. Ne décoder ni contenu de page, ni image, ni pièce jointe et ne consulter aucun fichier externe.
+- Publier un contrat JSON schemaVersion 1 documenté, les guides FR/EN et la validation indépendante pypdf/qpdf avec les non-régressions PHP 8.3, 8.4 et 8.5.
+
+
 ## 0.7.0 - 2026-10-28
 
 - Ajouter le décodage d’images natif prioritaire avec processus Ghostscript bornés et repli PHP optionnel `pdftoolkit/pdf-codecs`. Conserver les erreurs de données invalides et de ressources ; une capacité absente indique la commande Composer sans rien installer.

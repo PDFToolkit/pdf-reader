@@ -176,3 +176,7 @@ object-stream strings cannot masquerade as source-file spans.
 See [source PDF MAC](source-mac.md).
 
 `StructuralPolicy::Pdf20` enables the [targeted EC3 checks](structural-policy.md). `Compatible` remains the default; the policy is preserved by authentication, physical views and integrity-policy composition.
+
+## Source inspection
+
+`Inspection\DocumentInspector` creates a readonly `DocumentInspection` from a `ReadDocument`. `InspectionLimits` applies cumulative ceilings to typed properties, the structure tree, mappings, associations and object expansion. No HTML model is involved. See the [complete snapshot contract](inspection.md).
