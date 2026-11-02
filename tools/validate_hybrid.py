@@ -23,7 +23,7 @@ def main():
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
     # Composer locks this generator to an already published stable core tag.
-    generator = root / 'vendor/roukmoute/pdf/tools/fixtures/hybrid_references.php'
+    generator = root / 'vendor/pdftoolkit/pdf/tools/fixtures/hybrid_references.php'
     with tempfile.TemporaryDirectory(prefix='pdf-reader-hybrid-') as temporary:
         directory = Path(temporary)
         # A dependency has no nested vendor directory; only adapt the bootstrap.
