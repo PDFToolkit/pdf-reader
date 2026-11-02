@@ -4,12 +4,17 @@ English | [Français](CHANGELOG.fr.md)
 
 ## Unreleased
 
+## 0.8.1 — 2026-11-02
+
+- Use the canonical Composer package `pdftoolkit/pdf:^0.12.2` and migrated stable dependencies. Keep existing PHP namespaces, APIs and behavior.
+- Document migration of application requirements in English and French; preserve previous releases and their evidence.
+- Update the hybrid validation generator path for the new Composer directory without changing fixtures.
+
 ## 0.8.0 - 2026-11-02
 
 - Add an immutable, bounded source inspection model independent of HTML derivation: original tags, typed properties, page/object identities, namespaces, role mappings and associated-file metadata.
 - Preserve byte strings, integer precision and physical reference chains; expose missing references, cycles, malformed branches and explicit partial results. Never decode page/image/attachment streams or acquire external files.
 - Publish a documented schemaVersion 1 JSON contract, English/French guides and independent pypdf/qpdf inspection validation alongside the PHP 8.3, 8.4 and 8.5 regression suite.
-
 
 ## 0.7.0 - 2026-10-28
 
@@ -41,14 +46,12 @@ English | [Français](CHANGELOG.fr.md)
 - Add 33 native permission cases and ten independent CMS-encrypted s3 sources; retain all previous authentication, MAC, alias and budget validations.
 - Accept stable core `^0.11` without changing the published core `0.9.0` validation dependency or PHP requirements.
 
-
 ## 0.5.1 - 2026-10-15
 
 - Accept stable core `^0.10` while retaining the previously supported core series.
 - Preserve the published core `0.9.0` validation lock and all dependency versions and source commits; refresh its content hash with Composer.
 - Verify the unchanged module against the core 0.10 candidate on PHP 8.3, 8.4 and 8.5, using an isolated validation copy outside production manifests.
 - Keep the public API, limits and PHP requirements unchanged; update the documented compatibility in English and French.
-
 
 ## 0.5.0 - 2026-10-15
 
@@ -116,7 +119,6 @@ English | [Français](CHANGELOG.fr.md)
 - Add explicit Standard password authentication R2–R7, named crypt filters, metadata/signature exemptions and authenticated permissions. Preserve original ciphertext separately from bytes ready for decoding.
 - Verify 26 filter cases, six hybrid files and 24 independently encrypted files; retain explicit source PDF MAC, public-key and image-codec boundaries.
 - Require stable core ^0.7.1 or ^0.8; PHP 8.3–8.5. Update both documentation languages.
-
 
 ## 0.2.3 - 2026-10-15
 

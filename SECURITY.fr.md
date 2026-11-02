@@ -23,7 +23,7 @@ confidentiel, sans révéler les détails d'exploitation.
 
 Un rapport utile précise :
 
-- La révision du lecteur et celle de `roukmoute/pdf` utilisées.
+- La révision du lecteur et celle de `pdftoolkit/pdf` utilisées.
 - La version PHP, les extensions concernées et les `ReaderLimits` configurés.
 - La surface touchée, le comportement observé et l'impact attendu.
 - Une reproduction minimale, idéalement avec un PDF synthétique sans donnée personnelle.

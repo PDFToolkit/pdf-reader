@@ -16,7 +16,7 @@ in the model repository.
 
 ## Two packages and one dependency
 
-`roukmoute/pdf` defines primitives and their writing. `pdftoolkit/pdf-reader`
+`pdftoolkit/pdf` defines primitives and their writing. `pdftoolkit/pdf-reader`
 adds reading mechanisms under `PDF\Reading`. Composer connects the reader to
 the model; there is no reverse dependency from the writer to the reader.
 

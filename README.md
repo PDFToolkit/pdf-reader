@@ -22,7 +22,12 @@ application:
 composer require "pdftoolkit/pdf-reader:^0.8"
 ```
 
-The reader uses `roukmoute/pdf:^0.11 || ^0.12`, installed
+The core is installed under its canonical Composer name `pdftoolkit/pdf:^0.12.2`.
+If your application directly requires `roukmoute/pdf`, replace that requirement
+with `pdftoolkit/pdf:^0.12.2` and update the lock with Composer.
+PHP namespaces and APIs are unchanged.
+
+The reader uses `pdftoolkit/pdf:^0.12.2`, installed
 automatically by Composer. PHP 8.3 or newer on a 64-bit platform and the `ctype`,
 `iconv` and `zlib` extensions are required for this combination. The application's
 `composer.lock` records the selected versions and revisions.

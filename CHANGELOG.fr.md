@@ -4,12 +4,17 @@
 
 ## Non publié
 
+## 0.8.1 — 2026-11-02
+
+- Utiliser le nom Composer canonique `pdftoolkit/pdf:^0.12.2` et les dépendances stables migrées. Conserver les namespaces PHP, API et comportements existants.
+- Documenter la migration des exigences applicatives en français et en anglais ; conserver les anciennes versions et leurs preuves.
+- Adapter le chemin du générateur de validation hybride au nouveau répertoire Composer, sans modifier les fixtures.
+
 ## 0.8.0 - 2026-11-02
 
 - Ajouter un modèle d’inspection source immuable et borné, indépendant de la dérivation HTML : balises originales, propriétés typées, identités pages/objets, espaces de noms, correspondances de rôles et métadonnées des fichiers associés.
 - Préserver chaînes d’octets, précision entière et chaînes physiques de références ; exposer références manquantes, cycles, branches malformées et résultats partiels explicites. Ne décoder ni contenu de page, ni image, ni pièce jointe et ne consulter aucun fichier externe.
 - Publier un contrat JSON schemaVersion 1 documenté, les guides FR/EN et la validation indépendante pypdf/qpdf avec les non-régressions PHP 8.3, 8.4 et 8.5.
-
 
 ## 0.7.0 - 2026-10-28
 
@@ -41,14 +46,12 @@
 - Ajouter 33 cas natifs de permissions et dix sources s3 chiffrées par CMS indépendant ; conserver les validations d’authentification, MAC, alias et budgets existantes.
 - Accepter le core stable `^0.11` sans changer la dépendance publiée de validation core `0.9.0` ni les exigences PHP.
 
-
 ## 0.5.1 - 2026-10-15
 
 - Accepter le core stable `^0.10` en conservant les séries précédemment prises en charge.
 - Conserver le verrou de validation du core publié `0.9.0`, ainsi que toutes les versions et références des dépendances ; actualiser son empreinte avec Composer.
 - Vérifier le module inchangé avec le candidat core 0.10 sous PHP 8.3, 8.4 et 8.5, avec une copie de validation isolée hors des manifestes de production.
 - Conserver l’API publique, les limites et les exigences PHP ; actualiser la compatibilité documentée en français et en anglais.
-
 
 ## 0.5.0 - 2026-10-15
 

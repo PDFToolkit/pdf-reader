@@ -17,7 +17,7 @@ de norme reste dans le dépôt du modèle.
 
 ## Deux paquets et une dépendance
 
-`roukmoute/pdf` définit les primitives et leur écriture. `pdftoolkit/pdf-reader`
+`pdftoolkit/pdf` définit les primitives et leur écriture. `pdftoolkit/pdf-reader`
 ajoute les mécanismes de lecture sous `PDF\Reading`. Composer relie le lecteur
 au modèle ; aucune dépendance inverse ne relie le writer au lecteur.
 

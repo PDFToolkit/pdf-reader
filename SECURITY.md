@@ -23,7 +23,7 @@ channel without revealing exploitation details.
 
 A useful report includes:
 
-- The reader and `roukmoute/pdf` revisions used.
+- The reader and `pdftoolkit/pdf` revisions used.
 - The PHP version, relevant extensions and configured `ReaderLimits`.
 - The affected surface, observed behaviour and expected impact.
 - A minimal reproduction, preferably a synthetic PDF without personal data.

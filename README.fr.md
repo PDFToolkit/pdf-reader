@@ -23,7 +23,12 @@ consommateur :
 composer require "pdftoolkit/pdf-reader:^0.8"
 ```
 
-Le lecteur utilise le core `roukmoute/pdf:^0.11 || ^0.12`,
+Le core est installé sous son nom Composer canonique `pdftoolkit/pdf:^0.12.2`.
+Si votre application exige directement `roukmoute/pdf`, remplacez cette exigence
+par `pdftoolkit/pdf:^0.12.2` et actualisez le verrou avec Composer.
+Les namespaces PHP et les API restent inchangés.
+
+Le lecteur utilise le core `pdftoolkit/pdf:^0.12.2`,
 installé automatiquement par Composer. PHP 8.3 ou supérieur sur une plateforme
 64 bits et les extensions `ctype`, `iconv` et `zlib` sont requis pour cet ensemble.
 Le fichier `composer.lock` du projet consommateur fixe les versions et les
